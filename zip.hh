@@ -34,29 +34,25 @@ public:
 	ZipIterator() = delete;
 
 	ZipIterator(Iters &&...iters)
-		: m_iters{std::forward<Iters>(iters)...}
-	{}
+		: m_iters{std::forward<Iters>(iters)...} {
+	}
 
-	auto operator++() -> ZipIterator &
-	{
+	auto operator++() -> ZipIterator & {
 		std::apply([](auto &...args) { ((args += 1), ...); }, m_iters);
 		return *this;
 	}
 
-	auto operator++(int) -> ZipIterator
-	{
+	auto operator++(int) -> ZipIterator {
 		auto tmp = *this;
 		++*this;
 		return tmp;
 	}
 
-	friend auto operator!=(ZipIterator const &lhs, ZipIterator const &rhs)
-	{
+	friend auto operator!=(ZipIterator const &lhs, ZipIterator const &rhs) {
 		return !(lhs == rhs);
 	}
 
-	friend auto operator==(ZipIterator const &lhs, ZipIterator const &rhs)
-	{
+	friend auto operator==(ZipIterator const &lhs, ZipIterator const &rhs) {
 		// This method is a tiny bit faster (one compare per loop), but of course things break if first element isn't the largest:
 		// return (std::get<1>(m_iters) == std::get<1>(other.m_iters));
 
@@ -64,8 +60,7 @@ public:
 		return any_match(lhs.m_iters, rhs.m_iters);
 	}
 
-	auto operator*() -> ValueT
-	{
+	auto operator*() -> ValueT {
 		return std::apply([](auto &&...args) { return ValueT{*args...}; }, m_iters);
 	}
 
@@ -82,15 +77,13 @@ public:
 	//Constructor
 	template<typename... Args>
 	explicit Zipper(Args &&...args)
-		: m_args{std::forward<Args>(args)...}
-	{}
+		: m_args{std::forward<Args>(args)...} {
+	}
 
-	auto begin() -> ZipType
-	{
+	auto begin() -> ZipType {
 		return std::apply([](auto &&...args) { return ZipType{std::begin(args)...}; }, m_args);
 	}
-	auto end() -> ZipType
-	{
+	auto end() -> ZipType {
 		return std::apply([](auto &&...args) { return ZipType{std::end(args)...}; }, m_args);
 	}
 
@@ -101,7 +94,6 @@ private:
 } // namespace Zip
 
 template<typename... T>
-auto zip(T &&...t)
-{
+auto zip(T &&...t) {
 	return Zip::details::Zipper<T...>{std::forward<T>(t)...};
 }

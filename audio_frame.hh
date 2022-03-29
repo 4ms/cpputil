@@ -1,5 +1,5 @@
 #pragma once
-#include "util/math.hh"
+#include "math.hh"
 #include <array>
 #include <cstdint>
 #include <type_traits>

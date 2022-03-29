@@ -14,15 +14,15 @@ public:
 	using DataT = std::array<PairT, N>;
 	DataT data;
 
-	const ValT& operator[](const KeyT key) const {
-		for (auto & pair : data) {
+	const ValT &operator[](const KeyT key) const {
+		for (auto &pair : data) {
 			if (pair.key == key)
 				return pair.element;
 		}
 		return data[0].element;
 	}
-	ValT& operator[](const KeyT key) {
-		for (auto & pair : data) {
+	ValT &operator[](const KeyT key) {
+		for (auto &pair : data) {
 			if (pair.key == key)
 				return pair.element;
 		}
@@ -31,7 +31,10 @@ public:
 
 	//const DataT& operator()() const { return data; }
 	using const_seqmap_iterator = typename DataT::const_iterator;
-    const const_seqmap_iterator begin() const { return data.begin(); }
-    const const_seqmap_iterator end() const { return data.end(); }
+	const const_seqmap_iterator begin() const {
+		return data.begin();
+	}
+	const const_seqmap_iterator end() const {
+		return data.end();
+	}
 };
-

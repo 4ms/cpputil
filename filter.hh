@@ -7,9 +7,9 @@ struct Oversampler {
 	static_assert(MathTools::is_power_of_2(Size) > 0, "Oversampler<Size, T> requires Size to be a power of 2");
 
 public:
-	Oversampler() {}
-	void add_val(T newval)
-	{
+	Oversampler() {
+	}
+	void add_val(T newval) {
 		buff_ += newval;
 		if (++idx_ >= Size) {
 			val_ = buff_ >> oversample_shift_;
@@ -17,8 +17,7 @@ public:
 			buff_ = 0;
 		}
 	}
-	T val()
-	{
+	T val() {
 		return val_;
 	}
 
@@ -31,17 +30,15 @@ private:
 
 struct NoFilter {
 public:
-	NoFilter() {}
-	void add_val(unsigned newval)
-	{
+	NoFilter() {
+	}
+	void add_val(unsigned newval) {
 		val_ = newval;
 	}
-	unsigned val()
-	{
+	unsigned val() {
 		return val_;
 	}
 
 private:
 	unsigned val_ = 0;
 };
-

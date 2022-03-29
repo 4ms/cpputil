@@ -12,28 +12,24 @@ public:
 	Toggler()
 		: is_high_{false}
 		, got_rising_edge_{false}
-		, got_falling_edge_{false}
-	{}
+		, got_falling_edge_{false} {
+	}
 
-	void reset()
-	{
+	void reset() {
 		is_high_ = false;
 		got_falling_edge_ = false;
 		got_rising_edge_ = false;
 	}
 
-	bool is_high() const
-	{
+	bool is_high() const {
 		return is_high_;
 	}
 
-	bool is_pressed() const
-	{
+	bool is_pressed() const {
 		return is_high_;
 	}
 
-	bool is_just_pressed()
-	{
+	bool is_just_pressed() {
 		if (got_rising_edge_) {
 			got_rising_edge_ = false;
 			return true;
@@ -41,53 +37,45 @@ public:
 			return false;
 	}
 
-	bool just_went_high()
-	{
+	bool just_went_high() {
 		return is_just_pressed();
 	}
 
-	bool is_just_released()
-	{
+	bool is_just_released() {
 		if (got_falling_edge_) {
 			got_falling_edge_ = false;
 			return true;
 		} else
 			return false;
 	}
-	bool just_went_low()
-	{
+	bool just_went_low() {
 		return is_just_released();
 	}
 
-	void register_rising_edge()
-	{
+	void register_rising_edge() {
 		is_high_ = true;
 		got_rising_edge_ = true;
 		got_falling_edge_ = false;
 	}
 
-	void register_falling_edge()
-	{
+	void register_falling_edge() {
 		is_high_ = false;
 		got_falling_edge_ = true;
 		got_rising_edge_ = false;
 	}
 
-	void set_state(unsigned x)
-	{
+	void set_state(unsigned x) {
 		is_high_ = x ? true : false;
 	}
 
-	void copy_state(const Toggler &other)
-	{
+	void copy_state(const Toggler &other) {
 		is_high_ = other.is_high_;
 		got_rising_edge_ = other.got_rising_edge_;
 		got_falling_edge_ = other.got_falling_edge_;
 	}
 
 	// Update the toggler with more recent events from another toggler
-	void update_state(const Toggler &other)
-	{
+	void update_state(const Toggler &other) {
 		if (other.got_falling_edge_)
 			got_falling_edge_ = true;
 
@@ -98,15 +86,13 @@ public:
 	}
 
 	// Update the toggler with more recent events AND clear the other toggler
-	void transfer_events(Toggler &other)
-	{
+	void transfer_events(Toggler &other) {
 		update_state(other);
 		other.got_falling_edge_ = false;
 		other.got_rising_edge_ = false;
 	}
 
-	Toggler &operator=(const Toggler &other)
-	{
+	Toggler &operator=(const Toggler &other) {
 		copy_state(other);
 		return *this;
 	}
@@ -117,11 +103,10 @@ template<unsigned RisingEdgePattern = 0x00000001,
 		 unsigned StateMask = 0x00000FFF>
 struct Debouncer : Toggler {
 	Debouncer()
-		: debounce_state_{0}
-	{}
+		: debounce_state_{0} {
+	}
 
-	void register_state(unsigned new_state)
-	{
+	void register_state(unsigned new_state) {
 		debounce_state_ = ((debounce_state_ << 1) | new_state) & StateMask;
 		if (debounce_state_ == (RisingEdgePattern & StateMask)) {
 			register_rising_edge();

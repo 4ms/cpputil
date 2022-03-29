@@ -5,11 +5,10 @@ struct ReplaceString {
 	std::string str;
 
 	ReplaceString(std::string initval)
-		: str{initval}
-	{}
+		: str{initval} {
+	}
 
-	ReplaceString &replace_all(const std::string str_find, const std::string str_replace)
-	{
+	ReplaceString &replace_all(const std::string str_find, const std::string str_replace) {
 		size_t index = 0;
 		while (true) {
 			index = str.find(str_find, index);
