@@ -1,5 +1,5 @@
 #pragma once
-#include "cpputil/math.hh"
+#include "util/math.hh"
 
 struct float32x4_t {
 	float v[4];

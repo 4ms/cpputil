@@ -1,5 +1,5 @@
 #pragma once
-#include "cpputil/interp_array.hh"
+#include "util/interp_array.hh"
 extern const InterpArray<float, 2048> sinTable;
 extern const InterpArray<float, 2048> tanTable;
 extern const InterpArray<float, 2048> exp5Table;
