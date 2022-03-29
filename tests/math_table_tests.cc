@@ -1,5 +1,5 @@
-#include "cpputil/math.hh"
-#include "cpputil/math_tables.hh"
+#include "util/math.hh"
+#include "util/math_tables.hh"
 #include "doctest.h"
 #include <cmath>
 

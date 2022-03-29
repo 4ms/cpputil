@@ -1,4 +1,4 @@
-#include "cpputil/math.hh"
+#include "util/math.hh"
 #include "doctest.h"
 
 TEST_CASE("Testing map_value()") {

@@ -1,4 +1,4 @@
-#include "cpputil/interp_param.hh"
+#include "util/interp_param.hh"
 #include "doctest.h"
 #include <array>
 

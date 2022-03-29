@@ -1,4 +1,4 @@
-#include "cpputil/audio_frame.hh"
+#include "util/audio_frame.hh"
 #include "doctest.h"
 
 using TestAudioFrame = AudioFrame<int32_t, 24>;

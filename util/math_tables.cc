@@ -1,4 +1,4 @@
-#include "cpputil/interp_array.hh"
+#include "util/interp_array.hh"
 extern const InterpArray<float, 2048> sinTable = {
 	0.000000f,	0.003068f,	0.006136f,	0.009204f,	0.012272f,	0.015339f,	0.018407f,	0.021474f,	0.024541f,
 	0.027608f,	0.030675f,	0.033741f,	0.036807f,	0.039873f,	0.042938f,	0.046003f,	0.049068f,	0.052132f,

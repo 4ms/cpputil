@@ -1,4 +1,4 @@
-#include "cpputil/interp_array.hh"
+#include "util/interp_array.hh"
 #include "doctest.h"
 
 TEST_CASE("interp_array_tests: inits_with_single_value_sets_just_first_element") {

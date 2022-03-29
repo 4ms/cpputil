@@ -1,4 +1,4 @@
-#include "cpputil/static_string.hh"
+#include "util/static_string.hh"
 #include "doctest.h"
 
 TEST_CASE("Static String construction") {
