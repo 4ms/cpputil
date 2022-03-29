@@ -1,6 +1,6 @@
+#include "doctest.h"
 #include "util/math.hh"
 #include "util/math_tables.hh"
-#include "doctest.h"
 #include <cmath>
 
 const double TWOPI = 2. * (double)M_PI;

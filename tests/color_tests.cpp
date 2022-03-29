@@ -1,5 +1,5 @@
-#include "util/colors.hh"
 #include "doctest.h"
+#include "util/colors.hh"
 #include <stdio.h>
 
 TEST_CASE("Rgb565 conversion tests") {

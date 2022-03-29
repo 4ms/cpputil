@@ -1,5 +1,5 @@
-#include "util/analyzed_signal.hh"
 #include "doctest.h"
+#include "util/analyzed_signal.hh"
 
 TEST_CASE("Basic usage") {
 

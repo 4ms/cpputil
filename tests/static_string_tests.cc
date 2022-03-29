@@ -1,5 +1,5 @@
-#include "util/static_string.hh"
 #include "doctest.h"
+#include "util/static_string.hh"
 
 TEST_CASE("Static String construction") {
 	SUBCASE("Default (empty) constructor") {

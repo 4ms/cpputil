@@ -1,5 +1,5 @@
-#include "util/audio_frame.hh"
 #include "doctest.h"
+#include "util/audio_frame.hh"
 
 using TestAudioFrame = AudioFrame<int32_t, 24>;
 TEST_CASE("audio_frame_tests: input_scales") {

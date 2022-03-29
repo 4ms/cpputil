@@ -1,5 +1,5 @@
-#include "util/math.hh"
 #include "doctest.h"
+#include "util/math.hh"
 
 TEST_CASE("Testing map_value()") {
 	SUBCASE("basic float mapping usage") {

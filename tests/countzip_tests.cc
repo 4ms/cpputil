@@ -1,5 +1,5 @@
-#include "util/countzip.hh"
 #include "doctest.h"
+#include "util/countzip.hh"
 
 #include <array>
 // #include <iostream>

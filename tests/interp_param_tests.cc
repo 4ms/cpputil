@@ -1,5 +1,5 @@
-#include "util/interp_param.hh"
 #include "doctest.h"
+#include "util/interp_param.hh"
 #include <array>
 
 TEST_CASE("interp_param_tests: inits_to_zero") {

@@ -1,5 +1,5 @@
-#include "util/oscs.hh"
 #include "doctest.h"
+#include "util/oscs.hh"
 #include <iostream>
 
 TEST_CASE("Basic TriangleOscillator usage") {

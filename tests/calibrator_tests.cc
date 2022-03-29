@@ -1,5 +1,5 @@
-#include "util/calibrator.hh"
 #include "doctest.h"
+#include "util/calibrator.hh"
 #include <limits>
 
 TEST_CASE("Basic usage: inputting the high and low notes used to calibrate, gives the target high and low notes") {

@@ -1,5 +1,5 @@
-#include "util/interp_array.hh"
 #include "doctest.h"
+#include "util/interp_array.hh"
 
 TEST_CASE("interp_array_tests: inits_with_single_value_sets_just_first_element") {
 	InterpArray<long, 4> x = {42};
