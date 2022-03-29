@@ -1,8 +1,8 @@
-tests/build/tests/zip_tests.o: tests/zip_tests.cc tests/../zip.hh \
-  iterator_helpers.hh tests/doctest.h
+tests/build/tests/zip_tests.o: tests/zip_tests.cc cpputil/zip.hh \
+  cpputil/iterator_helpers.hh tests/doctest.h
 
-tests/../zip.hh:
+cpputil/zip.hh:
 
-iterator_helpers.hh:
+cpputil/iterator_helpers.hh:
 
 tests/doctest.h:

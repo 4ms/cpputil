@@ -1,16 +1,14 @@
-#include "../interp_param.hh"
+#include "cpputil/interp_param.hh"
 #include "doctest.h"
 #include <array>
 
-TEST_CASE("interp_param_tests: inits_to_zero")
-{
+TEST_CASE("interp_param_tests: inits_to_zero") {
 	InterpParam<float, 6> x;
 	CHECK(x.cur_val == 0.f);
 	CHECK(x.next() == 0.f);
 }
 
-TEST_CASE("interp_param_tests: basic_usage")
-{
+TEST_CASE("interp_param_tests: basic_usage") {
 	InterpParam<float, 6> x;
 	x.set_new_value(12.f);
 	CHECK(x.next() == 2.0f);
@@ -21,8 +19,7 @@ TEST_CASE("interp_param_tests: basic_usage")
 	CHECK(x.next() == 12.0f);
 }
 
-TEST_CASE("interp_param_tests: many_many_updates")
-{
+TEST_CASE("interp_param_tests: many_many_updates") {
 	const unsigned int updates = 0x1000000;
 	InterpParam<double, updates> x;
 
@@ -33,8 +30,7 @@ TEST_CASE("interp_param_tests: many_many_updates")
 	CHECK_EQ(x.next(), doctest::Approx(123456789.0).epsilon(0.000001));
 }
 
-TEST_CASE("interp_param_tests: goes_negative")
-{
+TEST_CASE("interp_param_tests: goes_negative") {
 	InterpParam<long, 3> x;
 	x.set_new_value(-12L);
 	CHECK_EQ(-4L, x.next());
@@ -42,8 +38,7 @@ TEST_CASE("interp_param_tests: goes_negative")
 	CHECK_EQ(-12L, x.next());
 }
 
-TEST_CASE("interp_param_tests: two_updates_opposite_directions")
-{
+TEST_CASE("interp_param_tests: two_updates_opposite_directions") {
 	InterpParam<long, 3> x;
 	x.set_new_value(-12L);
 	CHECK_EQ(-4L, x.next());
@@ -55,8 +50,7 @@ TEST_CASE("interp_param_tests: two_updates_opposite_directions")
 	CHECK_EQ(9L, x.next());
 }
 
-TEST_CASE("interp_param_tests: overflow_keeps_incrementing")
-{
+TEST_CASE("interp_param_tests: overflow_keeps_incrementing") {
 	InterpParam<float, 6> x;
 	x.set_new_value(12.f);
 	CHECK(x.next() == 2.0f);
@@ -68,17 +62,14 @@ TEST_CASE("interp_param_tests: overflow_keeps_incrementing")
 	CHECK_EQ(x.next(), doctest::Approx(14.));
 }
 
-TEST_CASE("interp_param_tests: zero_breaks")
-{
+TEST_CASE("interp_param_tests: zero_breaks") {
 	// InterpParam<float, 0> x;
 }
 
-TEST_CASE("interp_param_tests: step_size_is_nearly_zero_if_value_doesnt_change")
-{
+TEST_CASE("interp_param_tests: step_size_is_nearly_zero_if_value_doesnt_change") {
 	InterpParam<float, 1> x;
 	x.set_new_value(12.f);
 	CHECK(x.next() == 12.f);
 	x.set_new_value(12.f);
 	CHECK_EQ(x.get_step_size(), doctest::Approx(0.));
 }
-

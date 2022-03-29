@@ -1,5 +1,5 @@
 #pragma once
-#include "math.hh"
+#include "cpputil/math.hh"
 #include <array>
 
 template<class T, size_t max_size_>

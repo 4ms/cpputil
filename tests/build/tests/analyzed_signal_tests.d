@@ -1,6 +1,6 @@
 tests/build/tests/analyzed_signal_tests.o: tests/analyzed_signal_tests.cc \
-  tests/../analyzed_signal.hh tests/doctest.h
+  cpputil/analyzed_signal.hh tests/doctest.h
 
-tests/../analyzed_signal.hh:
+cpputil/analyzed_signal.hh:
 
 tests/doctest.h:

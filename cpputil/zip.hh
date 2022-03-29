@@ -1,28 +1,27 @@
 #pragma once
-#include "iterator_helpers.hh"
+#include "cpputil/iterator_helpers.hh"
 #include <tuple>
 
-// countzip
+// zip
 //
 // Use in range-based for loops
-// Given N iterable containers (such as arrays) return a tuple of size N+1:
-// [ index, a[index], b[index], c[index], ... ]
+// Given N iterable containers (such as arrays) return a tuple of size N:
+// [ a[index], b[index], c[index], ... ]
 //
 // For example:
 //
-// for (auto & [n, in, out, param] : countzip(in_array, out_array, param_array) {
-//     out = in * calc_something(n, param.xyz);
+// for (auto & [in, out, param] : zip(in_array, out_array, param_array) {
+//     out = in * calc_something(param.xyz);
 // }
 //
 // Source:
 // Pretty much from https://committhis.github.io/2020/10/14/zip-iterator.html
 // with the counting index stuff and some C++20 fixes added by me (Dan Green)
 
-namespace CountZip
+namespace Zip
 {
 namespace details
 {
-
 using IteratorHelper::any_match;
 using IteratorHelper::select_access_type_for;
 using IteratorHelper::select_iterator_for;
@@ -30,7 +29,7 @@ using IteratorHelper::select_iterator_for;
 template<typename... Iters>
 class ZipIterator {
 public:
-	using ValueT = std::tuple<size_t, select_access_type_for<Iters>...>;
+	using ValueT = std::tuple<select_access_type_for<Iters>...>;
 
 	ZipIterator() = delete;
 
@@ -39,7 +38,6 @@ public:
 	}
 
 	auto operator++() -> ZipIterator & {
-		++m_cnt;
 		std::apply([](auto &...args) { ((args += 1), ...); }, m_iters);
 		return *this;
 	}
@@ -63,15 +61,14 @@ public:
 	}
 
 	auto operator*() -> ValueT {
-		return std::apply([cnt = this->m_cnt](auto &&...args) { return ValueT{cnt, *args...}; }, m_iters);
+		return std::apply([](auto &&...args) { return ValueT{*args...}; }, m_iters);
 	}
 
 private:
-	size_t m_cnt = 0;
 	std::tuple<Iters...> m_iters;
 };
 
-// CountingZipper
+// Zipper
 template<typename... T>
 class Zipper {
 public:
@@ -94,14 +91,9 @@ private:
 	std::tuple<T...> m_args;
 };
 } // namespace details
-} // namespace CountZip
+} // namespace Zip
 
 template<typename... T>
-auto countzip(T &&...t) {
-	return CountZip::details::Zipper<T...>{std::forward<T>(t)...};
-}
-
-template<typename... T>
-auto enumerate(T &&...t) {
-	return CountZip::details::Zipper<T...>{std::forward<T>(t)...};
+auto zip(T &&...t) {
+	return Zip::details::Zipper<T...>{std::forward<T>(t)...};
 }

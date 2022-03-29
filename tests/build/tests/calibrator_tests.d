@@ -1,13 +1,13 @@
 tests/build/tests/calibrator_tests.o: tests/calibrator_tests.cc \
-  calibrator.hh ../util/math.hh math_tables.hh interp_array.hh \
-  tests/doctest.h
+  cpputil/calibrator.hh cpputil/math.hh cpputil/math_tables.hh \
+  cpputil/interp_array.hh tests/doctest.h
 
-calibrator.hh:
+cpputil/calibrator.hh:
 
-../util/math.hh:
+cpputil/math.hh:
 
-math_tables.hh:
+cpputil/math_tables.hh:
 
-interp_array.hh:
+cpputil/interp_array.hh:
 
 tests/doctest.h:

@@ -1,6 +1,6 @@
 tests/build/tests/bitfield_tests.o: tests/bitfield_tests.cc \
-  tests/../bitfield.hh tests/doctest.h
+  cpputil/bitfield.hh tests/doctest.h
 
-tests/../bitfield.hh:
+cpputil/bitfield.hh:
 
 tests/doctest.h:

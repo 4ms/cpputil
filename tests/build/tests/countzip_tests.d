@@ -1,8 +1,8 @@
 tests/build/tests/countzip_tests.o: tests/countzip_tests.cc \
-  tests/../countzip.hh iterator_helpers.hh tests/doctest.h
+  cpputil/countzip.hh cpputil/iterator_helpers.hh tests/doctest.h
 
-tests/../countzip.hh:
+cpputil/countzip.hh:
 
-iterator_helpers.hh:
+cpputil/iterator_helpers.hh:
 
 tests/doctest.h:

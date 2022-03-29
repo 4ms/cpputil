@@ -1,5 +1,5 @@
 #pragma once
-#include "math_tables.hh"
+#include "cpputil/math_tables.hh"
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>

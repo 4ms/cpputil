@@ -1,13 +1,13 @@
 tests/build/tests/audio_frame_tests.o: tests/audio_frame_tests.cc \
-  tests/../audio_frame.hh ../util/math.hh math_tables.hh interp_array.hh \
-  tests/doctest.h
+  cpputil/audio_frame.hh cpputil/math.hh cpputil/math_tables.hh \
+  cpputil/interp_array.hh tests/doctest.h
 
-tests/../audio_frame.hh:
+cpputil/audio_frame.hh:
 
-../util/math.hh:
+cpputil/math.hh:
 
-math_tables.hh:
+cpputil/math_tables.hh:
 
-interp_array.hh:
+cpputil/interp_array.hh:
 
 tests/doctest.h:

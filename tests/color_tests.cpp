@@ -1,9 +1,8 @@
-#include "../colors.hh"
+#include "cpputil/colors.hh"
 #include "doctest.h"
 #include <stdio.h>
 
-TEST_CASE("Rgb565 conversion tests")
-{
+TEST_CASE("Rgb565 conversion tests") {
 	// Using online rgb565 color picker
 	// values from: https://chrishewett.com/blog/true-rgb565-colour-picker/
 	uint16_t red565 = 0xf800;
@@ -24,8 +23,7 @@ TEST_CASE("Rgb565 conversion tests")
 	Color black{0, 0, 0};
 	Color white{255, 255, 255};
 
-	SUBCASE("Color to Rgb565")
-	{
+	SUBCASE("Color to Rgb565") {
 		CHECK(red.Rgb565() == red565);
 		CHECK(green.Rgb565() == green565);
 		CHECK(blue.Rgb565() == blue565);
@@ -35,22 +33,19 @@ TEST_CASE("Rgb565 conversion tests")
 		CHECK(white.Rgb565() == white565);
 	}
 
-	SUBCASE("Rgb565 to Color")
-	{
+	SUBCASE("Rgb565 to Color") {
 		Color c{goldenrod565};
 		// values from: https://chrishewett.com/blog/true-rgb565-colour-picker/
 		CHECK(c.red() == 29 << (8 - 5));
 		CHECK(c.green() == 51 << (8 - 6));
 		CHECK(c.blue() == 6 << (8 - 5));
 
-		SUBCASE("..and back to Rgb565")
-		{
+		SUBCASE("..and back to Rgb565") {
 			CHECK(c.Rgb565() == goldenrod565);
 		}
 	}
 
-	SUBCASE("Blending Rgb565")
-	{
+	SUBCASE("Blending Rgb565") {
 		CHECK(Color::blend(black565, white565, 0.5f) == greyish565);
 		CHECK(Color::blend(red565, green565, 0.25f) == mandarian565);
 		CHECK(Color::blend(red565, green565, 0.f) == red565);

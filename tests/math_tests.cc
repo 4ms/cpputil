@@ -1,35 +1,28 @@
-#include "../math.hh"
+#include "cpputil/math.hh"
 #include "doctest.h"
 
-TEST_CASE("Testing map_value()")
-{
-	SUBCASE("basic float mapping usage")
-	{
+TEST_CASE("Testing map_value()") {
+	SUBCASE("basic float mapping usage") {
 		auto mapped = MathTools::map_value(0.25f, 0.f, 1.f, 600.f, 700.f);
 		CHECK(mapped == 625.f);
 	}
-	SUBCASE("map a float from a float range to an integer range")
-	{
+	SUBCASE("map a float from a float range to an integer range") {
 		auto mapped = MathTools::map_value(1.25f, 1.f, 2.f, 600, 700);
 		CHECK(mapped == 625);
 	}
-	SUBCASE("map a float from an integer range to a float range")
-	{
+	SUBCASE("map a float from an integer range to a float range") {
 		auto mapped = MathTools::map_value(1.25f, 1, 2, -100.f, -200.f);
 		CHECK(mapped == -125.f);
 	}
-	SUBCASE("map an integer from an integer range to a float range")
-	{
+	SUBCASE("map an integer from an integer range to a float range") {
 		auto mapped = MathTools::map_value(25, 10, 70, -100.f, -200.f);
 		CHECK(mapped == -125.f);
 	}
-	SUBCASE("map an integer from an float range to a integer range")
-	{
+	SUBCASE("map an integer from an float range to a integer range") {
 		auto mapped = MathTools::map_value(25, 10.0, 70.0, -100, -200);
 		CHECK(mapped == -125);
 	}
-	SUBCASE("map to a zero-width range is always the same number")
-	{
+	SUBCASE("map to a zero-width range is always the same number") {
 		int low = 10;
 		int high = 70;
 		for (int i = low; i <= high; i++) {
@@ -37,16 +30,14 @@ TEST_CASE("Testing map_value()")
 			CHECK(mapped == 666);
 		}
 	}
-	SUBCASE("map an out-of-range number to a zero-width range is also the same number")
-	{
+	SUBCASE("map an out-of-range number to a zero-width range is also the same number") {
 		auto mapped = MathTools::map_value(-1000000, 10, 70, 666, 666);
 		CHECK(mapped == 666);
 
 		mapped = MathTools::map_value(7000000, 10, 70, 666, 666);
 		CHECK(mapped == 666);
 	}
-	SUBCASE("map an out-of-range number produces an out-of-range result")
-	{
+	SUBCASE("map an out-of-range number produces an out-of-range result") {
 		auto mapped = MathTools::map_value(-1000000, 10L, 70L, 0, 10000);
 		CHECK(mapped < 0);
 
@@ -55,8 +46,7 @@ TEST_CASE("Testing map_value()")
 	}
 }
 
-TEST_CASE("Testing is_power_of_2()")
-{
+TEST_CASE("Testing is_power_of_2()") {
 	CHECK(MathTools::is_power_of_2(1));
 	CHECK(MathTools::is_power_of_2(2));
 	CHECK(MathTools::is_power_of_2(4));
@@ -88,11 +78,9 @@ TEST_CASE("Testing is_power_of_2()")
 	CHECK_FALSE(MathTools::is_power_of_2(0x80000001));
 }
 
-TEST_CASE("Log2 template")
-{
+TEST_CASE("Log2 template") {
 
-	SUBCASE("Check normal powers of 2")
-	{
+	SUBCASE("Check normal powers of 2") {
 		CHECK(MathTools::Log2<1>::val == 0);
 		CHECK(MathTools::Log2<2>::val == 1);
 		CHECK(MathTools::Log2<4>::val == 2);
@@ -104,8 +92,7 @@ TEST_CASE("Log2 template")
 		CHECK(MathTools::Log2<0x80000000>::val == 31);
 	}
 
-	SUBCASE("Lowest closest integer (floor) of log2(val) is returned")
-	{
+	SUBCASE("Lowest closest integer (floor) of log2(val) is returned") {
 		CHECK(MathTools::Log2<3>::val == MathTools::Log2<2>::val);
 
 		CHECK(MathTools::Log2<5>::val == MathTools::Log2<4>::val);
@@ -117,10 +104,8 @@ TEST_CASE("Log2 template")
 	}
 }
 
-TEST_CASE("Testing randomNumber()")
-{
-	SUBCASE("results are in range")
-	{
+TEST_CASE("Testing randomNumber()") {
+	SUBCASE("results are in range") {
 		int reps = 100;
 		while (reps--) {
 			auto x = MathTools::randomNumber(-4.f, 4.f);
@@ -128,18 +113,15 @@ TEST_CASE("Testing randomNumber()")
 			CHECK(x <= 4.f);
 		}
 	}
-	SUBCASE("if minNum==maxNum, result will always be minNum")
-	{
+	SUBCASE("if minNum==maxNum, result will always be minNum") {
 		int reps = 100;
 		while (reps--) {
 			auto x = MathTools::randomNumber(222.f, 222.f);
 			CHECK(x == 222.f);
 		}
 	}
-	SUBCASE("results are always < maxNum (unless minNum==maxNum)")
-	{
-		SUBCASE("...with floats")
-		{
+	SUBCASE("results are always < maxNum (unless minNum==maxNum)") {
+		SUBCASE("...with floats") {
 			int reps = 100;
 			int num_high_x = 0;
 			while (reps--) {
@@ -151,8 +133,7 @@ TEST_CASE("Testing randomNumber()")
 			CHECK(num_high_x == 0);
 		}
 
-		SUBCASE("...with integers")
-		{
+		SUBCASE("...with integers") {
 			int reps = 100;
 			int num_high_x = 0;
 			while (reps--) {
@@ -164,8 +145,7 @@ TEST_CASE("Testing randomNumber()")
 		}
 	}
 
-	SUBCASE("Roughly equal distribution")
-	{
+	SUBCASE("Roughly equal distribution") {
 		int reps = 1000;
 		unsigned cnt[3] = {0, 0, 0};
 		while (reps--) {
@@ -188,8 +168,7 @@ TEST_CASE("Testing randomNumber()")
 		CHECK(cnt[2] < 170);
 	}
 }
-TEST_CASE("math_tests: wrapping")
-{
+TEST_CASE("math_tests: wrapping") {
 	uint32_t a = 0;
 	CHECK(1 == MathTools::wrap<5>(a + 1));
 	a++;
@@ -202,32 +181,27 @@ TEST_CASE("math_tests: wrapping")
 	CHECK(0 == MathTools::wrap<5>(a + 1));
 }
 
-TEST_CASE("math_tests: ipow_tests")
-{
-	SUBCASE("1 to any power is 1")
-	{
+TEST_CASE("math_tests: ipow_tests") {
+	SUBCASE("1 to any power is 1") {
 		CHECK(1 == MathTools::ipow(1, 0));
 		// CHECK(1 == MathTools::ipow(1, -10)); //FixMe: CRASH!
 		CHECK(1 == MathTools::ipow(1, 1));
 		CHECK(1 == MathTools::ipow(1, 11111));
 	}
-	SUBCASE("Powers of 2")
-	{
+	SUBCASE("Powers of 2") {
 		CHECK(1 == MathTools::ipow(2, 0));
 		CHECK(2 == MathTools::ipow(2, 1));
 		CHECK(4 == MathTools::ipow(2, 2));
 		CHECK(32768 == MathTools::ipow(2, 15));
 		CHECK(65536 == MathTools::ipow(2, 16));
 		CHECK(0x80000000U == MathTools::ipow(2, 31));
-		SUBCASE("2^32 overflows to 0")
-		{
+		SUBCASE("2^32 overflows to 0") {
 			CHECK(0x00000000 == MathTools::ipow(2, 32));
 		}
 	}
 }
 
-TEST_CASE("math_tests: sizeof_type_test")
-{
+TEST_CASE("math_tests: sizeof_type_test") {
 	uint8_t u8 = 0;
 	int8_t i8 = 0;
 	uint16_t u16 = 0;
@@ -240,8 +214,7 @@ TEST_CASE("math_tests: sizeof_type_test")
 	CHECK(127 == MathTools::bipolar_type_range(i8));
 }
 
-TEST_CASE("swap_bytes tests")
-{
+TEST_CASE("swap_bytes tests") {
 	uint16_t hw1 = 0x1234;
 	uint16_t hw2 = 0x0140;
 	CHECK(MathTools::swap_bytes_and_combine(hw1, hw2) == 0x34124001);
@@ -253,15 +226,12 @@ TEST_CASE("swap_bytes tests")
 	CHECK(MathTools::swap_bytes16(hw) == 0x7698);
 }
 
-TEST_CASE("log2int")
-{
-	SUBCASE("Log(0) is undefined, but in MathTools Log2Int(0) = 0")
-	{
+TEST_CASE("log2int") {
+	SUBCASE("Log(0) is undefined, but in MathTools Log2Int(0) = 0") {
 		CHECK(MathTools::log2_floor(0) == 0); // Is this important?
 	}
 
-	SUBCASE("Check powers of 2")
-	{
+	SUBCASE("Check powers of 2") {
 		CHECK(MathTools::log2_floor(1) == 0);
 		CHECK(MathTools::log2_floor(2) == 1);
 		CHECK(MathTools::log2_floor(4) == 2);
@@ -273,8 +243,7 @@ TEST_CASE("log2int")
 		CHECK(MathTools::log2_floor(0x80000000) == 31);
 	}
 
-	SUBCASE("Lowest closest integer (floor) of log2(val) is returned")
-	{
+	SUBCASE("Lowest closest integer (floor) of log2(val) is returned") {
 		CHECK(MathTools::log2_floor(3) == MathTools::log2_floor(2));
 
 		CHECK(MathTools::log2_floor(5) == MathTools::log2_floor(4));
@@ -286,8 +255,7 @@ TEST_CASE("log2int")
 	}
 }
 
-TEST_CASE("cos")
-{
+TEST_CASE("cos") {
 	CHECK(MathTools::cos(0) == doctest::Approx(cosf(0)));
 	CHECK(MathTools::cos(M_PI / 2.f) == doctest::Approx(cosf(M_PI / 2.f)));
 	CHECK(MathTools::cos(M_PI) == doctest::Approx(cosf(M_PI)));
@@ -296,8 +264,7 @@ TEST_CASE("cos")
 	CHECK(MathTools::cos(999) == doctest::Approx(cosf(999)));
 }
 
-TEST_CASE("tan")
-{
+TEST_CASE("tan") {
 	CHECK(MathTools::tan(0) == doctest::Approx(tanf(0)));
 	CHECK(MathTools::tan(M_PI / 2.f) == doctest::Approx(tanf(M_PI / 2.f)));
 	CHECK(MathTools::tan(M_PI) == doctest::Approx(tanf(M_PI)));
@@ -306,8 +273,7 @@ TEST_CASE("tan")
 	CHECK(MathTools::tan(999) == doctest::Approx(tanf(999)));
 }
 
-TEST_CASE("pow2")
-{
+TEST_CASE("pow2") {
 	float x;
 	x = 0;
 	CHECK(MathTools::pow2(x) == doctest::Approx(powf(2.f, x)));
@@ -323,8 +289,7 @@ TEST_CASE("pow2")
 	CHECK(MathTools::pow2(x) == doctest::Approx(powf(2.f, x)));
 }
 
-TEST_CASE("hysteresis_gate")
-{
+TEST_CASE("hysteresis_gate") {
 	float input;
 	float output = 0.f;
 
@@ -336,38 +301,32 @@ TEST_CASE("hysteresis_gate")
 	output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 	CHECK(output == 0.f);
 
-	THEN("Fully high input --> high output")
-	{
+	THEN("Fully high input --> high output") {
 		input = 1.f;
 		output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 		CHECK(output == 1.f);
 
-		THEN("input goes fully low --> low output")
-		{
+		THEN("input goes fully low --> low output") {
 			input = 0.f;
 			output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 			CHECK(output == 0.f);
 
-			THEN("input rises to 0.5 --> low output")
-			{
+			THEN("input rises to 0.5 --> low output") {
 				input = 0.5f;
 				output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 				CHECK(output == 0.f);
 
-				THEN("input rises to 0.6001 --> high output")
-				{
+				THEN("input rises to 0.6001 --> high output") {
 					input = 0.6001f;
 					output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 					CHECK(output == 1.f);
 
-					THEN("input falls to 0.5 --> high output")
-					{
+					THEN("input falls to 0.5 --> high output") {
 						input = 0.5f;
 						output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 						CHECK(output == 1.f);
 
-						THEN("input falls to 0.3999 --> low output")
-						{
+						THEN("input falls to 0.3999 --> low output") {
 							input = 0.3999f;
 							output = MathTools::hysteresis_gate(0.4f, 0.6f, output, input);
 							CHECK(output == 0.f);
@@ -379,8 +338,7 @@ TEST_CASE("hysteresis_gate")
 	}
 }
 
-TEST_CASE("hysteresis_feedback")
-{
+TEST_CASE("hysteresis_feedback") {
 	float input;
 	float output = 0.f;
 
@@ -392,38 +350,32 @@ TEST_CASE("hysteresis_feedback")
 	output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 	CHECK(output == 0.f);
 
-	THEN("Fully high input --> high output")
-	{
+	THEN("Fully high input --> high output") {
 		input = 1.f;
 		output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 		CHECK(output == 1.f);
 
-		THEN("input goes fully low --> low output")
-		{
+		THEN("input goes fully low --> low output") {
 			input = 0.f;
 			output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 			CHECK(output == 0.f);
 
-			THEN("input rises to 0.5 --> low output")
-			{
+			THEN("input rises to 0.5 --> low output") {
 				input = 0.5f;
 				output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 				CHECK(output == 0.f);
 
-				THEN("input rises to 0.6001 --> high output")
-				{
+				THEN("input rises to 0.6001 --> high output") {
 					input = 0.6001f;
 					output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 					CHECK(output == 1.f);
 
-					THEN("input falls to 0.5 --> high output")
-					{
+					THEN("input falls to 0.5 --> high output") {
 						input = 0.5f;
 						output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 						CHECK(output == 1.f);
 
-						THEN("input falls to 0.3999 --> low output")
-						{
+						THEN("input falls to 0.3999 --> low output") {
 							input = 0.3999f;
 							output = MathTools::hysteresis_feedback(0.1f, 0.5f, output, input);
 							CHECK(output == 0.f);

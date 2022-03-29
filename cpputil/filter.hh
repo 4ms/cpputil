@@ -1,6 +1,5 @@
 #pragma once
-
-#include "math.hh"
+#include "cpputil/math.hh"
 
 template<int Size, class T = unsigned int>
 struct Oversampler {

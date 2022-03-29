@@ -4,7 +4,7 @@
 TEST_DIR ?= tests
 DOCTESTHEADER_DIR = $(TEST_DIR)
 TEST_SOURCES = $(TEST_DIR)/doctest.cc
-TEST_SOURCES += $(wildcard *.cc)
+TEST_SOURCES += $(wildcard cpputil/*.cc)
 TEST_SOURCES += $(wildcard $(TEST_DIR)/*_test.cc)
 TEST_SOURCES += $(wildcard $(TEST_DIR)/*_test.cpp)
 TEST_SOURCES += $(wildcard $(TEST_DIR)/*_tests.cc)
@@ -18,6 +18,7 @@ CXXFLAGS = 	-Wall \
 		 	-std=gnu++2a \
 			-I. \
 			-I.. \
+			-I../cpputil \
 			-I$(TEST_DIR) \
 			-Wno-unused-const-variable \
 			-DTESTPROJECT \

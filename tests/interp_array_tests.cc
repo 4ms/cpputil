@@ -1,8 +1,7 @@
-#include "../interp_array.hh"
+#include "cpputil/interp_array.hh"
 #include "doctest.h"
 
-TEST_CASE("interp_array_tests: inits_with_single_value_sets_just_first_element")
-{
+TEST_CASE("interp_array_tests: inits_with_single_value_sets_just_first_element") {
 	InterpArray<long, 4> x = {42};
 	CHECK_EQ(42, x[0]);
 	CHECK_EQ(0, x[1]);
@@ -10,16 +9,14 @@ TEST_CASE("interp_array_tests: inits_with_single_value_sets_just_first_element")
 	CHECK_EQ(0, x[2]);
 }
 
-TEST_CASE("interp_array_tests: inits_to_multiple_values")
-{
+TEST_CASE("interp_array_tests: inits_to_multiple_values") {
 	InterpArray<long, 3> x = {42, 43, 44};
 	CHECK_EQ(42, x[0]);
 	CHECK_EQ(43, x[1]);
 	CHECK_EQ(44, x[2]);
 }
 
-TEST_CASE("interp_array_tests: basic_usage_by_phase")
-{
+TEST_CASE("interp_array_tests: basic_usage_by_phase") {
 	InterpArray<long, 4> x;
 	x[0] = 200;	 // 0
 	x[1] = 300;	 // 0.333
@@ -32,8 +29,7 @@ TEST_CASE("interp_array_tests: basic_usage_by_phase")
 	CHECK(((float)x.interp(0.f)) == doctest::Approx(200.));
 }
 
-TEST_CASE("interp_array_tests: floats_by_phase")
-{
+TEST_CASE("interp_array_tests: floats_by_phase") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;  // 0
 	x[1] = 200.f;  // 0.5
@@ -46,8 +42,7 @@ TEST_CASE("interp_array_tests: floats_by_phase")
 	CHECK(x.interp(0.875f) == doctest::Approx((double)expected_0_875));
 }
 
-TEST_CASE("interp_array_tests: doubles_by_phase")
-{
+TEST_CASE("interp_array_tests: doubles_by_phase") {
 	InterpArray<double, 3, double> x;
 	x[0] = 100.;  // 0
 	x[1] = 200.;  // 0.5
@@ -60,8 +55,7 @@ TEST_CASE("interp_array_tests: doubles_by_phase")
 	CHECK(x.interp(0.875) == doctest::Approx(expected_0_875));
 }
 
-TEST_CASE("interp_array_tests: basic_usage_by_index")
-{
+TEST_CASE("interp_array_tests: basic_usage_by_index") {
 	InterpArray<long, 300> x;
 	x[201] = 4200;
 	x[202] = 4300;
@@ -72,16 +66,14 @@ TEST_CASE("interp_array_tests: basic_usage_by_index")
 	CHECK(((float)x.interp_by_index(201.f)) == doctest::Approx(4200.));
 }
 
-TEST_CASE("interp_array_tests: floats_by_index")
-{
+TEST_CASE("interp_array_tests: floats_by_index") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;
 	x[1] = 200.f;
 	CHECK(((float)x.interp_by_index(0.156f)) == doctest::Approx(115.6));
 }
 
-TEST_CASE("interp_array_tests: interp_wrap_period_is_1")
-{
+TEST_CASE("interp_array_tests: interp_wrap_period_is_1") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;
 	x[1] = 200.f;
@@ -89,8 +81,7 @@ TEST_CASE("interp_array_tests: interp_wrap_period_is_1")
 	CHECK_EQ(x.interp_wrap(0.0f), x.interp_wrap(1.0f));
 }
 
-TEST_CASE("interp_array_tests: wrapping_by_phase")
-{
+TEST_CASE("interp_array_tests: wrapping_by_phase") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;  // 0.00, 1.00, 2.00...
 	x[1] = 200.f;  // 0.33, 1.33, 2.33...
@@ -102,8 +93,7 @@ TEST_CASE("interp_array_tests: wrapping_by_phase")
 	}
 }
 
-TEST_CASE("interp_array_tests: wrapping_by_phase_loop_transition_is_smooth")
-{
+TEST_CASE("interp_array_tests: wrapping_by_phase_loop_transition_is_smooth") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;  // 0.00, 1.00, 2.00...
 	x[1] = 200.f;  // 0.33, 1.33, 2.33...
@@ -120,8 +110,7 @@ TEST_CASE("interp_array_tests: wrapping_by_phase_loop_transition_is_smooth")
 	CHECK_EQ(loop_transition_middle, x.interp_wrap(2.5f / 3.0f));
 }
 
-TEST_CASE("interp_array_tests: index_wrap_period_is_Size")
-{
+TEST_CASE("interp_array_tests: index_wrap_period_is_Size") {
 	const int Size = 3;
 	InterpArray<float, Size> x;
 	x[0] = 100.f;
@@ -130,8 +119,7 @@ TEST_CASE("interp_array_tests: index_wrap_period_is_Size")
 	CHECK_EQ(x.interp_by_index_wrap(0), x.interp_by_index_wrap((float)Size));
 }
 
-TEST_CASE("interp_array_tests: wrapping_by_index")
-{
+TEST_CASE("interp_array_tests: wrapping_by_index") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;  // 0.00, 1.00, 2.00...
 	x[1] = 200.f;  // 0.33, 1.33, 2.33...
@@ -142,8 +130,7 @@ TEST_CASE("interp_array_tests: wrapping_by_index")
 	}
 }
 
-TEST_CASE("interp_array_tests: basic_usage_of_closest")
-{
+TEST_CASE("interp_array_tests: basic_usage_of_closest") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f;
 	x[1] = 200.f;
@@ -156,8 +143,7 @@ TEST_CASE("interp_array_tests: basic_usage_of_closest")
 	CHECK(((float)x.closest(1.f)) == doctest::Approx(150.));
 }
 
-TEST_CASE("interp_array_tests: wrapping_with_closest")
-{
+TEST_CASE("interp_array_tests: wrapping_with_closest") {
 	InterpArray<float, 3> x;
 	x[0] = 100.f; // 0.00, 1.00, 2.00, ...
 	x[1] = 200.f; // 0.33, 1.33, 2.33, ...

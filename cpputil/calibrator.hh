@@ -1,5 +1,5 @@
 #pragma once
-#include "math.hh"
+#include "cpputil/math.hh"
 #include <cstdint>
 
 class Calibrator {

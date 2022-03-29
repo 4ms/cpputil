@@ -1,10 +1,10 @@
-tests/build/tests/math_tests.o: tests/math_tests.cc tests/../math.hh \
-  math_tables.hh interp_array.hh tests/doctest.h
+tests/build/tests/math_tests.o: tests/math_tests.cc cpputil/math.hh \
+  cpputil/math_tables.hh cpputil/interp_array.hh tests/doctest.h
 
-tests/../math.hh:
+cpputil/math.hh:
 
-math_tables.hh:
+cpputil/math_tables.hh:
 
-interp_array.hh:
+cpputil/interp_array.hh:
 
 tests/doctest.h:

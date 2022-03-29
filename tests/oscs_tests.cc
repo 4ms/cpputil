@@ -1,9 +1,8 @@
-#include "../oscs.hh"
+#include "cpputil/oscs.hh"
 #include "doctest.h"
 #include <iostream>
 
-TEST_CASE("Basic TriangleOscillator usage")
-{
+TEST_CASE("Basic TriangleOscillator usage") {
 	// 1Hz triangle wave that we update (call Process()) at 100Hz
 	const uint32_t updates_per_cycle = 120;
 	TriangleOscillator<updates_per_cycle> tri;

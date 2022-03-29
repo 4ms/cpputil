@@ -1,4 +1,4 @@
-#include "../analyzed_signal.hh"
+#include "cpputil/analyzed_signal.hh"
 #include "doctest.h"
 
 TEST_CASE("Basic usage") {

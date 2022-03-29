@@ -1,4 +1,4 @@
-#include "../countzip.hh"
+#include "cpputil/countzip.hh"
 #include "doctest.h"
 
 #include <array>
@@ -9,14 +9,12 @@ struct Frame {
 	int r;
 };
 
-TEST_CASE("Basic countzip usage")
-{
+TEST_CASE("Basic countzip usage") {
 	std::array<float, 4> x_arr = {0, 0, 0, 0};
 	std::array<Frame, 4> y_arr = {{{0, 1}, {2, 3}, {4, 5}, {6, 7}}};
 	std::array<Frame, 4> z_arr = {{{9, 1}, {8, 3}, {7, 5}, {6, 7}}};
 
-	SUBCASE("Zip 1 array, read-only")
-	{
+	SUBCASE("Zip 1 array, read-only") {
 		int check_i = 0;
 		for (auto [n, x] : countzip(x_arr)) {
 			CHECK(x == x_arr[n]);
@@ -25,8 +23,7 @@ TEST_CASE("Basic countzip usage")
 		}
 	}
 
-	SUBCASE("Zip 2 arrays, read-only")
-	{
+	SUBCASE("Zip 2 arrays, read-only") {
 		int check_i = 0;
 		for (auto [n, x, y] : countzip(x_arr, y_arr)) {
 			CHECK(x == x_arr[n]);
@@ -37,8 +34,7 @@ TEST_CASE("Basic countzip usage")
 		}
 	}
 
-	SUBCASE("Zip 3 arrays, read-only")
-	{
+	SUBCASE("Zip 3 arrays, read-only") {
 		int check_i = 0;
 		for (auto [n, x, y, z] : countzip(x_arr, y_arr, z_arr)) {
 			CHECK(x == x_arr[n]);
@@ -51,8 +47,7 @@ TEST_CASE("Basic countzip usage")
 		}
 	}
 
-	SUBCASE("Zip 3 arrays, modify one and the new data persists")
-	{
+	SUBCASE("Zip 3 arrays, modify one and the new data persists") {
 		for (auto [n, x, y, z] : countzip(x_arr, y_arr, z_arr)) {
 			// std::cout << n << ": " << x << ", " << y.l << "|" << y.r << "    " << z.l << "|" << z.r << std::endl;
 			float f = n * 0.2f;
@@ -65,8 +60,7 @@ TEST_CASE("Basic countzip usage")
 		CHECK(x_arr[3] == doctest::Approx(6.4f));
 	}
 
-	SUBCASE("Can modify values even if using `const auto`")
-	{
+	SUBCASE("Can modify values even if using `const auto`") {
 		for (const auto [n, x] : countzip(x_arr)) {
 			x = n;
 		}

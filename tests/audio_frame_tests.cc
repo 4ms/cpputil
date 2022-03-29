@@ -1,9 +1,8 @@
-#include "../audio_frame.hh"
+#include "cpputil/audio_frame.hh"
 #include "doctest.h"
 
 using TestAudioFrame = AudioFrame<int32_t, 24>;
-TEST_CASE("audio_frame_tests: input_scales")
-{
+TEST_CASE("audio_frame_tests: input_scales") {
 	TestAudioFrame a;
 
 	a.chan[0] = 0x00000000;
@@ -25,8 +24,7 @@ TEST_CASE("audio_frame_tests: input_scales")
 	CHECK(((float)TestAudioFrame::scaleInput(a.chan[1])) == doctest::Approx(0.0));
 }
 
-TEST_CASE("audio_frame_tests: output_scales")
-{
+TEST_CASE("audio_frame_tests: output_scales") {
 	const float smallest_val = 1.f / 8388608.f;
 	CHECK(TestAudioFrame::scaleOutput(-1.f) == -8388608);
 	CHECK(TestAudioFrame::scaleOutput(-1.f + smallest_val) == -8388607);

@@ -1,4 +1,4 @@
-#include "../bitfield.hh"
+#include "cpputil/bitfield.hh"
 #include "doctest.h"
 #include <cstdint>
 

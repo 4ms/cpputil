@@ -1,5 +1,5 @@
 #pragma once
-#include "math_tables.hh"
+#include "cpputil/math_tables.hh"
 #include <cstdint>
 
 // template<int UpdateRateHz>
