@@ -15,10 +15,14 @@ public:
 		, got_falling_edge_{false} {
 	}
 
-	void reset() {
-		is_high_ = false;
+	void clear_events() {
 		got_falling_edge_ = false;
 		got_rising_edge_ = false;
+	}
+
+	void reset() {
+		is_high_ = false;
+		clear_events();
 	}
 
 	bool is_high() const {
