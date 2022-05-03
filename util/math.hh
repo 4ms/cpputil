@@ -95,6 +95,11 @@ constexpr float f_abs(float x) {
 	return (x >= 0.f) ? x : -x;
 }
 
+template<typename T>
+constexpr T diff(T a, T b) {
+	return (a > b) ? (a - b) : (b - a);
+}
+
 // [0..1] --> [-1..1]
 // 0.00 => 0
 // 0.25 => -1
