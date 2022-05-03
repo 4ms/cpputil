@@ -16,16 +16,14 @@ struct StaticString {
 	}
 
 	constexpr StaticString(std::string_view s) {
-		size_t i = 0;
-		for (auto c : s) {
-			_data[i++] = c;
-			if (i >= CAPACITY)
-				break;
-		}
-		_data[i] = '\0';
+		copy(s);
 	}
 
 	constexpr StaticString(const char *s) {
+		copy(s);
+	}
+
+	void copy(const char *s) {
 		size_t i = 0;
 		while (*s && i < CAPACITY) {
 			_data[i] = *s;
@@ -35,8 +33,14 @@ struct StaticString {
 		_data[i] = '\0';
 	}
 
-	const char *cstr() const {
-		return _data;
+	void copy(std::string_view s) {
+		size_t i = 0;
+		for (auto c : s) {
+			_data[i++] = c;
+			if (i >= CAPACITY)
+				break;
+		}
+		_data[i] = '\0';
 	}
 
 	const char *c_str() const {

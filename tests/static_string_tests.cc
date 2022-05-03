@@ -32,12 +32,12 @@ TEST_CASE("Static String construction") {
 }
 
 TEST_CASE("Static string reading") {
-	SUBCASE(".cstr() returns actual data") {
+	SUBCASE(".c_str() returns actual data") {
 		StaticString<3> str{"123"};
-		CHECK(str.cstr()[0] == '1');
-		CHECK(str.cstr()[1] == '2');
-		CHECK(str.cstr()[2] == '3');
-		CHECK(str.cstr()[3] == '\0');
+		CHECK(str.c_str()[0] == '1');
+		CHECK(str.c_str()[1] == '2');
+		CHECK(str.c_str()[2] == '3');
+		CHECK(str.c_str()[3] == '\0');
 	}
 
 	SUBCASE("explicit const char * cast returns actual data") {
