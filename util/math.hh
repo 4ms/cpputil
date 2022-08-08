@@ -1,8 +1,10 @@
 #pragma once
 #include "util/math_tables.hh"
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+#include <numeric>
 
 namespace MathTools
 {
@@ -42,6 +44,11 @@ static constexpr T min(const T val1, const T val2) {
 
 inline float interpolate(float in1, float in2, float phase) {
 	return (in2 * phase) + in1 * (1.0f - phase);
+}
+
+template<uint32_t PhaseMax>
+inline int32_t interpolate(int32_t in1, int32_t in2, int32_t phase) {
+	return ((in2 * phase) + in1 * (PhaseMax - phase)) / PhaseMax;
 }
 
 template<class T>
@@ -98,6 +105,23 @@ constexpr float f_abs(float x) {
 template<typename T>
 constexpr T diff(T a, T b) {
 	return (a > b) ? (a - b) : (b - a);
+}
+
+constexpr inline int16_t plateau(int16_t val, int32_t width, int32_t center) {
+	auto high = center + width / 2;
+	auto low = center - width / 2;
+	if (val > high)
+		return val - high;
+	else if (val < low)
+		return val - low;
+	else
+		return 0;
+}
+
+consteval auto array_adj_diff(auto arr) {
+	std::array<std::remove_reference_t<decltype(arr[0])>, arr.size() - 1> darr;
+	std::adjacent_difference(std::next(arr.begin()), arr.end(), darr.begin());
+	return darr;
 }
 
 // [0..1] --> [-1..1]
