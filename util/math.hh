@@ -107,7 +107,7 @@ constexpr T diff(T a, T b) {
 	return (a > b) ? (a - b) : (b - a);
 }
 
-//TODO: generalize this for all integer widths using SignedInt and UnsignedInt
+//Returns the signed difference between val and center,
 constexpr inline int32_t plateau(int32_t val, uint32_t width, int32_t center) {
 	int32_t high = center + width / 2;
 	int32_t low = center - width / 2;
@@ -117,6 +117,16 @@ constexpr inline int32_t plateau(int32_t val, uint32_t width, int32_t center) {
 		return val - low;
 	else
 		return 0;
+}
+
+template<unsigned width, int center>
+constexpr inline auto plateau(int val) {
+	return plateau(val, width, center);
+}
+
+template<unsigned width, typename T = int>
+constexpr inline T plateau(T val, T center) {
+	return plateau(val, width, center);
 }
 
 consteval auto array_adj_diff(auto arr) {
