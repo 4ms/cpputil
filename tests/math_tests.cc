@@ -418,3 +418,31 @@ TEST_CASE("Plateau") {
 		// CHECK(MathTools::plateau(100, -20, 100) == -2147483638);
 	}
 }
+
+TEST_CASE("interpolate<>(ints)") {
+	CHECK(MathTools::interpolate<100>(500, 600, 0) == 500);
+	CHECK(MathTools::interpolate<100>(500, 600, 50) == 550);
+	CHECK(MathTools::interpolate<100>(500, 600, 100) == 600);
+
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate<100>(500, 600, -100) == 400);
+	}
+}
+
+TEST_CASE("interpolate(floats)") {
+	CHECK(MathTools::interpolate(500, 600, 0.f) == 500);
+	CHECK(MathTools::interpolate(500, 600, 0.50) == 550);
+	CHECK(MathTools::interpolate(500, 600, 1.00) == 600);
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate(500, 600, -1.f) == 400);
+	}
+}
+
+TEST_CASE("array_adj_diff") {
+	constexpr std::array<int16_t, 4> x{1, 10, 15, 35};
+	std::array d = MathTools::array_adj_diff(x);
+	CHECK(d[0] == 9);
+	CHECK(d[1] == 5);
+	CHECK(d[2] == 20);
+	CHECK(d.size() == 3);
+}

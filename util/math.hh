@@ -120,9 +120,16 @@ constexpr inline int32_t plateau(int32_t val, uint32_t width, int32_t center) {
 }
 
 consteval auto array_adj_diff(auto arr) {
-	std::array<std::remove_reference_t<decltype(arr[0])>, arr.size() - 1> darr;
-	std::adjacent_difference(std::next(arr.begin()), arr.end(), darr.begin());
-	return darr;
+	// Get simple difference between elements, with first element copied
+	decltype(arr) darr;
+	std::adjacent_difference(arr.begin(), arr.end(), darr.begin());
+
+	// Create a new array of size - 1
+	std::array<typename decltype(arr)::value_type, arr.size() - 1> darrm1;
+
+	// Drop the first element
+	std::copy(std::next(darr.begin()), darr.end(), darrm1.begin());
+	return darrm1;
 }
 
 // [0..1] --> [-1..1]
