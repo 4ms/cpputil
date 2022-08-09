@@ -386,3 +386,35 @@ TEST_CASE("hysteresis_feedback") {
 		}
 	}
 }
+
+TEST_CASE("Plateau") {
+
+	CHECK(MathTools::plateau(2058, 20, 2048) == 0);
+
+	SUBCASE("plateau center 100, width 20 means 90 to 110 = 0") {
+		CHECK(MathTools::plateau(90, 20, 100) == 0);
+		CHECK(MathTools::plateau(110, 20, 100) == 0);
+	}
+
+	SUBCASE("One away from plateau is -1 and +1") {
+		CHECK(MathTools::plateau(89, 20, 100) == -1);
+		CHECK(MathTools::plateau(111, 20, 100) == 1);
+	}
+
+	SUBCASE("Accepts negatives for val") {
+		CHECK(MathTools::plateau(0, 20, 100) == -90);
+		CHECK(MathTools::plateau(-1, 20, 100) == -91);
+		CHECK(MathTools::plateau(-100, 20, 100) == -190);
+	}
+
+	SUBCASE("Accepts negatives for center") {
+		CHECK(MathTools::plateau(-100, 20, -100) == 0);
+		CHECK(MathTools::plateau(-90, 20, -100) == 0);
+		CHECK(MathTools::plateau(-110, 20, -100) == 0);
+		CHECK(MathTools::plateau(0, 20, -100) == 90);
+	}
+
+	SUBCASE("Negative width is broken") {
+		// CHECK(MathTools::plateau(100, -20, 100) == -2147483638);
+	}
+}

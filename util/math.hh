@@ -107,9 +107,10 @@ constexpr T diff(T a, T b) {
 	return (a > b) ? (a - b) : (b - a);
 }
 
-constexpr inline int16_t plateau(int16_t val, int32_t width, int32_t center) {
-	auto high = center + width / 2;
-	auto low = center - width / 2;
+//TODO: generalize this for all integer widths using SignedInt and UnsignedInt
+constexpr inline int32_t plateau(int32_t val, uint32_t width, int32_t center) {
+	int32_t high = center + width / 2;
+	int32_t low = center - width / 2;
 	if (val > high)
 		return val - high;
 	else if (val < low)
