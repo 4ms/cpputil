@@ -29,7 +29,7 @@ using select_access_type_for = typename std::iterator_traits<Iter>::reference;
 template<typename... Args, std::size_t... Index>
 auto any_match_impl(std::tuple<Args...> const &lhs, std::tuple<Args...> const &rhs, std::index_sequence<Index...>)
 	-> bool {
-	return (... | (std::get<Index>(lhs) == std::get<Index>(rhs)));
+	return (... || (std::get<Index>(lhs) == std::get<Index>(rhs)));
 }
 
 template<typename... Args>
