@@ -1,6 +1,6 @@
 #pragma once
 #include "util/math_tables.hh"
-#include <cmath>
+// #include <cmath>
 #include <cstdint>
 #include <cstdlib>
 
@@ -134,7 +134,7 @@ constexpr float setPitchMultiple(float val) {
 	return pitchMultiple;
 }
 
-static inline float audioFreqToNorm(float input) // normalized filter frequency conversion
+static inline constexpr float audioFreqToNorm(float input) // normalized filter frequency conversion
 {
 	float output = 0;
 	input = constrain(input, 20.0f, 20000.0f);
@@ -144,7 +144,7 @@ static inline float audioFreqToNorm(float input) // normalized filter frequency 
 }
 
 // Returns 2^x
-static inline float pow2(float x) {
+static inline constexpr float pow2(float x) {
 	x = x / 5.0f;
 	float res = 1.f;
 	for (;;) {
@@ -192,7 +192,8 @@ static inline float tan_close(float x) {
 // The input must exceed the turn_on threshold to make the output 1
 // and must go below turn_off threshold to make the output 0
 // Returns updated output, which should be passed as old_val the next time the function is called
-static inline float hysteresis_gate(float turn_off_thresh, float turn_on_thresh, float last_output, float new_input) {
+static inline constexpr float
+hysteresis_gate(float turn_off_thresh, float turn_on_thresh, float last_output, float new_input) {
 	float feedback_amt = (turn_on_thresh - turn_off_thresh) * 0.5f;
 	float feedback = feedback_amt * last_output;
 	float test_signal = new_input + feedback;
@@ -211,7 +212,8 @@ static inline float hysteresis_gate(float turn_off_thresh, float turn_on_thresh,
 // The input must exceed the turn_on threshold to make the output 1
 // and must go below turn_off threshold to make the output 0
 // Returns updated output, which should be passed as old_val the next time the function is called
-static inline float hysteresis_feedback(float feedback_coef, float thresh, float last_output, float new_input) {
+static inline constexpr float
+hysteresis_feedback(float feedback_coef, float thresh, float last_output, float new_input) {
 	return (new_input + last_output * feedback_coef) > thresh ? 1.f : 0.f;
 }
 
