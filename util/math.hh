@@ -1,5 +1,5 @@
 #pragma once
-#include "util/math_tables.hh"
+// #include "util/math_tables.hh"
 #include <array>
 #include <cstdint>
 #include <cstdlib>
@@ -165,12 +165,12 @@ constexpr uint32_t swap_bytes_and_combine(uint16_t halfword1, uint16_t halfword2
 
 constexpr float setPitchMultiple(float val) {
 	float pitchMultiple = 1;
-	if (val >= 0)
-		pitchMultiple = exp5Table.interp(constrain(val, 0.0f, 1.0f));
-	else {
-		float invertPitch = val * -1.0f;
-		pitchMultiple = 1.0f / exp5Table.interp(constrain(invertPitch, 0.0f, 1.0f));
-	}
+	// if (val >= 0)
+	// 	pitchMultiple = exp5Table.interp(constrain(val, 0.0f, 1.0f));
+	// else {
+	// 	float invertPitch = val * -1.0f;
+	// 	pitchMultiple = 1.0f / exp5Table.interp(constrain(invertPitch, 0.0f, 1.0f));
+	// }
 
 	return pitchMultiple;
 }
@@ -178,9 +178,9 @@ constexpr float setPitchMultiple(float val) {
 static inline constexpr float audioFreqToNorm(float input) // normalized filter frequency conversion
 {
 	float output = 0;
-	input = constrain(input, 20.0f, 20000.0f);
-	float temp1 = logTable.interp(map_value(input, 20.0f, 20000.0f, 0.0f, 1.0f));
-	output = (temp1 - 2.99573f) / (6.90776f);
+	// input = constrain(input, 20.0f, 20000.0f);
+	// float temp1 = logTable.interp(map_value(input, 20.0f, 20000.0f, 0.0f, 1.0f));
+	// output = (temp1 - 2.99573f) / (6.90776f);
 	return output;
 }
 
@@ -188,42 +188,48 @@ static inline constexpr float audioFreqToNorm(float input) // normalized filter 
 static inline constexpr float pow2(float x) {
 	x = x / 5.0f;
 	float res = 1.f;
-	for (;;) {
-		if (x < 1.f) {
-			// Note: exp5Table.interp(x) = 2^(x*5), where 0 <= x <= 1
-			res *= exp5Table.interp(x);
-			break;
-		} else {
-			res *= 32.f;
-			x -= 1.f;
-		}
-	}
+	// for (;;) {
+	// 	if (x < 1.f) {
+	// 		// Note: exp5Table.interp(x) = 2^(x*5), where 0 <= x <= 1
+	// 		res *= exp5Table.interp(x);
+	// 		break;
+	// 	} else {
+	// 		res *= 32.f;
+	// 		x -= 1.f;
+	// 	}
+	// }
 	return res;
 }
 
 static inline float sin(float x) {
-	return sinTable.interp_wrap(x / (2.f * M_PI));
+	return 0.f;
+	// return sinTable.interp_wrap(x / (2.f * M_PI));
 }
 
 //
 static inline float sin01(float x) {
-	return sinTable.interp_wrap(x);
+	return 0.f;
+	// return sinTable.interp_wrap(x);
 }
 
 static inline float cos(float x) {
-	return sinTable.interp_wrap((x / (2.f * M_PI)) + 0.25f);
+	return 0.f;
+	// return sinTable.interp_wrap((x / (2.f * M_PI)) + 0.25f);
 }
 
 static inline float cos_close(float x) {
-	return sinTable.closest_wrap((x / (2.f * M_PI)) + 0.25f);
+	return 0.f;
+	// return sinTable.closest_wrap((x / (2.f * M_PI)) + 0.25f);
 }
 
 static inline float tan(float x) {
-	return tanTable.interp_wrap(x / M_PI);
+	return 0.f;
+	// return tanTable.interp_wrap(x / M_PI);
 }
 
 static inline float tan_close(float x) {
-	return tanTable.closest_wrap(x / M_PI);
+	return 0.f;
+	// return tanTable.closest_wrap(x / M_PI);
 }
 
 // Apply a hysteresis threshold on a gate signal. Assumes 0.0f = off, 1.0f = on
