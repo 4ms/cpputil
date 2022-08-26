@@ -1,6 +1,6 @@
 #include "util/interp_array.hh"
 
-#define USE_CONSTEXPR_TABLES 1
+#define USE_CONSTEXPR_TABLES 0
 
 #if !USE_CONSTEXPR_TABLES
 
