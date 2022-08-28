@@ -2,6 +2,7 @@
 #include "util/math.hh"
 #include <array>
 
+//FIXME: Unit tests, and describe expected behavior
 template<class T, size_t max_size_>
 class CircularBuffer {
 public:
