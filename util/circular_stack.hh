@@ -4,9 +4,9 @@
 
 // CircularStack allows popping and pushing to the back (top) only.
 // If the top exceeds MaxElements, then it'll overwrite the front (bottom).
-template<typename T, size_t MaxElements>
+template<typename T, int MaxElements>
 class CircularStack {
-	static_assert(MaxElements > 0);
+	static_assert(MaxElements > 0, "Zero sized CircularStack not supported");
 
 	std::array<T, MaxElements> data;
 
