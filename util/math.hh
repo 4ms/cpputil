@@ -41,9 +41,16 @@ static constexpr T min(const T val1, const T val2) {
 	}
 }
 
-inline float interpolate(float in1, float in2, float phase) {
-	return (in2 * phase) + in1 * (1.0f - phase);
+constexpr inline float interpolate(float in1, float in2, float phase) {
+	return in1 * (1.0f - phase) + (in2 * phase);
 }
+
+// Optimized interpolate, may perform faster than interpolate
+constexpr inline float interpolate3(float in1, float in2, float phase) {
+	return in1 + phase * (in2 - in1);
+}
+
+static_assert(interpolate(1.f, 2.f, 0.25f) == interpolate3(1.f, 2.f, 0.25f));
 
 template<uint32_t PhaseMax>
 inline int32_t interpolate(int32_t in1, int32_t in2, int32_t phase) {

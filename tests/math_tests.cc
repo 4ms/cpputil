@@ -438,6 +438,15 @@ TEST_CASE("interpolate(floats)") {
 	}
 }
 
+TEST_CASE("interpolate3 floats") {
+	CHECK(MathTools::interpolate3(500, 600, 0.f) == 500);
+	CHECK(MathTools::interpolate3(500, 600, 0.50) == 550);
+	CHECK(MathTools::interpolate3(500, 600, 1.00) == 600);
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate3(500, 600, -1.f) == 400);
+	}
+}
+
 TEST_CASE("array_adj_diff") {
 	constexpr std::array<int16_t, 4> x{1, 10, 15, 35};
 	std::array d = MathTools::array_adj_diff(x);
