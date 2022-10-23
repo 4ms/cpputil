@@ -76,7 +76,7 @@ TEST_CASE("int to str") {
 		CHECK(buf[1] == '2');
 		CHECK(buf[2] == '3');
 		CHECK(buf[3] == '4');
-		CHECK(buf[4] == '5');
+		CHECK(buf[4] == '\0');
 	}
 
 	SUBCASE("Negative") {
@@ -86,12 +86,12 @@ TEST_CASE("int to str") {
 		CHECK(buf[2] == '2'); //2
 		CHECK(buf[3] == '3'); // \0
 		CHECK(buf[4] == '\0');
-		//int_to_str(-12345, buf);
-		////The '123' is dropped and the - is ended
-		//CHECK(buf[0] == '4');
-		//CHECK(buf[1] == '5');
-		//CHECK(buf[2] == '-');
-		//CHECK(buf[3] == '\0');
-		//CHECK(buf[4] == 0x7F);
+		int_to_str(-12345, buf);
+		//The '123' is dropped and the - is ended
+		CHECK(buf[0] == '-');
+		CHECK(buf[1] == '2');
+		CHECK(buf[2] == '3');
+		CHECK(buf[3] == '4');
+		CHECK(buf[4] == 0x7F);
 	}
 }

@@ -2,6 +2,16 @@
 #include <iostream>
 #include <span>
 
+template<unsigned Place>
+char digit(int &value) {
+	if (value > Place) {
+		unsigned dig = value / Place;
+		value -= dig * Place;
+		return '0' + dig;
+	}
+	return 0;
+}
+
 void int_to_str(int value, const std::span<char> buf) {
 	if (buf.size() <= 1)
 		return;
@@ -13,29 +23,23 @@ void int_to_str(int value, const std::span<char> buf) {
 	}
 
 	int len = 0;
-	unsigned start = 0;
 	if (value < 0) {
-		start = 1;
 		buf[len++] = '-';
 		value = -value;
 	}
 
-	//save 1 char for the zero terminator, and 1 for the - sign if negative
-	const int MAX_DIGITS = buf.size() - 1;
-	std::cout << "MAX: " << MAX_DIGITS << std::endl;
+	if (char dig = digit<10000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = digit<1000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = digit<100>(value); dig)
+		buf[len++] = dig;
+	if (char dig = digit<10>(value); dig)
+		buf[len++] = dig;
+	if (char dig = digit<1>(value); dig)
+		buf[len++] = dig;
 
-	do {
-		const char digit = (char)(value % 10);
-		buf[len++] = '0' + digit;
-		value /= 10;
-		std::cout << "dig = " << '0' + digit << " value now " << value << " len: " << len << std::endl;
-	} while (value && (len <= MAX_DIGITS));
 	buf[len] = '\0';
-
-	std::cout << "len: " << len << " start: " << start << " buf: " << buf.data() << std::endl;
-	for (int i = start; i < (len - start) / 2; i++) {
-		std::swap(buf[i], buf[len - start - i - 1]);
-	}
 }
 
 // #Method #1:
