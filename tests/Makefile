@@ -5,7 +5,6 @@ TEST_DIR ?= tests
 DOCTESTHEADER_DIR = $(TEST_DIR)
 TEST_SOURCES = $(TEST_DIR)/doctest.cc
 TEST_SOURCES += util/math_tables.cc
-TEST_SOURCES += util/print.cc
 TEST_SOURCES += util/int_to_str.cc
 TEST_SOURCES += $(wildcard $(TEST_DIR)/*_test.cc)
 TEST_SOURCES += $(wildcard $(TEST_DIR)/*_test.cpp)
