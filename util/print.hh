@@ -5,7 +5,6 @@ struct Hex {
 	unsigned x;
 };
 
-void int_to_str(int x, std::span<char> buf);
 void printone(const unsigned char *str);
 void printone(const char *str);
 void printone(int value);

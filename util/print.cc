@@ -1,46 +1,5 @@
 #include "print.hh"
-#include <iostream>
 #include <span>
-
-template<unsigned Place>
-char digit(int &value) {
-	if (value > Place) {
-		unsigned dig = value / Place;
-		value -= dig * Place;
-		return '0' + dig;
-	}
-	return 0;
-}
-
-void int_to_str(int value, const std::span<char> buf) {
-	if (buf.size() <= 1)
-		return;
-
-	if (value == 0) {
-		buf[0] = '0';
-		buf[1] = '\0';
-		return;
-	}
-
-	int len = 0;
-	if (value < 0) {
-		buf[len++] = '-';
-		value = -value;
-	}
-
-	if (char dig = digit<10000>(value); dig)
-		buf[len++] = dig;
-	if (char dig = digit<1000>(value); dig)
-		buf[len++] = dig;
-	if (char dig = digit<100>(value); dig)
-		buf[len++] = dig;
-	if (char dig = digit<10>(value); dig)
-		buf[len++] = dig;
-	if (char dig = digit<1>(value); dig)
-		buf[len++] = dig;
-
-	buf[len] = '\0';
-}
 
 // #Method #1:
 // putchar_s(const char) Must be defined in the applicaton code somewhere
