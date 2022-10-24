@@ -26,7 +26,7 @@ char digit(int &value, int avail) {
 }
 } // namespace
 
-void int_to_str_chop(int value, const std::span<char> buf) {
+void int_to_str_chop(int32_t value, const std::span<char> buf) {
 	if (buf.size() <= 1)
 		return;
 
@@ -95,7 +95,7 @@ unsigned num_digits(unsigned value) {
 	return num_digits(value / 100000) + 5;
 }
 
-bool int_to_str(int value, const std::span<char> buf) {
+bool int_to_str(int32_t value, const std::span<char> buf) {
 	int len = 0;
 	if (value < 0) {
 		if (!buf.size())
@@ -113,6 +113,16 @@ bool int_to_str(int value, const std::span<char> buf) {
 	if ((num_dig + len + 1) > buf.size())
 		return false;
 
+	if (char dig = _digit<1000000000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = _digit<100000000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = _digit<10000000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = _digit<1000000>(value); dig)
+		buf[len++] = dig;
+	if (char dig = _digit<100000>(value); dig)
+		buf[len++] = dig;
 	if (char dig = _digit<10000>(value); dig)
 		buf[len++] = dig;
 	if (char dig = _digit<1000>(value); dig)
