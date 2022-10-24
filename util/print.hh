@@ -1,21 +1,10 @@
 #pragma once
 #include <span>
+#include <string_view>
 
 struct Hex {
-	unsigned x;
+	uint32_t x;
 };
-
-void printone(const unsigned char *str);
-void printone(const char *str);
-void printone(int value);
-void printone(Hex value);
-
-template<typename... Types>
-void print(Types... args) {
-	(printone(args), ...);
-}
-
-/////////// Alt method: specify putc as a template parameter
 
 using putchar_t = void (*)(const char c);
 
@@ -32,64 +21,85 @@ void printone(const unsigned char *str) {
 }
 
 template<putchar_t putc>
-void printone(Hex hex) {
-	auto value = hex.x;
+void printone(std::string_view str) {
+	printone<putc>(str.data());
+}
 
-	if (!value) {
+namespace
+{
+template<unsigned Place, putchar_t putc>
+void print_digit(unsigned &value, bool &print_zero) {
+	if (print_zero || value >= Place) {
+		unsigned dig = value / Place;
+		value -= dig * Place;
+		putc(dig < 10 ? '0' + dig : 'A' + dig - 10);
+		print_zero = true;
+	}
+}
+} // namespace
+
+template<putchar_t putc>
+void printone(int32_t val) {
+	if (!val) {
 		putc('0');
 		return;
 	}
-	/// TODO: read left to right, not right to left, to avoid flipping digits
-	constexpr int MAX_DIGITS = 8;
-	char buf[MAX_DIGITS + 1];
-	int len = 0;
-	do {
-		const char digit = (char)(value & 0xF);
-		buf[len++] = digit < 10 ? '0' + digit : 'A' + digit - 10;
-		value >>= 4;
-	} while (value && (len < MAX_DIGITS));
-	buf[len] = '\0';
 
-	for (int i = 0; i < len / 2; i++) {
-		auto tmp = buf[i];
-		buf[i] = buf[len - i - 1];
-		buf[len - i - 1] = tmp;
-	}
+	unsigned uval;
+	if (val < 0) {
+		putc('-');
+		uval = -val;
+	} else
+		uval = val;
 
-	printone<putc>(buf);
+	bool print_zero = false;
+	print_digit<1000000000, putc>(uval, print_zero);
+	print_digit<100000000, putc>(uval, print_zero);
+	print_digit<10000000, putc>(uval, print_zero);
+	print_digit<1000000, putc>(uval, print_zero);
+	print_digit<100000, putc>(uval, print_zero);
+	print_digit<10000, putc>(uval, print_zero);
+	print_digit<1000, putc>(uval, print_zero);
+	print_digit<100, putc>(uval, print_zero);
+	print_digit<10, putc>(uval, print_zero);
+	print_digit<1, putc>(uval, print_zero);
 }
 
 template<putchar_t putc>
-void printone(int value) {
+void printone(Hex hex) {
+	uint32_t value = hex.x;
+
 	if (!value) {
 		putc('0');
 		return;
 	}
 
-	if (value < 0) {
-		putc('-');
-		value = -value;
-	}
-
-	constexpr int MAX_DIGITS = 10;
-	char buf[MAX_DIGITS + 1];
-	int len = 0;
-	do {
-		const char digit = (char)(value % 10);
-		buf[len++] = '0' + digit;
-		value /= 10;
-	} while (value && (len < MAX_DIGITS));
-	buf[len] = '\0';
-
-	for (int i = 0; i < len / 2; i++) {
-		auto tmp = buf[i];
-		buf[i] = buf[len - i - 1];
-		buf[len - i - 1] = tmp;
-	}
-
-	printone<putc>(buf);
+	bool print_zero = false;
+	print_digit<0x10000000, putc>(value, print_zero);
+	print_digit<0x1000000, putc>(value, print_zero);
+	print_digit<0x100000, putc>(value, print_zero);
+	print_digit<0x10000, putc>(value, print_zero);
+	print_digit<0x1000, putc>(value, print_zero);
+	print_digit<0x100, putc>(value, print_zero);
+	print_digit<0x10, putc>(value, print_zero);
+	print_digit<0x1, putc>(value, print_zero);
 }
 
+template<putchar_t putc>
+void printone(float f) {
+	//TODO
+	putc('?');
+	printone<putc>(static_cast<int32_t>(f));
+	putc('?');
+}
+
+// print<putc>(...):
+// Define a putc(const char c) function and pass it as the template parameter.
+// Usage examples:
+// print<uart_putc>("Some ", stuff, 2, output());
+// print<console_putc>("SomeVar = ", somevar);
+// print<error>("Fail!");
+// print<log>("Loaded in ", tm, " ms");
 template<putchar_t putc, typename... Types>
 void print(Types... args) {
 	(printone<putc>(args), ...);
