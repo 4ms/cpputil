@@ -1,11 +1,12 @@
 #pragma once
 #include <cstdint>
+#include <type_traits>
 
 template<typename T>
-uint8_t constexpr bitfield(T const val) {
-	return (static_cast<uint8_t>(val));
+auto constexpr bitfield(T const val) {
+	return static_cast<std::underlying_type_t<T>>(val);
 }
 template<typename... Args>
-uint8_t constexpr bitfield(const Args... args) {
+auto constexpr bitfield(const Args... args) {
 	return (... | bitfield(args));
 }
