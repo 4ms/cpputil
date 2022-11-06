@@ -7,13 +7,16 @@ template<typename T>
 auto constexpr bitfield(T const val) {
 	return static_cast<std::underlying_type_t<T>>(val);
 }
-// template<typename T>
-// requires {!std::underlying_type<T>::type}
-// T constexpr bitfield(T const val) {
-// 	return static_cast<T>(val);
-// }
-template<typename... Args>
-auto constexpr bitfield(const Args... args) {
+
+template<std::integral T>
+auto constexpr bitfield(T const val) {
+	return static_cast<T>(val);
+}
+
+// bitfield(...) makes sure we only OR together values of the same enum
+// It also works on integral types
+template<typename... Ts>
+auto constexpr bitfield(const Ts... args) {
 	return (... | bitfield(args));
 }
 
