@@ -1,24 +1,24 @@
-#include "doctest.h"
-#include "util/bitfield.hh"
-#include <cstdint>
+// #include "doctest.h"
+// #include "util/bitfield.hh"
+// #include <cstdint>
 
 // BitFieldBase<uint8_t> bf8;
 // BitFieldBase<uint16_t> bf16;
 // BitFieldBase<uint32_t> bf32;
 
-enum bits8 : uint8_t {
-	BIT8_0 = 1,
-	BIT8_1 = 2,
-	BIT8_2 = 4,
-	BIT8_3 = 8,
+// enum bits8 : uint8_t {
+// 	BIT8_0 = 1,
+// 	BIT8_1 = 2,
+// 	BIT8_2 = 4,
+// 	BIT8_3 = 8,
 
-	BIT8_7 = 128,
-};
+// 	BIT8_7 = 128,
+// };
 
-enum bitsDefault {
-	BITdef_0 = 1,
-	BITdef_1 = 0xFFFFFFF0,
-};
+// enum bitsDefault {
+// 	BITdef_0 = 1,
+// 	BITdef_1 = 0xFFFFFFF0,
+// };
 
 // TEST_CASE("bitfield_tests: single_bit_equals_itself") {
 // 	CHECK(bf8.bitfield(BIT8_0) == BIT8_0);

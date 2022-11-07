@@ -16,7 +16,7 @@ TEST_SOURCES += $(wildcard $(TEST_DIR)/test_*.cpp)
 BUILDDIR = $(TEST_DIR)/build
 
 CXXFLAGS = 	-Wall \
-		 	-std=gnu++2a \
+		 	-std=c++20 \
 			-I. \
 			-I.. \
 			-I../cpputil \
