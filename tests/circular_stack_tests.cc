@@ -100,8 +100,8 @@ TEST_CASE("Popping an empty stack returns nullopt") {
 	CHECK(t.pop_back() == 32);
 }
 
-TEST_CASE("Clearing does its job") {
-	CircularStack<int, 4> t;
-	t.push_back(2);
-	t.push_back(3);
-}
+// TEST_CASE("Clearing does its job") {
+// 	CircularStack<int, 4> t;
+// 	t.push_back(2);
+// 	t.push_back(3);
+// }

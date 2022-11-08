@@ -6,10 +6,10 @@
 template<class T, size_t max_size_>
 class CircularBuffer {
 public:
-	// static_assert(MathTools::is_power_of_2(max_size_), "CircularBuffer size must be a power of 2");
-	// static constexpr size_t SIZE_MASK = max_size_ - 1;
+	static_assert(MathTools::is_power_of_2(max_size_), "CircularBuffer size must be a power of 2");
+	static constexpr size_t SIZE_MASK = max_size_ - 1;
 
-	CircularBuffer(){};
+	CircularBuffer() = default;
 
 	void put(T item) {
 		buf_[head_] = item;
@@ -46,9 +46,11 @@ public:
 	}
 
 	// Return a reference to the first element
-	T &first() {
+	T &first() const {
 		return buf_[tail_];
 	}
+
+	//TODO: allow access to any element with operator[]
 
 	void reset() {
 		head_ = tail_;
@@ -64,11 +66,16 @@ public:
 		return full_;
 	}
 
-	size_t capacity() const {
+	// Maximum number of elements it can hold
+	constexpr size_t max_size() const {
+		return max_size_;
+	}
+	constexpr size_t max_capacity() const {
 		return max_size_;
 	}
 
-	size_t size() const {
+	// Number of elements filled
+	size_t count() const {
 		size_t size = max_size_;
 
 		if (!full_) {
@@ -81,26 +88,36 @@ public:
 		return size;
 	}
 
-	void inc_head() {
-		//head_ = (head_ + 1) & SIZE_MASK;
-		head_ = (head_ + 1) % max_size_;
+	void fill_buffer(std::array<T, max_size_> &src) {
+		memcpy(buf_.data(), src.data(), max_size_);
 	}
 
-	void inc_tail() {
-		//tail_ = (tail_ + 1) & SIZE_MASK;
-		tail_ = (tail_ + 1) % max_size_;
+	void fill_buffer(T val) {
+		memset(buf_.data(), val, max_size_);
 	}
 
-	size_t get_head_idx() {
+	// Alias for count()
+	size_t num_filled() const {
+		return count();
+	}
+
+	size_t get_head_idx() const {
 		return head_;
 	}
 
-	size_t get_tail_idx() {
+	size_t get_tail_idx() const {
 		return tail_;
 	}
 
-	void fill_buffer(std::array<T, max_size_> &src) {
-		memcpy(buf_.data(), src.data(), max_size_);
+private:
+	void inc_head() {
+		head_ = (head_ + 1) & SIZE_MASK;
+		// head_ = (head_ + 1) % max_size_;
+	}
+
+	void inc_tail() {
+		tail_ = (tail_ + 1) & SIZE_MASK;
+		// tail_ = (tail_ + 1) % max_size_;
 	}
 
 private:
