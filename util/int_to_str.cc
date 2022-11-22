@@ -16,7 +16,7 @@ constexpr size_t Log10<1>() {
 }
 
 template<unsigned Place>
-char digit(int &value, int avail) {
+char digit(unsigned &value, unsigned avail) {
 	if (value > Place) {
 		unsigned dig = value / Place;
 		value -= dig * Place;
@@ -36,31 +36,32 @@ void int_to_str_chop(int32_t value, const std::span<char> buf) {
 		return;
 	}
 
-	int len = 0;
+	unsigned len = 0;
 	if (value < 0) {
 		buf[len++] = '-';
 		value = -value;
 	}
+	uint32_t val = value;
 
-	if (char dig = digit<1000000000>(value, buf.size() - len); dig)
+	if (char dig = digit<1000000000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<100000000>(value, buf.size() - len); dig)
+	if (char dig = digit<100000000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<10000000>(value, buf.size() - len); dig)
+	if (char dig = digit<10000000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<1000000>(value, buf.size() - len); dig)
+	if (char dig = digit<1000000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<100000>(value, buf.size() - len); dig)
+	if (char dig = digit<100000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<10000>(value, buf.size() - len); dig)
+	if (char dig = digit<10000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<1000>(value, buf.size() - len); dig)
+	if (char dig = digit<1000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<100>(value, buf.size() - len); dig)
+	if (char dig = digit<100>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<10>(value, buf.size() - len); dig)
+	if (char dig = digit<10>(val, buf.size() - len); dig)
 		buf[len++] = dig;
-	if (char dig = digit<1>(value, buf.size() - len); dig)
+	if (char dig = digit<1>(val, buf.size() - len); dig)
 		buf[len++] = dig;
 
 	buf[len] = '\0';
@@ -71,7 +72,7 @@ void int_to_str_chop(int32_t value, const std::span<char> buf) {
 namespace
 {
 template<unsigned Place>
-char _digit(int &value) {
+char _digit(unsigned &value) {
 	if (value >= Place) {
 		unsigned dig = value / Place;
 		value -= dig * Place;
@@ -113,25 +114,27 @@ bool int_to_str(int32_t value, const std::span<char> buf) {
 	if ((num_dig + len + 1) > buf.size())
 		return false;
 
-	if (char dig = _digit<1000000000>(value); dig)
+	uint32_t val = value;
+
+	if (char dig = _digit<1000000000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<100000000>(value); dig)
+	if (char dig = _digit<100000000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<10000000>(value); dig)
+	if (char dig = _digit<10000000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<1000000>(value); dig)
+	if (char dig = _digit<1000000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<100000>(value); dig)
+	if (char dig = _digit<100000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<10000>(value); dig)
+	if (char dig = _digit<10000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<1000>(value); dig)
+	if (char dig = _digit<1000>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<100>(value); dig)
+	if (char dig = _digit<100>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<10>(value); dig)
+	if (char dig = _digit<10>(val); dig)
 		buf[len++] = dig;
-	if (char dig = _digit<1>(value); dig)
+	if (char dig = _digit<1>(val); dig)
 		buf[len++] = dig;
 
 	buf[len] = '\0';
