@@ -1,14 +1,16 @@
 #pragma once
 #include "util/math.hh"
 #include <array>
+#include <optional>
 
+// Same as CircularBuffer but returns std::optional<T> for get()
 template<class T, size_t max_size_>
-class CircularBuffer {
+class CircularBufferOpt {
 public:
 	static_assert(MathTools::is_power_of_2(max_size_), "CircularBuffer size must be a power of 2");
 	static constexpr size_t SIZE_MASK = max_size_ - 1;
 
-	CircularBuffer() = default;
+	CircularBufferOpt() = default;
 
 	void put(T item) {
 		buf_[head_] = item;
@@ -20,9 +22,9 @@ public:
 		full_ = head_ == tail_;
 	}
 
-	T get() {
+	[[nodiscard("Use remove_first() if discarding result of get()")]] std::optional<T> get() {
 		if (empty()) {
-			return T();
+			return std::nullopt;
 		}
 
 		// Read data and advance the tail (we now have a free space)
@@ -33,10 +35,14 @@ public:
 		return val;
 	}
 
+	// Set the position of the next put().
+	// Useful, for example, if get() and put() happen at the same rates
+	// and you want to provide a fixed delay (similar to double-buffering)
 	void set_head(size_t head) {
 		head_ = head;
 	}
 
+	// get the next element but discard it
 	void remove_first() {
 		if (!empty()) {
 			full_ = false;
@@ -45,9 +51,9 @@ public:
 	}
 
 	// Return a reference to the first element
-	T &first() const {
-		return buf_[tail_];
-	}
+	// T &first() const {
+	// 	return buf_[tail_];
+	// }
 
 	//TODO: allow access to any element with operator[]
 
