@@ -10,6 +10,10 @@ struct EdgeDetector {
 		state_ = state;
 	}
 
+	bool changed() const {
+		return last_state_ != state_;
+	}
+
 	bool went_high() const {
 		return (!last_state_ && state_);
 	}
