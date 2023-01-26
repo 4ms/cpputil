@@ -1,10 +1,11 @@
 #pragma once
 #include "util/math.hh"
 
-template<int Size, class T = unsigned int>
+template<unsigned Size, class T = unsigned>
 struct Oversampler {
 	static_assert(MathTools::is_power_of_2(Size) > 0, "Oversampler<Size, T> requires Size to be a power of 2");
 	// TODO: separate RawT and OversampledT and assert OverSampledT is large enough so we can't overflow
+	// template<size_t Size, size_t MaxInputVal, typename AccumulatorT>
 
 public:
 	Oversampler() {}
