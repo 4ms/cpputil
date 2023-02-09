@@ -1,5 +1,6 @@
 #include "doctest.h"
 #include "util/static_string.hh"
+#include <array>
 
 TEST_CASE("Static String construction") {
 	SUBCASE("Default (empty) constructor") {
@@ -28,6 +29,49 @@ TEST_CASE("Static String construction") {
 			CHECK(str40._data[2] == 'F');
 			CHECK(str40._data[3] == '\0');
 		}
+	}
+}
+
+TEST_CASE("StaticString string_view ctor") {
+
+	SUBCASE("Same size") {
+		std::string_view sv{"1234567890"};
+		StaticString<10> s{sv};
+		CHECK(s.length() == 10);
+		CHECK(s[0] == '1');
+		CHECK(s[9] == '0');
+	}
+	SUBCASE("SV is larger size") {
+		std::string_view sv{"0123456789"};
+		StaticString<8> s{sv};
+		CHECK(s.length() == 8);
+		CHECK(s[0] == '0');
+		CHECK(s[7] == '7');
+		CHECK(s[8] == '\0');
+	}
+	SUBCASE("SV is smaller size") {
+		std::string_view sv{"0123456789"};
+		StaticString<12> s{sv};
+		CHECK(s.length() == 10);
+		CHECK(s[0] == '0');
+		CHECK(s[9] == '9');
+		CHECK(s[10] == '\0');
+		CHECK(s[11] == '\0');
+	}
+	SUBCASE("SV is is of a larger string but ss is smaller size") {
+		std::array<char, 26> _buf;
+		for (char i = 0; auto &b : _buf)
+			b = 'A' + i++;
+
+		std::string_view sv{_buf.data(), _buf.size()};
+		StaticString<12> s{sv.substr(2, 5)};
+		CHECK(s.length() == 5);
+		CHECK(s[0] == 'C');
+		CHECK(s[1] == 'D');
+		CHECK(s[2] == 'E');
+		CHECK(s[3] == 'F');
+		CHECK(s[4] == 'G');
+		CHECK(s[5] == '\0');
 	}
 }
 
