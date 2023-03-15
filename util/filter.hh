@@ -1,11 +1,13 @@
 #pragma once
+// #include "lib/cpputil/util/math.hh"
 #include "util/math.hh"
 
-template<unsigned Size, class T = unsigned>
+template<unsigned Size, class T = unsigned, unsigned InputValueBits = 12>
 struct Oversampler {
 	static_assert(MathTools::is_power_of_2(Size) > 0, "Oversampler<Size, T> requires Size to be a power of 2");
-	// TODO: separate RawT and OversampledT and assert OverSampledT is large enough so we can't overflow
-	// template<size_t Size, size_t MaxInputVal, typename AccumulatorT>
+
+	using AccumT = unsigned;
+	static_assert(sizeof(AccumT) * 8 >= (MathTools::Log2<Size>::val + InputValueBits));
 
 public:
 	Oversampler() {}
@@ -21,7 +23,7 @@ public:
 
 private:
 	constexpr static auto oversample_shift_ = MathTools::Log2<Size>::val;
-	T buff_ = 0;
+	AccumT buff_ = 0;
 	T val_ = 0;
 	unsigned int idx_ = 0;
 };
