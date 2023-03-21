@@ -124,3 +124,27 @@ struct Debouncer : Toggler {
 private:
 	unsigned debounce_state_;
 };
+
+template<unsigned RisingEdgePattern = 0x00000001,
+		 unsigned FallingEdgePattern = 0xFFFFFFFE,
+		 unsigned StateMask = 0x00000FFF>
+struct DebouncerCounter : Toggler {
+	void register_state(unsigned new_state) {
+		debounce_state_ = ((debounce_state_ << 1) | new_state) & StateMask;
+		if (debounce_state_ == (RisingEdgePattern & StateMask)) {
+			register_rising_edge();
+			steady_state_ctr = 0;
+		} else if (debounce_state_ == (FallingEdgePattern & StateMask)) {
+			register_falling_edge();
+			steady_state_ctr = 0;
+		} else {
+			set_state(new_state);
+			steady_state_ctr++;
+		}
+	}
+
+	unsigned steady_state_ctr = 0;
+
+private:
+	unsigned debounce_state_ = 0;
+};
