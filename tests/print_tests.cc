@@ -2,6 +2,7 @@
 #include "util/print.hh"
 #include <span>
 #include <string_view>
+#include <climits>
 
 unsigned num_chars_printed = 0;
 char buffer[128]{};
@@ -193,12 +194,16 @@ namespace
 unsigned num_chars_logged = 0;
 unsigned num_chars_warned = 0;
 
+auto CountPrintedFunc = [](auto) { num_chars_logged++; };
+auto CountWarnedFunc  = [](auto) { num_chars_warned++; };
+
 void log(auto... x) {
-	(print<[](const char c) { num_chars_logged++; }>(x), ...);
+	
+	(print<CountPrintedFunc>(x), ...);
 }
 
 void warn(auto... x) {
-	(print<[](const char c) { num_chars_warned++; }>(x), ...);
+	(print<CountWarnedFunc>(x), ...);
 }
 } // namespace
 

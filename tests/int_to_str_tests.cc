@@ -1,6 +1,7 @@
 #include "doctest.h"
 #include "util/int_to_str.hh"
 #include <span>
+#include <climits>
 
 TEST_CASE("int to str chop") {
 	char b[5] = {0x7F, 0x7F, 0x7F, 0x7F, 0x7F};
