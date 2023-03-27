@@ -1,8 +1,8 @@
 #include "doctest.h"
 #include "util/print.hh"
+#include <climits>
 #include <span>
 #include <string_view>
-#include <climits>
 
 unsigned num_chars_printed = 0;
 char buffer[128]{};
@@ -195,19 +195,14 @@ unsigned num_chars_logged = 0;
 unsigned num_chars_warned = 0;
 
 auto CountPrintedFunc = [](auto) { num_chars_logged++; };
-auto CountWarnedFunc  = [](auto) { num_chars_warned++; };
+auto CountWarnedFunc = [](auto) { num_chars_warned++; };
 
-void log(auto... x) {
-	
-	(print<CountPrintedFunc>(x), ...);
-}
+void log(auto... x) { (print<CountPrintedFunc>(x), ...); }
 
-void warn(auto... x) {
-	(print<CountWarnedFunc>(x), ...);
-}
+void warn(auto... x) { (print<CountWarnedFunc>(x), ...); }
 } // namespace
 
-TEST_CASE("wrapper method usage") {
+TEST_CASE("Wrapper template method usage") {
 	num_chars_logged = 0;
 	num_chars_warned = 0;
 
