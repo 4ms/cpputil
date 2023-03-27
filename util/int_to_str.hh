@@ -1,5 +1,6 @@
 #pragma once
 #include <span>
+#include <cstdint>
 
 // Fills buf with null-terminated string conversion of `value`.
 // Returns false if value won't fit.
