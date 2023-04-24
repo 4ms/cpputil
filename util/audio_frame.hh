@@ -13,10 +13,13 @@ public:
 	static constexpr inline unsigned kMaxValue = MathTools::ipow(2, UsedBits - 1);
 	static constexpr inline float kOutScaling = static_cast<float>(kMaxValue);
 
-	static inline constexpr float scaleInput(SampleType val) {
-		return sign_extend(val) / kOutScaling;
-	}
-	static inline constexpr SampleType scaleOutput(const float val) {
+	SampleType sign_extend_chan(unsigned chan_num) const { return sign_extend(chan[chan_num]); }
+	float scale_input_chan(unsigned chan_num) const { return scaleInput(chan[chan_num]); }
+	float scale_output_chan(unsigned chan_num) const { return scaleOutput(chan[chan_num]); }
+
+	static constexpr float scaleInput(SampleType val) { return sign_extend(val) / kOutScaling; }
+
+	static constexpr SampleType scaleOutput(float val) {
 		if constexpr (std::is_signed_v<SampleType>) {
 			const float v = MathTools::constrain(val, -1.f, (kOutScaling - 1.f) / kOutScaling);
 			return static_cast<SampleType>(v * kOutScaling);
@@ -26,12 +29,14 @@ public:
 		}
 	}
 
-	static inline constexpr SampleType sign_extend(const SampleType &v) noexcept {
+	static constexpr SampleType sign_extend(const SampleType &v) noexcept {
 		static_assert((sizeof(SampleType) * 8u) >= UsedBits, "SampleType is smaller than the specified width");
 		if constexpr ((sizeof(SampleType) * 8u) == UsedBits)
 			return v;
 		else {
-			using S = struct { signed Val : UsedBits; };
+			using S = struct {
+				signed Val : UsedBits;
+			};
 			return reinterpret_cast<const S *>(&v)->Val;
 		}
 	}
