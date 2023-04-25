@@ -27,3 +27,23 @@ struct AnalyzedSignal {
 		max = curval; // std::numeric_limits<float>::min();
 	}
 };
+
+template<typename T>
+struct PeakMeter {
+	// TODO: attack, decay
+
+	T min = std::numeric_limits<T>::max();
+	T max = std::numeric_limits<T>::min();
+
+	void update(T newval) {
+		if (newval < min)
+			min = newval;
+		if (newval > max)
+			max = newval;
+	}
+
+	void reset() {
+		min = std::numeric_limits<T>::max();
+		max = std::numeric_limits<T>::min();
+	}
+};
