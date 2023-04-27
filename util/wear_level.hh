@@ -56,7 +56,8 @@ public:
 			if (cell_ >= Storage::cell_nr_) {
 				if (erased_once)
 					return false;
-				Storage::erase();
+				if (!Storage::erase())
+					return false;
 				cell_ = 0;
 				erased_once = true;
 			}
