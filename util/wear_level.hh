@@ -19,12 +19,13 @@ public:
 	// Assign the cell_ value such that the next cell we will (try to) write is
 	// the cell after the one containing the first valid data
 	WearLevel() {
+		data_t data;
 		while (cell_) {
-			data_t data;
-			Storage::read(data, --cell_);
-			if (data.validate()) {
-				cell_++;
-				return;
+			if (Storage::read(data, --cell_)) {
+				if (data.validate()) {
+					cell_++;
+					return;
+				}
 			}
 		}
 	}
