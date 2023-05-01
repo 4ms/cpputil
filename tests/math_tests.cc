@@ -94,12 +94,12 @@ TEST_CASE("Log2 template") {
 	}
 
 	SUBCASE("Lowest closest integer (floor) of log2(val) is returned") {
-		CHECK((MathTools::Log2<3>::val) == (MathTools::Log2<2>::val));
-		CHECK((MathTools::Log2<5>::val) == (MathTools::Log2<4>::val));
-		CHECK((MathTools::Log2<6>::val) == (MathTools::Log2<4>::val));
-		CHECK((MathTools::Log2<7>::val) == (MathTools::Log2<4>::val));
-		CHECK((MathTools::Log2<9>::val) == (MathTools::Log2<8>::val));
-		CHECK((MathTools::Log2<15>::val) == (MathTools::Log2<8>::val));
+		CHECK((int)(MathTools::Log2<3>::val) == (int)(MathTools::Log2<2>::val));
+		CHECK((int)(MathTools::Log2<5>::val) == (int)(MathTools::Log2<4>::val));
+		CHECK((int)(MathTools::Log2<6>::val) == (int)(MathTools::Log2<4>::val));
+		CHECK((int)(MathTools::Log2<7>::val) == (int)(MathTools::Log2<4>::val));
+		CHECK((int)(MathTools::Log2<9>::val) == (int)(MathTools::Log2<8>::val));
+		CHECK((int)(MathTools::Log2<15>::val) == (int)(MathTools::Log2<8>::val));
 	}
 }
 

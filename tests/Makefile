@@ -16,6 +16,9 @@ TEST_SOURCES += $(wildcard $(TEST_DIR)/test_*.cpp)
 BUILDDIR = $(TEST_DIR)/build
 
 CXXFLAGS = 	-Wall \
+			-Wextra \
+			-Wdeprecated-enum-float-conversion \
+			-Wenum-compare \
 		 	-std=c++20 \
 			-I. \
 			-I.. \

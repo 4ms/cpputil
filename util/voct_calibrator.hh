@@ -40,8 +40,8 @@ struct VoctCalibrator {
 			}
 
 			if (!measured_C0_) {
-				T offset_0 = datapt_[0].second - (slope_ * datapt_[0].first);
-				T offset_1 = datapt_[1].second - (slope_ * datapt_[1].first);
+				T offset_0 = datapt_[0].second - (slope_ * (int)datapt_[0].first);
+				T offset_1 = datapt_[1].second - (slope_ * (int)datapt_[1].first);
 				offset_ = (offset_0 + offset_1) / 2;
 			}
 		}
