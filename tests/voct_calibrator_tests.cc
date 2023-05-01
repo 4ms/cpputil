@@ -1,4 +1,6 @@
 #include "doctest.h"
+#include <cstdint>
+//
 #include "util/voct_calibrator.hh"
 
 TEST_CASE("Normal usage with integer") {

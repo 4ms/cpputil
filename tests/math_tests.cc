@@ -94,14 +94,12 @@ TEST_CASE("Log2 template") {
 	}
 
 	SUBCASE("Lowest closest integer (floor) of log2(val) is returned") {
-		CHECK(MathTools::Log2<3>::val == MathTools::Log2<2>::val);
-
-		CHECK(MathTools::Log2<5>::val == MathTools::Log2<4>::val);
-		CHECK(MathTools::Log2<6>::val == MathTools::Log2<4>::val);
-		CHECK(MathTools::Log2<7>::val == MathTools::Log2<4>::val);
-
-		CHECK(MathTools::Log2<9>::val == MathTools::Log2<8>::val);
-		CHECK(MathTools::Log2<15>::val == MathTools::Log2<8>::val);
+		CHECK((MathTools::Log2<3>::val) == (MathTools::Log2<2>::val));
+		CHECK((MathTools::Log2<5>::val) == (MathTools::Log2<4>::val));
+		CHECK((MathTools::Log2<6>::val) == (MathTools::Log2<4>::val));
+		CHECK((MathTools::Log2<7>::val) == (MathTools::Log2<4>::val));
+		CHECK((MathTools::Log2<9>::val) == (MathTools::Log2<8>::val));
+		CHECK((MathTools::Log2<15>::val) == (MathTools::Log2<8>::val));
 	}
 }
 
@@ -196,9 +194,7 @@ TEST_CASE("math_tests: ipow_tests") {
 		CHECK(32768 == MathTools::ipow(2, 15));
 		CHECK(65536 == MathTools::ipow(2, 16));
 		CHECK(0x80000000U == MathTools::ipow(2, 31));
-		SUBCASE("2^32 overflows to 0") {
-			CHECK(0x00000000 == MathTools::ipow(2, 32));
-		}
+		SUBCASE("2^32 overflows to 0") { CHECK(0x00000000 == MathTools::ipow(2, 32)); }
 	}
 }
 
@@ -425,27 +421,21 @@ TEST_CASE("interpolate<>(ints)") {
 	CHECK(MathTools::interpolate<100>(500, 600, 50) == 550);
 	CHECK(MathTools::interpolate<100>(500, 600, 100) == 600);
 
-	SUBCASE("negative phase continues linearly") {
-		CHECK(MathTools::interpolate<100>(500, 600, -100) == 400);
-	}
+	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate<100>(500, 600, -100) == 400); }
 }
 
 TEST_CASE("interpolate(floats)") {
 	CHECK(MathTools::interpolate(500, 600, 0.f) == 500);
 	CHECK(MathTools::interpolate(500, 600, 0.50) == 550);
 	CHECK(MathTools::interpolate(500, 600, 1.00) == 600);
-	SUBCASE("negative phase continues linearly") {
-		CHECK(MathTools::interpolate(500, 600, -1.f) == 400);
-	}
+	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate(500, 600, -1.f) == 400); }
 }
 
 TEST_CASE("interpolate3 floats") {
 	CHECK(MathTools::interpolate3(500, 600, 0.f) == 500);
 	CHECK(MathTools::interpolate3(500, 600, 0.50) == 550);
 	CHECK(MathTools::interpolate3(500, 600, 1.00) == 600);
-	SUBCASE("negative phase continues linearly") {
-		CHECK(MathTools::interpolate3(500, 600, -1.f) == 400);
-	}
+	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate3(500, 600, -1.f) == 400); }
 }
 
 TEST_CASE("array_adj_diff") {
