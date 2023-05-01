@@ -57,7 +57,7 @@ TEST_CASE("StaticString string_view ctor") {
 		CHECK(s[0] == '0');
 		CHECK(s[9] == '9');
 		CHECK(s[10] == '\0');
-		CHECK(s[11] == '\0');
+		// CHECK(s[11] == '\0'); // not necessarily true, [10] is the null-terminator
 	}
 	SUBCASE("SV is is of a larger string but ss is smaller size") {
 		std::array<char, 26> _buf;
