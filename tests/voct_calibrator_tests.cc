@@ -1,5 +1,5 @@
 #include "doctest.h"
-#include "voct_calibrator.hh"
+#include "util/voct_calibrator.hh"
 
 TEST_CASE("Normal usage with integer") {
 	using VoctCalibrator = VoctCalibrator<int16_t>;
