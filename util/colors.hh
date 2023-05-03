@@ -4,7 +4,20 @@
 #if defined(__ARM_FEATURE_DSP) && (__ARM_FEATURE_DSP == 1) && defined(__ARM_ARCH_7M__) && (__ARM_ARCH_7M__ == 1)
 #include "cmsis_gcc.h"
 #define builtin_add_u8(x, y) __UQADD8(x, y)
+#elif defined(__USAT)
+#define builtin_add_u8(x, y) ((x) + (y))
 #else
+static inline uint32_t __USAT(int32_t val, uint32_t sat) {
+	if (sat <= 31U) {
+		const uint32_t max = ((1U << sat) - 1U);
+		if (val > (int32_t)max) {
+			return max;
+		} else if (val < 0) {
+			return 0U;
+		}
+	}
+	return (uint32_t)val;
+}
 #define builtin_add_u8(x, y) ((x) + (y))
 #endif
 
@@ -81,8 +94,11 @@ struct Color {
 	}
 
 	// Todo: unit tests
-	constexpr const Color adjust(Adjustment const adj) const {
-		return Color((r_ * adj.r) >> 7, (g_ * adj.g) >> 7, (b_ * adj.b) >> 7);
+	Color adjust(Adjustment adj) const {
+		unsigned r = (r_ * adj.r) >> 7;
+		unsigned g = (g_ * adj.g) >> 7;
+		unsigned b = (b_ * adj.b) >> 7;
+		return Color(__USAT(r, 8), __USAT(g, 8), __USAT(b, 8));
 	}
 
 	constexpr uint16_t Rgb565() const {
