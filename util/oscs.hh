@@ -180,6 +180,9 @@ struct DownCounter {
 	}
 
 	void update() {
+		if (!increment_)
+			phase_ = 0;
+
 		if (phase_ > increment_)
 			phase_ -= increment_;
 		else
@@ -204,6 +207,6 @@ private:
 	static constexpr uint32_t max_ = 0xFFFFFFFF;
 	static constexpr float _to_float_convert = 1.0f / 4294967295.f; // stores as 0x2f800000
 	static constexpr uint32_t freq_units = max_ / UpdateRateHz;
-	uint32_t increment_ = 0;
+	uint32_t increment_ = max_;
 	uint32_t phase_ = max_;
 };
