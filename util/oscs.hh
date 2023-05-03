@@ -168,3 +168,38 @@ private:
 	static constexpr uint32_t max_ = 0xFFFFFFFF;
 	static constexpr float _to_u32_convert = 4294967040.f; // largest value less than 4294967296.f
 };
+
+template<int UpdateRateHz>
+struct DownCounter {
+	void reset() {
+		phase_ = max_;
+	}
+
+	void update() {
+		if (phase_ > increment_)
+			phase_ -= increment_;
+		else
+			phase_ = 0;
+	}
+
+	uint32_t val() {
+		return phase_;
+	}
+
+	void set_frequency(uint32_t freq) {
+		increment_ = freq * freq_units;
+	}
+	void set_period_ms(uint32_t ms) {
+		increment_ = (float)freq_units / (ms / 1000.f);
+	}
+	void set_phase(uint32_t phase) {
+		phase_ = phase;
+	}
+
+private:
+	static constexpr uint32_t max_ = 0xFFFFFFFF;
+	static constexpr float _to_float_convert = 1.0f / 4294967295.f; // stores as 0x2f800000
+	static constexpr uint32_t freq_units = max_ / UpdateRateHz;
+	uint32_t increment_ = 0;
+	uint32_t phase_ = max_;
+};
