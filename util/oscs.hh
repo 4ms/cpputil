@@ -2,6 +2,7 @@
 #include "util/math_tables.hh"
 #include <cstdint>
 
+// TODO: Oscllator Concept
 // template<int UpdateRateHz>
 // struct ProtoOscillator {
 // 	ProtoOscillator(uint32_t freq);
@@ -84,6 +85,7 @@ private:
 	uint32_t increment_;
 };
 
+// Ramp-up oscillator
 template<int UpdateRateHz>
 struct PhaseAccum {
 	PhaseAccum(uint32_t freq)
@@ -127,6 +129,7 @@ private:
 template<int UpdateRateHz>
 using RampOscillator = PhaseAccum<UpdateRateHz>;
 
+// LUT-based sine
 template<int UpdateRateHz>
 struct SineOscillator {
 	SineOscillator(uint32_t freq)
@@ -169,6 +172,7 @@ private:
 	static constexpr float _to_u32_convert = 4294967040.f; // largest value less than 4294967296.f
 };
 
+// DownCounter: phase counts from max to 0, then stops
 template<int UpdateRateHz>
 struct DownCounter {
 	void reset() {
