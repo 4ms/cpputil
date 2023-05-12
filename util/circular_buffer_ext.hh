@@ -45,10 +45,23 @@ public:
 		return wrapped;
 	}
 
-	bool write(const std::span<const value_type> newdata) {
+	bool read_reverse(std::span<value_type> read_data) {
+		bool wrapped = false;
+		for (auto &d : read_data) {
+			d = buf[rd--];
+			if (rd >= sz) {
+				rd = sz - 1;
+				wrapped = true;
+			}
+		}
+		return wrapped;
+	}
+
+	bool write(const std::span<const value_type> newdata, float phase = 1.f) {
 		bool wrapped = false;
 		for (auto d : newdata) {
-			buf[wr++] = d;
+			value_type xfade = d * phase + buf[wr] * (1.f - phase);
+			buf[wr++] = xfade;
 			if (wr >= sz) {
 				wr = 0;
 				wrapped = true;
@@ -57,7 +70,29 @@ public:
 		return wrapped;
 	}
 
+	bool write_reverse(const std::span<const value_type> newdata, float phase = 1.f) {
+		bool wrapped = false;
+		for (auto d : newdata) {
+			value_type xfade = d * phase + buf[wr] * (1.f - phase);
+			buf[wr--] = xfade;
+			if (wr >= sz) {
+				wr = sz - 1;
+				wrapped = true;
+			}
+		}
+		return wrapped;
+	}
+
 	bool read_check_crossed(std::span<value_type> read_data, size_t marker) {
+		bool was_before_marker = rd <= marker;
+		bool wrapped = read(read_data);
+		bool is_before_marker = rd <= marker;
+		bool changed_marker_side = was_before_marker != is_before_marker;
+		bool crossed_marker = changed_marker_side != wrapped;
+		return crossed_marker; //|| newdata.size() >= sz;
+	}
+
+	bool read_reverse_check_crossed(std::span<value_type> read_data, size_t marker) {
 		bool was_before_marker = rd <= marker;
 		bool wrapped = read(read_data);
 		bool is_before_marker = rd <= marker;
@@ -89,6 +124,10 @@ public:
 	//wr_pos() returns the index of the *next* element written by write()
 	size_t wr_pos() const {
 		return wr;
+	}
+
+	void wr_pos(size_t pos) {
+		wr = pos;
 	}
 
 	//rd_pos() returns the index of the *next* element read by read()
