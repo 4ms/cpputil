@@ -134,6 +134,9 @@ public:
 	size_t rd_pos() const {
 		return rd;
 	}
+	void rd_pos(size_t pos) {
+		rd = pos;
+	}
 
 	size_t size() const {
 		return sz;
