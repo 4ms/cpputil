@@ -1,6 +1,7 @@
 #include "doctest.h"
 #include "util/circular_buffer_ext.hh"
 #include <array>
+#include <cstdint>
 
 TEST_CASE("Writing") {
 	std::array<int32_t, 16> buf;
