@@ -94,7 +94,7 @@ public:
 
 	bool read_reverse_check_crossed(std::span<value_type> read_data, size_t marker) {
 		bool was_before_marker = rd <= marker;
-		bool wrapped = read(read_data);
+		bool wrapped = read_reverse(read_data);
 		bool is_before_marker = rd <= marker;
 		bool changed_marker_side = was_before_marker != is_before_marker;
 		bool crossed_marker = changed_marker_side != wrapped;
