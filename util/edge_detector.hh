@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-struct EdgeDetector {
+struct EdgeStateDetector {
 	bool state_ = false;
 	bool last_state_ = false;
 
