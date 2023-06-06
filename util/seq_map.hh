@@ -3,7 +3,7 @@
 #include <cstddef>
 
 template<typename KeyT, typename ValT, size_t Size>
-struct FlatMap {
+struct SeqMap {
 	std::array<KeyT, Size> keys;
 	std::array<ValT, Size> vals;
 	size_t idx = 0;

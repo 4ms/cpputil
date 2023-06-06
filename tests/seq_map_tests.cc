@@ -1,12 +1,12 @@
 #include "doctest.h"
-#include "util/flat_map.hh"
+#include "util/seq_map.hh"
 #include "util/static_string.hh"
 
 TEST_CASE("Basic usage with static_string") {
 	StaticString<3> key1 = {"abc"};
 	StaticString<3> key2 = {"def"};
 
-	FlatMap<StaticString<3>, uint32_t, 16> map;
+	SeqMap<StaticString<3>, uint32_t, 16> map;
 
 	map.insert(key1, 11);
 	map.insert(key2, 22);
