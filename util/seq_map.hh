@@ -8,7 +8,7 @@ struct SeqMap {
 	std::array<ValT, Size> vals;
 	size_t idx = 0;
 
-	bool insert(KeyT key, ValT val) {
+	bool insert(KeyT key, const ValT &val) {
 		if (idx >= Size)
 			return false;
 		keys[idx] = key;
@@ -16,6 +16,17 @@ struct SeqMap {
 		idx++;
 		return true;
 	}
+
+	bool insert(KeyT key, ValT &&val) {
+		if (idx >= Size)
+			return false;
+		keys[idx] = key;
+		vals[idx] = std::move(val);
+		idx++;
+		return true;
+	}
+
+	//TODO: allow move for key on insert?
 
 	ValT *get(KeyT key) {
 		for (size_t i = 0; auto k : keys) {
