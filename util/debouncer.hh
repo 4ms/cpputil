@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <utility>
 
 struct Toggler {
 
@@ -135,4 +136,54 @@ struct DebouncerCounter : Toggler {
 
 private:
 	unsigned debounce_state_ = 0;
+};
+
+// TODO: test this
+// ButtonHandler<mdrivlib::FPin<GPIO::A, Pin::_2>> button{PinPolarity::Inverted};
+template<typename Source,
+		 unsigned RisingEdgePattern = 0x00000001,
+		 unsigned FallingEdgePattern = 0xFFFFFFFE,
+		 unsigned StateMask = 0x00000FFF>
+struct ButtonHandler : Source, Toggler {
+
+	template<typename... Args>
+	ButtonHandler(Args &&...args)
+		: Source{std::forward<Args...>(args...)} {
+	}
+
+	void register_state(unsigned new_state) {
+		debounce_state_ = ((debounce_state_ << 1) | new_state) & StateMask;
+		if (debounce_state_ == (RisingEdgePattern & StateMask)) {
+			this->register_rising_edge();
+			steady_state_ctr = 0;
+		} else if (debounce_state_ == (FallingEdgePattern & StateMask)) {
+			this->register_falling_edge();
+			steady_state_ctr = 0;
+			ignore = false;
+		} else {
+			this->set_state(new_state);
+			steady_state_ctr++;
+		}
+	}
+
+	unsigned how_long_pressed() {
+		return !ignore && this->is_pressed() ? this->steady_state_ctr : 0;
+	}
+
+	unsigned how_long_released() {
+		return !ignore && !this->is_pressed() ? this->steady_state_ctr : 0;
+	}
+
+	void reset_hold_ctr() {
+		this->steady_state_ctr = 0;
+	}
+
+	void ignore_until_released() {
+		ignore = true;
+	}
+
+private:
+	unsigned debounce_state_ = 0;
+	unsigned steady_state_ctr = 0;
+	bool ignore = false;
 };
