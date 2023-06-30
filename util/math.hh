@@ -11,6 +11,7 @@ namespace MathTools
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288f
 #endif
+static constexpr float M_PIF = M_PI;
 
 template<typename Tval, typename Tin, typename Tout>
 static constexpr Tout
@@ -41,10 +42,14 @@ static constexpr T min(const T val1, const T val2) {
 	}
 }
 
-constexpr inline float interpolate(float in1, float in2, float phase) { return in1 * (1.0f - phase) + (in2 * phase); }
+constexpr inline float interpolate(float in1, float in2, float phase) {
+	return in1 * (1.0f - phase) + (in2 * phase);
+}
 
 // Optimized interpolate, may perform faster than interpolate
-constexpr inline float interpolate3(float in1, float in2, float phase) { return in1 + phase * (in2 - in1); }
+constexpr inline float interpolate3(float in1, float in2, float phase) {
+	return in1 + phase * (in2 - in1);
+}
 
 static_assert(interpolate(1.f, 2.f, 0.25f) == interpolate3(1.f, 2.f, 0.25f));
 
@@ -68,7 +73,9 @@ struct Log2<1> {
 	enum { val = 0 };
 };
 
-constexpr bool is_power_of_2(unsigned int v) { return v && ((v & (v - 1)) == 0); }
+constexpr bool is_power_of_2(unsigned int v) {
+	return v && ((v & (v - 1)) == 0);
+}
 
 // Todo: log2_ceiling()
 
@@ -81,7 +88,9 @@ constexpr unsigned int log2_floor(const unsigned int x) {
 	return 0;
 }
 
-constexpr unsigned int ipow(unsigned int a, unsigned int b) { return b == 0 ? 1 : a * ipow(a, b - 1); }
+constexpr unsigned int ipow(unsigned int a, unsigned int b) {
+	return b == 0 ? 1 : a * ipow(a, b - 1);
+}
 
 // Todo: this needs a better name
 template<typename T>
@@ -96,7 +105,9 @@ T wrap(T val) {
 	return val;
 }
 
-constexpr float f_abs(float x) { return (x >= 0.f) ? x : -x; }
+constexpr float f_abs(float x) {
+	return (x >= 0.f) ? x : -x;
+}
 
 template<typename T>
 constexpr T diff(T a, T b) {
@@ -159,7 +170,9 @@ constexpr float faster_sine(float x) {
 	return 4.f * (x - x * f_abs(x));
 }
 
-constexpr uint16_t swap_bytes16(uint16_t halfword) { return ((halfword & 0xFF) << 8) | (halfword >> 8); }
+constexpr uint16_t swap_bytes16(uint16_t halfword) {
+	return ((halfword & 0xFF) << 8) | (halfword >> 8);
+}
 
 constexpr uint32_t swap_bytes32(uint32_t word) {
 	return ((word & 0x000000FF) << 24) | ((word & 0x0000FF00) << 8) | ((word & 0x00FF0000) >> 8) | (word >> 24);
@@ -206,18 +219,30 @@ static inline constexpr float pow2(float x) {
 	return res;
 }
 
-static inline float sin(float x) { return sinTable.interp_wrap(x / (2.f * M_PI)); }
+static inline float sin(float x) {
+	return sinTable.interp_wrap(x / (2.f * M_PIF));
+}
 
 //
-static inline float sin01(float x) { return sinTable.interp_wrap(x); }
+static inline float sin01(float x) {
+	return sinTable.interp_wrap(x);
+}
 
-static inline float cos(float x) { return sinTable.interp_wrap((x / (2.f * M_PI)) + 0.25f); }
+static inline float cos(float x) {
+	return sinTable.interp_wrap((x / (2.f * M_PIF)) + 0.25f);
+}
 
-static inline float cos_close(float x) { return sinTable.closest_wrap((x / (2.f * M_PI)) + 0.25f); }
+static inline float cos_close(float x) {
+	return sinTable.closest_wrap((x / (2.f * M_PIF)) + 0.25f);
+}
 
-static inline float tan(float x) { return tanTable.interp_wrap(x / M_PI); }
+static inline float tan(float x) {
+	return tanTable.interp_wrap(x / M_PIF);
+}
 
-static inline float tan_close(float x) { return tanTable.closest_wrap(x / M_PI); }
+static inline float tan_close(float x) {
+	return tanTable.closest_wrap(x / M_PIF);
+}
 
 // Apply a hysteresis threshold on a gate signal. Assumes 0.0f = off, 1.0f = on
 // Converts a real-world analog signal (0.f to 1.0f) to a clean gate (0 or 1, but not in between)
