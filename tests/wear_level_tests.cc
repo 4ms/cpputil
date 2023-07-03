@@ -2,6 +2,7 @@
 #include "util/wear_level.hh"
 #include <array>
 #include <iostream>
+#include <cstdint>
 
 struct SomeData {
 	uint32_t data = 0xFFFFFFFF;
