@@ -1,8 +1,9 @@
 #pragma once
+#include <array>
 
 template<typename T, unsigned int Size, typename PhaseT = float>
 struct InterpArray {
-	T data[Size];
+	std::array<T, Size> data;
 
 	T &operator[](const unsigned int index) {
 		return data[index];

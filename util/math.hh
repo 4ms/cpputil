@@ -219,11 +219,12 @@ static inline constexpr float pow2(float x) {
 	return res;
 }
 
+//sin(x), for any x
 static inline float sin(float x) {
 	return sinTable.interp_wrap(x / (2.f * M_PIF));
 }
 
-//
+//x=0..1 => sin(0..2pi)
 static inline float sin01(float x) {
 	return sinTable.interp_wrap(x);
 }
