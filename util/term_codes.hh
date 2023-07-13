@@ -32,4 +32,10 @@ struct Term {
 
 	static constexpr const char *Bold = "\x1b[1m";
 	static constexpr const char *Blink = "\x1b[5m";
+
+	static constexpr const char *JumpLineStart = "\x1b[0G";
+	static constexpr const char *ClearLine = "\x1b[2K";
+	static constexpr const char *ClearScreen = "\x1b[2J";
+	static constexpr const char *SaveCursorPos = "\x1b[s";
+	static constexpr const char *RestoreCursorPos = "\x1b[u";
 };
