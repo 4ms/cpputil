@@ -26,7 +26,9 @@ public:
 
 	bool is_high() const { return is_high_; }
 
-	bool is_pressed() const { return is_high_; }
+	bool is_pressed() const volatile {
+		return is_high_;
+	}
 
 	bool is_just_pressed() {
 		if (got_rising_edge_) {
