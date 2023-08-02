@@ -12,7 +12,8 @@ public:
 	Toggler()
 		: is_high_{false}
 		, got_rising_edge_{false}
-		, got_falling_edge_{false} {}
+		, got_falling_edge_{false} {
+	}
 
 	void clear_events() {
 		got_falling_edge_ = false;
@@ -24,7 +25,9 @@ public:
 		clear_events();
 	}
 
-	bool is_high() const { return is_high_; }
+	bool is_high() const {
+		return is_high_;
+	}
 
 	bool is_pressed() const volatile {
 		return is_high_;
@@ -38,7 +41,9 @@ public:
 			return false;
 	}
 
-	bool just_went_high() { return is_just_pressed(); }
+	bool just_went_high() {
+		return is_just_pressed();
+	}
 
 	bool is_just_released() {
 		if (got_falling_edge_) {
@@ -47,7 +52,9 @@ public:
 		} else
 			return false;
 	}
-	bool just_went_low() { return is_just_released(); }
+	bool just_went_low() {
+		return is_just_released();
+	}
 
 	void register_rising_edge() {
 		is_high_ = true;
@@ -61,7 +68,9 @@ public:
 		got_rising_edge_ = false;
 	}
 
-	void set_state(unsigned x) { is_high_ = x ? true : false; }
+	void set_state(unsigned x) {
+		is_high_ = x ? true : false;
+	}
 
 	void copy_state(const Toggler &other) {
 		is_high_ = other.is_high_;
@@ -98,7 +107,8 @@ template<unsigned RisingEdgePattern = 0x00000001,
 		 unsigned StateMask = 0x00000FFF>
 struct Debouncer : Toggler {
 	Debouncer()
-		: debounce_state_{0} {}
+		: debounce_state_{0} {
+	}
 
 	void register_state(unsigned new_state) {
 		debounce_state_ = ((debounce_state_ << 1) | new_state) & StateMask;
