@@ -68,7 +68,23 @@ public:
 		got_rising_edge_ = false;
 	}
 
-	void set_state(unsigned x) {
+	void register_state(bool newstate) {
+		if (newstate == is_high_)
+			return;
+
+		is_high_ = newstate;
+
+		if (newstate)
+			got_rising_edge_ = true;
+		else
+			got_falling_edge_ = true;
+	}
+
+	[[deprecated("Misleading name: use set_state_no_events")]] void set_state(unsigned x) {
+		is_high_ = x ? true : false;
+	}
+
+	void set_state_no_events(unsigned x) {
 		is_high_ = x ? true : false;
 	}
 
@@ -117,7 +133,7 @@ struct Debouncer : Toggler {
 		} else if (debounce_state_ == (FallingEdgePattern & StateMask)) {
 			register_falling_edge();
 		} else {
-			set_state(new_state);
+			set_state_no_events(new_state);
 		}
 	}
 
@@ -138,7 +154,7 @@ struct DebouncerCounter : Toggler {
 			register_falling_edge();
 			steady_state_ctr = 0;
 		} else {
-			set_state(new_state);
+			set_state_no_events(new_state);
 			steady_state_ctr++;
 		}
 	}
