@@ -4,6 +4,7 @@
 #include <optional>
 
 // Same as CircularBuffer but returns std::optional<T> for get()
+// Not thread-safe (consumer and producer must not interrupt each other)
 template<class T, size_t max_size_>
 class CircularBufferOpt {
 public:
@@ -129,5 +130,5 @@ private:
 	std::array<T, max_size_> buf_{};
 	size_t head_ = 0;
 	size_t tail_ = 0;
-	bool full_ = 0;
+	bool full_ = false;
 };
