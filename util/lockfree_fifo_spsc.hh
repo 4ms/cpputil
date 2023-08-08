@@ -1,6 +1,7 @@
 #pragma once
 #include "util/math.hh"
 #include <array>
+#include <atomic>
 #include <optional>
 #include <span>
 
@@ -8,21 +9,21 @@
 // For cheaply copied types
 // Will not overwrite
 template<class T, size_t max_size_>
-class LockFreeQueueSpSc {
+class LockFreeFifoSpsc {
 public:
 	static_assert(MathTools::is_power_of_2(max_size_), "Size must be a power of 2");
 	static constexpr size_t SIZE_MASK = max_size_ - 1;
 
-	LockFreeQueueSpSc() = default;
+	LockFreeFifoSpsc() = default;
 
-	LockFreeQueueSpSc(std::span<T, max_size_> src) {
+	LockFreeFifoSpsc(std::span<T, max_size_> src) {
 		memcpy(buf_.data(), src.data(), max_size_);
 	}
 
 	// Initialize with an offset between get and put
 	// Useful, for example, if get() and put() happen at the same rates
 	// and you want to provide a fixed delay
-	LockFreeQueueSpSc(size_t head)
+	LockFreeFifoSpsc(size_t head)
 		: head_{head} {
 	}
 

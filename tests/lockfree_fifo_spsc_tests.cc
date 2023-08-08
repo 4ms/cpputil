@@ -1,8 +1,8 @@
 #include "doctest.h"
-#include "util/circular_buffer_spsc.hh"
+#include "util/lockfree_fifo_spsc.hh"
 
 TEST_CASE("Basic usage: FIFO") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 	CHECK(a.SIZE_MASK == 0b11);
 	CHECK(a.max_size() == 4);
 
@@ -17,7 +17,7 @@ TEST_CASE("Basic usage: FIFO") {
 }
 
 TEST_CASE("Basic usage: Does not overwrites if put() past end") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 
 	a.put(1);
 	a.put(2);
@@ -33,7 +33,7 @@ TEST_CASE("Basic usage: Does not overwrites if put() past end") {
 }
 
 TEST_CASE("Basic usage: Interleaving put/get is ok") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 
 	a.put(1);
 	a.put(2);
@@ -46,7 +46,7 @@ TEST_CASE("Basic usage: Interleaving put/get is ok") {
 }
 
 TEST_CASE("Basic usage: get() when empty returns default value (0)") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 	CHECK(a.get().has_value() == false);
 	CHECK(a.get().has_value() == false);
 	CHECK(a.get().has_value() == false);
@@ -61,7 +61,7 @@ TEST_CASE("Basic usage: get() when empty returns default value (0)") {
 }
 
 TEST_CASE("Basic usage: size()") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 	CHECK(a.num_filled() == 0);
 	a.put(1);
 	CHECK(a.num_filled() == 1);
@@ -74,7 +74,7 @@ TEST_CASE("Basic usage: size()") {
 }
 
 TEST_CASE("Basic usage: full/empty()") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 	CHECK(a.empty());
 	CHECK(!a.full());
 
@@ -104,7 +104,7 @@ TEST_CASE("Basic usage: full/empty()") {
 }
 
 TEST_CASE("Basic usage: reset") {
-	LockFreeQueueSpSc<int, 4> a;
+	LockFreeFifoSpsc<int, 4> a;
 
 	a.put(1);
 	a.put(2);
@@ -117,7 +117,7 @@ TEST_CASE("Basic usage: reset") {
 }
 
 TEST_CASE("Construct with offset") {
-	LockFreeQueueSpSc<int, 4> a{2};
+	LockFreeFifoSpsc<int, 4> a{2};
 
 	a.put(1);
 	CHECK(a.get().value() == 0);
