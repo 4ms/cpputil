@@ -4,7 +4,8 @@
 namespace MathTools
 {
 #if defined(__GNUC__) &&                                                                                               \
-	((defined(__ARM_ARCH_7M__) && (__ARM_ARCH_7M__ == 1)) || (defined(__ARM_ARCH_7EM__) && (__ARM_ARCH_7EM__ == 1)) || \
+	((defined(__ARM_ARCH_7A__) && (__ARM_ARCH_7A__ == 1)) || (defined(__ARM_ARCH_7M__) && (__ARM_ARCH_7M__ == 1)) ||   \
+	 (defined(__ARM_ARCH_7EM__) && (__ARM_ARCH_7EM__ == 1)) ||                                                         \
 	 (defined(__ARM_ARCH_8M_MAIN__) && (__ARM_ARCH_8M_MAIN__ == 1)))
 
 static inline int32_t signed_saturate(int32_t val, uint32_t sat) {
