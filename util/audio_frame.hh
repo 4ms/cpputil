@@ -31,7 +31,9 @@ public:
 	}
 
 	static constexpr SampleType scaleOutput(float val) {
+
 		if constexpr (std::is_signed_v<SampleType>) {
+
 			if constexpr (kSampleTypeBits > UsedBits) {
 				auto v = static_cast<SampleType>(val * kOutScaling);
 				return MathTools::signed_saturate(v, 24);
@@ -39,6 +41,7 @@ public:
 				const float v = MathTools::constrain(val, -1.f, (kOutScaling - 1.f) / kOutScaling);
 				return static_cast<SampleType>(v * kOutScaling);
 			}
+
 		} else {
 			const float v = MathTools::constrain(val * 0.5f + 0.5f, 0.f, 1.0f);
 			return v * (MathTools::ipow(2, UsedBits) - 1);

@@ -45,13 +45,31 @@ TEST_CASE("Works to convert 32-bit ints to -1.0...+1.0 float") {
 		CHECK(c.adjust(-0.5) == doctest::Approx(-16384));
 	}
 
-	SUBCASE("24 bit signed") {
+	SUBCASE("float to 24 bit signed") {
 		c.calibrate_chan<LowVal24, HighVal24>(-1., 1.);
 
 		// Range is asymmetrical (-8388608 to +8388607) so 0 is not the center
 		CHECK(c.adjust(0) == doctest::Approx(-1.));
 		CHECK(c.adjust(1.0f / 8388608.f) == doctest::Approx(0.));
 		CHECK(c.adjust(2.0f / 8388608.f) == doctest::Approx(1.));
+	}
+
+	static constexpr int32_t InputLowRangeMillivolts = -10000;
+	static constexpr int32_t InputHighRangeMillivolts = 10000;
+	static constexpr unsigned kMaxValue = MathTools::ipow(2, 24 - 1);
+
+	SUBCASE("24 bit signed to +/-10V") {
+		c.calibrate_chan<InputLowRangeMillivolts, InputHighRangeMillivolts, 1000>(-1. * (float)(kMaxValue),
+																				  kMaxValue - 1);
+		CHECK(c.adjust(0x7FFFFF) == doctest::Approx(10.f));
+		CHECK(c.adjust(0x700000) == doctest::Approx(8.75));
+		CHECK(c.adjust(0x600000) == doctest::Approx(7.5));
+		CHECK(c.adjust(0x400000) == doctest::Approx(5.0));
+		CHECK(c.adjust(0x200000) == doctest::Approx(2.5));
+		CHECK(c.adjust(0x100000) == doctest::Approx(1.25));
+		CHECK(c.adjust(0) == doctest::Approx(0.));
+		CHECK(c.adjust(-8388608. / 2.) == doctest::Approx(-5.));
+		CHECK(c.adjust(-8388608.) == doctest::Approx(-10.));
 	}
 
 	SUBCASE("24 bit with uneven range calibrated on a subset (2V/4V)") {
