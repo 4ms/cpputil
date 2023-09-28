@@ -23,7 +23,7 @@ struct StaticString {
 		copy(s);
 	}
 
-	void copy(const char *s) {
+	constexpr void copy(const char *s) {
 		size_t i = 0;
 		while (*s && i < CAPACITY) {
 			_data[i] = *s;
@@ -33,7 +33,7 @@ struct StaticString {
 		_data[i] = '\0';
 	}
 
-	void copy(std::string_view s) {
+	constexpr void copy(std::string_view s) {
 		size_t i = 0;
 		for (auto c : s) {
 			_data[i++] = c;
@@ -53,6 +53,10 @@ struct StaticString {
 
 	size_t length() const {
 		return std::string_view{_data}.length();
+	}
+
+	size_t size() const {
+		return length();
 	}
 
 	template<size_t CAP2>
