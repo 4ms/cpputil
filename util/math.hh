@@ -110,6 +110,11 @@ constexpr float f_abs(float x) {
 }
 
 template<typename T>
+constexpr T abs_diff(T x, T y) {
+	return (x >= y) ? x - y : y - x;
+}
+
+template<typename T>
 constexpr T diff(T a, T b) {
 	return (a > b) ? (a - b) : (b - a);
 }

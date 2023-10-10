@@ -1,4 +1,33 @@
 #pragma once
+#include "util/math.hh"
+
+template<typename T, unsigned MinChangeNumerator, unsigned MinChangeDenom = 1>
+struct LatchedParam {
+	static constexpr T min_change = T(MinChangeNumerator) / T(MinChangeDenom);
+
+	T val{0};
+	bool changed{false};
+
+	// TODO:
+	// use a tracking_ctr to track value 1:1 for N number
+	// of reads after a change > min_change
+
+	bool store_changed(T new_val) {
+		if (MathTools::abs_diff<T>(new_val, val) >= min_change) {
+			val = new_val;
+			changed = true;
+			return true;
+		} else
+			return false;
+	}
+
+	void operator=(T x) {
+		val = x;
+	}
+	operator T() {
+		return val;
+	}
+};
 
 template<typename T>
 class Parameter {
