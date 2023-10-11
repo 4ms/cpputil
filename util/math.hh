@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <numeric>
+#include <optional>
 
 namespace MathTools
 {
@@ -40,6 +41,11 @@ static constexpr T min(const T val1, const T val2) {
 	} else {
 		return val2;
 	}
+}
+
+template<typename T>
+constexpr std::optional<T> between(T x, T low, T high) {
+	return (x >= low && x <= high) ? std::optional<T>{x - low} : std::nullopt;
 }
 
 constexpr inline float interpolate(float in1, float in2, float phase) {
