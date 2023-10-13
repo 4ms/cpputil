@@ -51,3 +51,17 @@ TEST_CASE("Basic TriangleOscillator usage") {
 	val_approx = (float)val / (float)(0xFFFFFFFF);
 	CHECK(val_approx == doctest::Approx(0.00));
 }
+
+TEST_CASE("OneShot") {
+
+	auto os = OneShot{48000}; //48kHz = .020833 ms
+	printf("START\n");
+	os.start(1e-3);
+
+	unsigned expected_updates = 48;
+	while (--expected_updates) {
+		CHECK(os.update());
+	}
+
+	CHECK_FALSE(os.update());
+}
