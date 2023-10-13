@@ -212,27 +212,30 @@ private:
 };
 
 struct OneShot {
-	OneShot(float update_rate_hz)
+	OneShot(float update_rate_hz = 48000.f)
 		: increment_{1.f / update_rate_hz}
 		, pulse_width_{0} {
 	}
 
-	void set_update_rate_hz(float hz) {
-		increment_ = 1.f / hz;
+	void start(float pulse_width_sec) {
+		pulse_width_ = pulse_width_sec;
+	}
+
+	// starts true, goes false after pulse_width seconds has passed
+	bool update() {
+		if (pulse_width_ > 0) {
+			pulse_width_ -= increment_;
+			return true;
+		}
+		return false;
 	}
 
 	void stop() {
 		pulse_width_ = 0;
 	}
 
-	// starts true, goes false after pulse_width seconds has passed
-	bool update() {
-		pulse_width_ -= increment_;
-		return pulse_width_ > 0;
-	}
-
-	void start(float pulse_width_sec) {
-		pulse_width_ = pulse_width_sec;
+	void set_update_rate_hz(float hz) {
+		increment_ = 1.f / hz;
 	}
 
 private:
