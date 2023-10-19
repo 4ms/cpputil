@@ -1,5 +1,6 @@
 #pragma once
 #include "util/math_tables.hh"
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstdlib>

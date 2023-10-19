@@ -21,6 +21,14 @@ struct LatchedParam {
 			return false;
 	}
 
+	bool did_change() {
+		if (changed) {
+			changed = false;
+			return true;
+		}
+		return false;
+	}
+
 	void operator=(T x) {
 		val = x;
 	}
