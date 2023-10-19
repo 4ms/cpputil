@@ -88,11 +88,12 @@ public:
 	}
 
 	void fill_buffer(std::array<T, max_size_> &src) {
-		memcpy(buf_.data(), src.data(), max_size_);
+		memcpy(buf_.data(), src.data(), sizeof(T) * max_size_);
 	}
 
 	void fill_buffer(T val) {
-		memset(buf_.data(), val, max_size_);
+		for (auto &el : buf_)
+			el = val;
 	}
 
 	// Alias for count()
