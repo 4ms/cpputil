@@ -33,4 +33,9 @@ struct EdgeStateDetector {
 	bool staying_low() const {
 		return (!last_state_ && !state_);
 	}
+
+	void reset() {
+		state_ = false;
+		last_state_ = false;
+	}
 };
