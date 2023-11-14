@@ -31,9 +31,6 @@ struct Color565 {
 		g = green >> 2;
 		b = blue >> 3;
 	}
-	constexpr operator uint16_t() const {
-		return *this;
-	}
 	constexpr uint16_t raw() const {
 		return (r << 11) | (g << 5) | b;
 	}
@@ -97,13 +94,6 @@ struct Color {
 		return Color(builtin_add_u8(r_, that.r_), builtin_add_u8(g_, that.g_), builtin_add_u8(b_, that.b_));
 	}
 
-	// Color &operator=(Color const that) {
-	// 	r_ = that.r_;
-	// 	g_ = that.g_;
-	// 	b_ = that.b_;
-	// 	return *this;
-	// }
-
 	// Todo: unit tests
 	constexpr Color blend(Color const that) const {
 		return Color((r_ >> 1) + (that.r_ >> 1), (g_ >> 1) + (that.g_ >> 1), (b_ >> 1) + (that.b_ >> 1));
@@ -135,6 +125,13 @@ struct Color {
 
 	constexpr bool operator!=(Color const that) {
 		return this->r_ != that.r_ || this->g_ != that.g_ || this->b_ != that.b_;
+	}
+
+	Color combine(Color that) const {
+		unsigned r = r_ + that.r_;
+		unsigned g = g_ + that.g_;
+		unsigned b = b_ + that.b_;
+		return Color(__USAT(r, 8), __USAT(g, 8), __USAT(b, 8));
 	}
 
 	// Todo: unit tests
