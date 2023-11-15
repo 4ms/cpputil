@@ -47,6 +47,20 @@ struct Color565 {
 		return (raw() & 0x001f) << 3;
 	}
 };
+namespace Colors565
+{
+static constexpr auto Red = Color565{0xFF, 0x00, 0x00};
+static constexpr auto Orange = Color565{0xFF, 0xAA, 0x00};
+static constexpr auto Yellow = Color565{0xFF, 0xFF, 0x00};
+static constexpr auto Green = Color565{0x00, 0xFF, 0x00};
+static constexpr auto Blue = Color565{0x00, 0x00, 0xFF};
+static constexpr auto Cyan = Color565{0x00, 0xFF, 0xFF};
+static constexpr auto Purple = Color565{0x88, 0x00, 0xFF};
+static constexpr auto Pink = Color565{0xFF, 0x00, 0xAA};
+static constexpr auto White = Color565{0xFF, 0xFF, 0xFF};
+static constexpr auto Black = Color565{0x00, 0x00, 0x00};
+static constexpr auto Grey = Color565{0x80, 0x80, 0x80};
+} // namespace Colors565
 
 static_assert(sizeof(Color565) == 2);
 static_assert(Color565{0xFF, 0x00, 0x00}.red() == (0xFF & 0xF8));
