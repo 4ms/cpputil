@@ -1,6 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <cstdint>
 #include <string>
 #include <string_view>
 
@@ -79,4 +78,18 @@ struct StaticString {
 	operator std::string_view() const {
 		return _data;
 	}
+
+	// volatile combinations:
+	// clang-format off
+  constexpr void copy(const char *s) volatile { const_cast<StaticString<CAPACITY>*>(this)->copy(s); }
+
+  template <size_t OTHER_CAP>
+  constexpr void copy(StaticString<OTHER_CAP> const &other) { copy(other.data()); }
+
+  template <size_t OTHER_CAP>
+  constexpr void copy(StaticString<OTHER_CAP> volatile const &other) volatile { copy(const_cast<StaticString<OTHER_CAP> const &>(other).data()); }
+
+  template <size_t OTHER_CAP>
+  constexpr void copy(StaticString<OTHER_CAP> const &other) volatile { copy(other.data()); }
+	// clang-format on
 };
