@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 struct EdgeStateDetector {
 	bool state_ = false;
