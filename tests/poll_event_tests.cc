@@ -2,6 +2,7 @@
 #include "doctest.h"
 #include <concepts>
 #include <cstddef>
+#include <cstdint>
 
 template<std::unsigned_integral TimeT>
 void test_overflow(TimeT starting_time, unsigned num_reps = 13) {
