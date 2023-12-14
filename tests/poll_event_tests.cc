@@ -1,5 +1,6 @@
 #include "../util/poll_event.hh"
 #include "doctest.h"
+#include <cstddef>
 
 TEST_CASE("Unsigned overflow of system time") {
 
