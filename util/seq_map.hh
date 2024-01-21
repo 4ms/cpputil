@@ -2,27 +2,27 @@
 #include <array>
 #include <cstddef>
 
-template<typename KeyT, typename ValT, size_t Size>
+template<typename KeyT, typename ValT, size_t MaxSize>
 struct SeqMap {
-	std::array<KeyT, Size> keys;
-	std::array<ValT, Size> vals;
-	size_t idx = 0;
+	std::array<KeyT, MaxSize> keys;
+	std::array<ValT, MaxSize> vals;
+	size_t sz = 0;
 
 	bool insert(KeyT key, const ValT &val) {
-		if (idx >= Size)
+		if (sz >= MaxSize)
 			return false;
-		keys[idx] = key;
-		vals[idx] = val;
-		idx++;
+		keys[sz] = key;
+		vals[sz] = val;
+		sz++;
 		return true;
 	}
 
 	bool insert(KeyT key, ValT &&val) {
-		if (idx >= Size)
+		if (sz >= MaxSize)
 			return false;
-		keys[idx] = key;
-		vals[idx] = std::move(val);
-		idx++;
+		keys[sz] = key;
+		vals[sz] = std::move(val);
+		sz++;
 		return true;
 	}
 
@@ -43,5 +43,9 @@ struct SeqMap {
 				return true;
 		}
 		return false;
+	}
+
+	size_t size() {
+		return sz;
 	}
 };
