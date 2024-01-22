@@ -73,4 +73,101 @@ TEST_CASE("Push back creates elements in the right order") {
 	}
 }
 
+TEST_CASE("Insert/erase") {
+
+	constexpr auto vsize = 4;
+	FixedVector<int, vsize> fv;
+
+	// make sure size is 0 on init
+	CHECK(fv.size() == 0);
+
+	// try erasing
+	fv.erase(0);
+	fv.erase(10);
+	CHECK(fv.size() == 0);
+
+	constexpr auto A = 16;
+	constexpr auto B = 31;
+	constexpr auto C = 99;
+
+	// Inserting at values > size() does nothing
+	fv.insert(1, A);
+	fv.insert(13, A);
+	CHECK(fv.size() == 0);
+
+	// Insert at 0
+	fv.insert(0, A);
+	CHECK(fv.size() == 1);
+	CHECK(fv[0] == A);
+
+	// Erase past end does nothing
+	fv.erase(1);
+	CHECK(fv.size() == 1);
+
+	// Erase first element works
+	fv.erase(0);
+	CHECK(fv.size() == 0);
+
+	// Insert and erase two elements
+	fv.insert(0, A);
+	fv.insert(1, B);
+	CHECK(fv[0] == A);
+	CHECK(fv[1] == B);
+	CHECK(fv.size() == 2);
+	fv.erase(0);
+	fv.erase(0);
+	CHECK(fv.size() == 0);
+
+	// Insert an element at the start
+	fv.insert(0, A);
+	fv.insert(0, B);
+	fv.insert(0, C);
+	CHECK(fv[0] == C);
+	CHECK(fv[1] == B);
+	CHECK(fv[2] == A);
+
+	// Erase at the end
+	fv.erase(2);
+	CHECK(fv[0] == C);
+	CHECK(fv[1] == B);
+	CHECK(fv.size() == 2);
+	fv.erase(1);
+	CHECK(fv[0] == C);
+	CHECK(fv.size() == 1);
+	fv.erase(0);
+	CHECK(fv.size() == 0);
+
+	// Erase in the middle
+	fv.insert(0, A);
+	fv.insert(1, B);
+	fv.insert(2, C);
+	CHECK(fv[0] == A);
+	CHECK(fv[1] == B);
+	CHECK(fv[2] == C);
+	fv.erase(1);
+	CHECK(fv[0] == A);
+	CHECK(fv[1] == C);
+
+	// Erase at the begining
+	fv.erase(0);
+	CHECK(fv[0] == C);
+
+	// Erase too much
+	fv.erase(0);
+	fv.erase(0);
+	fv.erase(0);
+	CHECK(fv.size() == 0);
+	fv.insert(fv.size(), A);
+	CHECK(fv.size() == 1);
+	CHECK(fv[0] == A);
+
+	// try to overflow
+	fv.insert(fv.size(), A);
+	fv.insert(fv.size(), B);
+	fv.insert(fv.size(), C);
+	fv.insert(fv.size(), -1);
+	fv.insert(fv.size(), -1);
+	CHECK(fv.size() == 4);
+}
+
 //TODO: Test with custom types and count number of ctors/dtors in custom type

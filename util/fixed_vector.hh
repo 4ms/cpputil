@@ -50,4 +50,48 @@ public:
 	void clear() {
 		back_idx = 0;
 	}
+
+	void insert(unsigned index, T d) {
+		if (back_idx >= max_size() || index > back_idx)
+			return;
+
+		if (index == back_idx) {
+			push_back(d);
+			return;
+		}
+
+		std::move_backward(&data[index], &data[back_idx], &data[back_idx + 1]);
+
+		data[index] = d;
+		back_idx++;
+	}
+
+	void erase(const unsigned index) {
+		if (back_idx == 0 || index >= back_idx)
+			return;
+
+		if (index == back_idx - 1) {
+			back_idx--;
+			return;
+		}
+
+		std::move(&data[index + 1], &data[back_idx], &data[index]);
+		back_idx -= 1;
+	}
+
+	auto begin() const {
+		return data.begin();
+	}
+
+	auto end() const {
+		return begin() + back_idx;
+	}
+
+	auto begin() {
+		return data.begin();
+	}
+
+	auto end() {
+		return begin() + back_idx;
+	}
 };
