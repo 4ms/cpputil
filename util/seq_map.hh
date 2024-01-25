@@ -1,5 +1,4 @@
 #pragma once
-#include "zip.hh"
 #include <array>
 #include <cstddef>
 
@@ -21,7 +20,8 @@ struct SeqMap {
 
 	ValT *overwrite(KeyT key, const ValT &val) {
 		// overwrite existing key
-		for (auto [k, v] : zip(keys, vals)) {
+		for (auto i = 0u; auto k : keys) {
+			auto &v = vals[i++];
 			if (k == key) {
 				v = val;
 				return &v;
