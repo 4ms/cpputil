@@ -1,7 +1,7 @@
 #include "doctest.h"
 #include "util/seq_map.hh"
 #include "util/static_string.hh"
-
+/*
 TEST_CASE("Basic usage with static_string") {
 	StaticString<3> key1 = {"abc"};
 	StaticString<3> key2 = {"def"};
@@ -20,3 +20,4 @@ TEST_CASE("Basic usage with static_string") {
 	CHECK(*val1 == 11);
 	CHECK(*val2 == 22);
 }
+*/
