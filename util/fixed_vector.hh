@@ -10,7 +10,8 @@ class FixedVector {
 public:
 	template<typename... Ts>
 	FixedVector(const Ts... t)
-		: data{t...} {
+		: data{t...}
+		, back_idx{sizeof...(t)} {
 	}
 
 	// Unchecked!

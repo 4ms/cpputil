@@ -1,6 +1,11 @@
 #include "doctest.h"
 #include "util/fixed_vector.hh"
 
+TEST_CASE("Constructor  inits back_idx variable") {
+	FixedVector<int, 8> a{1, 3, 5};
+	CHECK(a.size() == 3);
+}
+
 TEST_CASE("Basic usage: operator[] reads") {
 	FixedVector<int, 4> a{1, 2, 3, 4};
 	CHECK(a[0] == 1);
