@@ -1,6 +1,7 @@
 #include "doctest.h"
 #include "util/seq_map.hh"
 #include "util/static_string.hh"
+#include <cstdint>
 
 TEST_CASE("Basic usage with static_string") {
 	StaticString<3> key1 = {"abc"};
