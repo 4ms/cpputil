@@ -53,6 +53,10 @@ struct Color {
 		return Color(builtin_add_u8(r_, that.r_), builtin_add_u8(g_, that.g_), builtin_add_u8(b_, that.b_));
 	}
 
+	const Color operator*(float phase) const {
+		return Color{0, 0, 0}.blend(*this, phase);
+	}
+
 	// Todo: unit tests
 	constexpr Color blend(Color const that) const {
 		return Color((r_ >> 1) + (that.r_ >> 1), (g_ >> 1) + (that.g_ >> 1), (b_ >> 1) + (that.b_ >> 1));
