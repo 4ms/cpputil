@@ -10,7 +10,8 @@ struct Oversampler {
 	static_assert(sizeof(AccumT) * 8 >= (MathTools::Log2<Size>::val + InputValueBits));
 
 public:
-	Oversampler() {}
+	Oversampler() = default;
+
 	void add_val(T newval) {
 		buff_ += newval;
 		if (++idx_ >= Size) {
@@ -19,7 +20,9 @@ public:
 			buff_ = 0;
 		}
 	}
-	T val() { return val_; }
+	T val() {
+		return val_;
+	}
 
 private:
 	constexpr static auto oversample_shift_ = MathTools::Log2<Size>::val;
@@ -28,11 +31,87 @@ private:
 	unsigned int idx_ = 0;
 };
 
+// Like Oversampler but returns a float, does not require Size to be a power of 2
+template<unsigned Size, class T = unsigned, unsigned InputValueBits = 12>
+struct SmoothOversampler {
+
+	using AccumT = unsigned;
+	static_assert(sizeof(AccumT) * 8 >= (MathTools::Log2<Size>::val + InputValueBits));
+
+public:
+	SmoothOversampler() = default;
+
+	void add_val(T newval) {
+		buff_ += newval;
+		if (++idx_ >= Size) {
+			val_ = buff_ / (float)Size;
+			idx_ = 0;
+			buff_ = 0;
+		}
+	}
+	float val() {
+		return val_;
+	}
+
+private:
+	AccumT buff_ = 0;
+	float val_ = 0;
+	unsigned int idx_ = 0;
+};
+
+template<class T, class Transfer>
+class NonLinearOnePoleLp {
+	T state_;
+
+public:
+	NonLinearOnePoleLp(float state)
+		: state_(state) {
+	}
+	NonLinearOnePoleLp()
+		: state_(0.f) {
+	}
+	T add_val(T input) {
+		state_ += Transfer::Process(input - state_);
+		return state_;
+	}
+
+	T val() {
+		return state_;
+	}
+};
+
+template<size_t Divisor>
+struct TransferQuadratic {
+	static float Process(float x) {
+		constexpr float const fact = 1.f / float(Divisor);
+		return std::abs(x) * x * fact;
+	}
+};
+
+template<size_t Numerator, size_t Divisor>
+struct TransferHysteresis {
+	static float Process(float x) {
+		constexpr float const flat = float(Numerator) / float(Divisor);
+		return x - std::clamp(x, -flat, flat);
+	}
+};
+
+template<size_t Divisor>
+class QuadraticOnePoleLp : public NonLinearOnePoleLp<float, TransferQuadratic<Divisor>> {};
+
+template<size_t Numerator, size_t Divisor>
+class HysteresisFilter : public NonLinearOnePoleLp<float, TransferHysteresis<Numerator, Divisor>> {};
+
 struct NoFilter {
 public:
-	NoFilter() {}
-	void add_val(unsigned newval) { val_ = newval; }
-	unsigned val() { return val_; }
+	NoFilter() = default;
+
+	void add_val(unsigned newval) {
+		val_ = newval;
+	}
+	unsigned val() {
+		return val_;
+	}
 
 private:
 	unsigned val_ = 0;
