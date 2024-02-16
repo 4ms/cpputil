@@ -12,13 +12,14 @@ struct Oversampler {
 public:
 	Oversampler() = default;
 
-	void add_val(T newval) {
+	T add_val(T newval) {
 		buff_ += newval;
 		if (++idx_ >= Size) {
 			val_ = buff_ >> oversample_shift_;
 			idx_ = 0;
 			buff_ = 0;
 		}
+		return val_;
 	}
 	T val() {
 		return val_;
@@ -41,13 +42,14 @@ struct SmoothOversampler {
 public:
 	SmoothOversampler() = default;
 
-	void add_val(T newval) {
+	float add_val(T newval) {
 		buff_ += newval;
 		if (++idx_ >= Size) {
 			val_ = buff_ / (float)Size;
 			idx_ = 0;
 			buff_ = 0;
 		}
+		return val_;
 	}
 	float val() {
 		return val_;
@@ -102,17 +104,36 @@ class QuadraticOnePoleLp : public NonLinearOnePoleLp<float, TransferQuadratic<Di
 template<size_t Numerator, size_t Divisor>
 class HysteresisFilter : public NonLinearOnePoleLp<float, TransferHysteresis<Numerator, Divisor>> {};
 
+template<typename T = unsigned>
 struct NoFilter {
 public:
 	NoFilter() = default;
 
-	void add_val(unsigned newval) {
+	T add_val(T newval) {
 		val_ = newval;
+		return val_;
 	}
-	unsigned val() {
+	T val() {
 		return val_;
 	}
 
 private:
-	unsigned val_ = 0;
+	T val_ = 0;
+};
+
+// Two filters in series
+// Second is only filled when val() is called
+template<typename T, typename FirstFilter, typename SecondFilter>
+class CascadingFilter {
+public:
+	T add_val(T newval) {
+		return f1.add_val(newval);
+	}
+	T val() {
+		return f2.add_val(f1.val());
+	}
+
+private:
+	FirstFilter f1{};
+	SecondFilter f2{};
 };
