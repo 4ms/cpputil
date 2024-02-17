@@ -25,6 +25,10 @@ public:
 		clear_events();
 	}
 
+	operator bool() const {
+		return is_high();
+	}
+
 	bool is_high() const {
 		return is_high_;
 	}
