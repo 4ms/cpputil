@@ -57,6 +57,10 @@ struct Color {
 		return Color{0, 0, 0}.blend(*this, phase);
 	}
 
+	bool operator==(Color const &other) const {
+		return (r_ == other.r_ && g_ == other.g_ && b_ == other.b_);
+	}
+
 	// Todo: unit tests
 	constexpr Color blend(Color const that) const {
 		return Color((r_ >> 1) + (that.r_ >> 1), (g_ >> 1) + (that.g_ >> 1), (b_ >> 1) + (that.b_ >> 1));
