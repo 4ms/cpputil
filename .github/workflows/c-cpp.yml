@@ -11,8 +11,11 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        cxx: [g++-13]
+        os: [ubuntu-latest]
+        cxx: [g++-13, g++-12, g++-11, clang++-15, clang++-14]
+        include:
+          - os: macos-latest
+            cxx: clang++
 
     runs-on: ${{ matrix.os }}
 
