@@ -1,6 +1,39 @@
 #pragma once
+#include "util/circular_buffer.hh"
 // #include "lib/cpputil/util/math.hh"
 #include "util/math.hh"
+
+template<unsigned Size, class T = unsigned, unsigned InputValueBits = 12>
+struct MovingAverage {
+	static_assert(MathTools::is_power_of_2(Size) > 0, "MovingAverage<Size, T> requires Size to be a power of 2");
+
+	using AccumT = unsigned;
+	static_assert(sizeof(AccumT) * 8 >= (MathTools::Log2<Size>::val + InputValueBits));
+
+public:
+	MovingAverage() = default;
+
+	T add_val(T newval) {
+		sum_ -= buff_[idx_];
+		buff_[idx_] = newval;
+		sum_ += newval;
+		inc_index();
+		return sum_ >> oversample_shift_;
+	}
+	T val() {
+		return sum_ >> oversample_shift_;
+	}
+
+private:
+	constexpr static auto oversample_shift_ = MathTools::Log2<Size>::val;
+	AccumT sum_ = 0;
+	std::array<T, Size> buff_{};
+	size_t idx_ = 0;
+
+	void inc_index() {
+		idx_ = (idx_ + 1) & (Size - 1);
+	}
+};
 
 template<unsigned Size, class T = unsigned, unsigned InputValueBits = 12>
 struct Oversampler {
