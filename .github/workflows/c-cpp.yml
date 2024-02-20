@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Run unit tests
 
 on:
   push:
@@ -19,5 +19,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Build tests
+    - name: Build and run tests
       run: CXX=${{ matrix.cxx }} make -f tests/Makefile
