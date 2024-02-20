@@ -3,6 +3,7 @@
 #include <climits>
 #include <span>
 #include <string_view>
+#include <climits>
 
 unsigned num_chars_printed = 0;
 char buffer[128]{};
