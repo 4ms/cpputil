@@ -1,4 +1,5 @@
 #include <span>
+#include <cstdint>
 
 ///// Method #1: fill available buffer spots, truncating
 
