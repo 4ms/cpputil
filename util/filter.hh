@@ -134,8 +134,8 @@ struct TransferHysteresis {
 template<size_t Divisor>
 class QuadraticOnePoleLp : public NonLinearOnePoleLp<float, TransferQuadratic<Divisor>> {};
 
-template<size_t Numerator, size_t Divisor>
-class HysteresisFilter : public NonLinearOnePoleLp<float, TransferHysteresis<Numerator, Divisor>> {};
+template<size_t Numerator, size_t Divisor, typename T = float>
+class HysteresisFilter : public NonLinearOnePoleLp<T, TransferHysteresis<Numerator, Divisor>> {};
 
 template<typename T = unsigned>
 struct NoFilter {
