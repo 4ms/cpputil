@@ -34,9 +34,12 @@ DEPDIR := $(BUILDDIR)
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$(subst ../,,$(basename $<).d)
 TMPFILE = $(BUILDDIR)/runtests.out
 
-.PHONY: all tests clean
+.PHONY: all tests clean version
 
-all: $(DOCTESTHEADER_DIR)/doctest.h tests
+all: version $(DOCTESTHEADER_DIR)/doctest.h tests
+
+version:
+	@echo Using c++ compiler: `$(CXX) --version | head -1`
 
 $(BUILDDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
