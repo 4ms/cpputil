@@ -2,6 +2,8 @@ project(cpputil CXX)
 
 add_library(cpputil)
 
+set_property(TARGET cpputil PROPERTY CXX_STANDARD 20)
+
 target_include_directories(cpputil PUBLIC .)
 
 target_sources(cpputil PRIVATE

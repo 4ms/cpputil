@@ -1,5 +1,7 @@
 #include <span>
 #include <cstdint>
+#include <cstddef>
+#include <span>
 
 ///// Method #1: fill available buffer spots, truncating
 
@@ -42,7 +44,7 @@ void int_to_str_chop(int32_t value, const std::span<char> buf) {
 		buf[len++] = '-';
 		value = -value;
 	}
-	uint32_t val = value;
+	unsigned val = value;
 
 	if (char dig = digit<1000000000>(val, buf.size() - len); dig)
 		buf[len++] = dig;
@@ -115,7 +117,7 @@ bool int_to_str(int32_t value, const std::span<char> buf) {
 	if ((num_dig + len + 1) > buf.size())
 		return false;
 
-	uint32_t val = value;
+	unsigned val = value;
 
 	if (char dig = _digit<1000000000>(val); dig)
 		buf[len++] = dig;
