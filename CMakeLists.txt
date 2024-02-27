@@ -11,3 +11,6 @@ target_sources(cpputil PRIVATE
     util/int_to_str.cc
 )
 
+set_property(TARGET cpputil PROPERTY CXX_STANDARD 20)
+
+
