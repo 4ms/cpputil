@@ -130,3 +130,31 @@ TEST_CASE("inserting and overwriting") {
 	CHECK(*map.get("d") == 44);
 	CHECK(*map.get("e") == 55);
 }
+
+TEST_CASE("Check if Key exists") {
+	SeqMap<StaticString<31>, uint32_t, 4> map;
+	StaticString<31> test = "ABC";
+	CHECK_FALSE(map.key_exists(test));
+
+	CHECK(map.insert("ABC", 9999));
+	CHECK(map.key_exists(test));
+
+	CHECK(map.insert("DDD", 10000));
+	CHECK(map.insert("EEE", 10001));
+	CHECK(map.insert("FFF", 10002));
+	CHECK_FALSE(map.insert("GGG", 10003));
+
+	CHECK(map.key_exists(test));
+
+	CHECK(*map.get("DDD") == 10000);
+	map.overwrite("DDD", 123);
+	CHECK(*map.get("DDD") == 123);
+
+	// Overwrite should not overwrite non-matching keys unless full
+	CHECK(map.key_exists(test));
+
+	// Overwrite will remove oldest key if full
+	auto hhh = map.overwrite("HHH", 888);
+	CHECK_FALSE(map.key_exists(test));
+	CHECK(*hhh == 888);
+}

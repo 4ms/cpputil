@@ -21,7 +21,7 @@ struct SeqMap {
 
 	ValT *overwrite(KeyT key, const ValT &val) {
 		// overwrite existing key
-		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		auto active_keys = std::span<const KeyT>{keys}.subspan(0, sz);
 		for (size_t i = 0; auto k : active_keys) {
 			if (k == key) {
 				vals[i] = val;
@@ -46,7 +46,7 @@ struct SeqMap {
 	}
 
 	ValT *get(KeyT key) {
-		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		auto active_keys = std::span<const KeyT>{keys}.subspan(0, sz);
 		for (size_t i = 0; auto k : active_keys) {
 			if (k == key)
 				return &vals[i];
@@ -61,7 +61,7 @@ struct SeqMap {
 	}
 
 	bool key_exists(KeyT key) const {
-		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		auto active_keys = std::span<const KeyT>{keys}.subspan(0, sz);
 		for (auto &k : active_keys) {
 			if (k == key)
 				return true;
