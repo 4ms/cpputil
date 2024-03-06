@@ -7,6 +7,7 @@ struct SeqMap {
 	std::array<KeyT, MaxSize> keys;
 	std::array<ValT, MaxSize> vals;
 	size_t sz = 0;
+	size_t oldest = 0;
 
 	bool insert(KeyT key, const ValT &val) {
 		if (sz >= MaxSize)
@@ -17,19 +18,35 @@ struct SeqMap {
 		return true;
 	}
 
-	bool insert(KeyT key, ValT &&val) {
-		if (sz >= MaxSize)
-			return false;
-		keys[sz] = key;
-		vals[sz] = std::move(val);
-		sz++;
-		return true;
-	}
+	ValT *overwrite(KeyT key, const ValT &val) {
+		// overwrite existing key
+		for (auto i = 0u; auto k : keys) {
+			auto &v = vals[i++];
+			if (k == key) {
+				v = val;
+				return &v;
+			}
+		}
 
-	//TODO: allow move for key on insert?
+		// Overwrite oldest value if full, otherwise append
+		size_t index = sz;
+		if (sz >= MaxSize) {
+			index = oldest;
+			oldest++;
+			if (oldest >= MaxSize)
+				oldest = 0;
+		} else
+			sz++;
+
+		keys[index] = key;
+		vals[index] = val;
+		return &vals[index];
+	}
 
 	ValT *get(KeyT key) {
 		for (size_t i = 0; auto k : keys) {
+			if (i >= sz)
+				return nullptr;
 			if (k == key)
 				return &vals[i];
 			i++;
@@ -38,9 +55,11 @@ struct SeqMap {
 	}
 
 	bool key_exists(KeyT key) {
-		for (auto &k : keys) {
+		for (auto i = 0u; auto &k : keys) {
 			if (k == key)
 				return true;
+			if (i++ >= sz)
+				return false;
 		}
 		return false;
 	}
