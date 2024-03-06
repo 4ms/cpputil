@@ -20,12 +20,14 @@ struct SeqMap {
 
 	ValT *overwrite(KeyT key, const ValT &val) {
 		// overwrite existing key
-		for (auto i = 0u; auto k : keys) {
-			auto &v = vals[i++];
+		for (size_t i = 0; auto k : keys) {
+			if (i >= sz)
+				break;
 			if (k == key) {
-				v = val;
-				return &v;
+				vals[i] = val;
+				return &vals[i];
 			}
+			i++;
 		}
 
 		// Overwrite oldest value if full, otherwise append
@@ -54,17 +56,23 @@ struct SeqMap {
 		return nullptr;
 	}
 
-	bool key_exists(KeyT key) {
-		for (auto i = 0u; auto &k : keys) {
+	void remove_last() {
+		if (sz > 0)
+			sz--;
+	}
+
+	bool key_exists(KeyT key) const {
+		for (size_t i = 0; auto &k : keys) {
+			if (i >= sz)
+				return false;
 			if (k == key)
 				return true;
-			if (i++ >= sz)
-				return false;
+			i++;
 		}
 		return false;
 	}
 
-	size_t size() {
+	size_t size() const {
 		return sz;
 	}
 };
