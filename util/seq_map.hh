@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <cstddef>
+#include <span>
 
 template<typename KeyT, typename ValT, size_t MaxSize>
 struct SeqMap {
@@ -20,9 +21,8 @@ struct SeqMap {
 
 	ValT *overwrite(KeyT key, const ValT &val) {
 		// overwrite existing key
-		for (size_t i = 0; auto k : keys) {
-			if (i >= sz)
-				break;
+		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		for (size_t i = 0; auto k : active_keys) {
 			if (k == key) {
 				vals[i] = val;
 				return &vals[i];
@@ -46,9 +46,8 @@ struct SeqMap {
 	}
 
 	ValT *get(KeyT key) {
-		for (size_t i = 0; auto k : keys) {
-			if (i >= sz)
-				return nullptr;
+		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		for (size_t i = 0; auto k : active_keys) {
 			if (k == key)
 				return &vals[i];
 			i++;
@@ -62,12 +61,10 @@ struct SeqMap {
 	}
 
 	bool key_exists(KeyT key) const {
-		for (size_t i = 0; auto &k : keys) {
-			if (i >= sz)
-				return false;
+		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		for (auto &k : active_keys) {
 			if (k == key)
 				return true;
-			i++;
 		}
 		return false;
 	}
