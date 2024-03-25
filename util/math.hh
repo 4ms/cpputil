@@ -112,6 +112,24 @@ T wrap(T val) {
 	return val;
 }
 
+template<typename T = int>
+constexpr T wrap(T val, T min, T max) {
+	T range = max - min + 1;
+	while (val > max)
+		val -= range;
+	while (val < min)
+		val += range;
+	return val;
+}
+
+static_assert(wrap<int>(-99, 1, 2) == 1);
+static_assert(wrap<int>(-2, 1, 2) == 2);
+static_assert(wrap<int>(-1, 1, 2) == 1);
+static_assert(wrap<int>(0, 1, 2) == 2);
+static_assert(wrap<int>(1, 1, 2) == 1);
+static_assert(wrap<int>(2, 1, 2) == 2);
+static_assert(wrap<int>(99, 1, 2) == 1);
+
 constexpr float f_abs(float x) {
 	return (x >= 0.f) ? x : -x;
 }
