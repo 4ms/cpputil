@@ -60,6 +60,20 @@ struct SeqMap {
 			sz--;
 	}
 
+	// returns true if found and removed
+	bool remove(KeyT key) {
+		auto active_keys = std::span<KeyT>{keys}.subspan(0, sz);
+		for (size_t i = 0; auto &k : active_keys) {
+			if (k == key) {
+				k = KeyT{};
+				vals[i] = ValT{};
+				return true;
+			}
+			i++;
+		}
+		return false;
+	}
+
 	bool key_exists(KeyT key) const {
 		auto active_keys = std::span<const KeyT>{keys}.subspan(0, sz);
 		for (auto &k : active_keys) {

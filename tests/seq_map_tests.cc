@@ -158,3 +158,63 @@ TEST_CASE("Check if Key exists") {
 	CHECK_FALSE(map.key_exists(test));
 	CHECK(*hhh == 888);
 }
+
+namespace
+{
+int num_created = 0;
+int num_destroyed = 0;
+} // namespace
+
+TEST_CASE("Removing") {
+	SeqMap<StaticString<31>, uint32_t, 4> map;
+
+	CHECK(map.insert("ABC", 123));
+	CHECK(map.insert("DEF", 456));
+	CHECK(map.insert("GHI", 789));
+	CHECK(map.insert("JKL", 101213));
+
+	CHECK(map.remove("DEF"));
+	CHECK_FALSE(map.key_exists("DEF"));
+	CHECK(map.key_exists("ABC"));
+	CHECK(map.key_exists("GHI"));
+	CHECK(map.key_exists("JKL"));
+
+	//can't remove twice
+	CHECK_FALSE(map.remove("DEF"));
+}
+
+TEST_CASE("Using Value type with destructor") {
+	struct Tracer {
+		Tracer() {
+			num_created++;
+		}
+		~Tracer() {
+			num_destroyed++;
+		}
+	};
+
+	// reset
+	num_created = 0;
+	num_destroyed = 0;
+
+	SeqMap<StaticString<3>, Tracer, 4> map;
+
+	CHECK(num_created == 4);
+	CHECK(num_destroyed == 0);
+
+	CHECK(map.insert("ABC", {}));
+	CHECK(num_created == 5);
+	CHECK(num_destroyed == 1);
+
+	CHECK(map.insert("DEF", {}));
+	CHECK(num_created == 6);
+	CHECK(num_destroyed == 2);
+
+	map.overwrite("DEF", {});
+	CHECK(num_created == 7);
+	CHECK(num_destroyed == 3);
+
+	map.remove("ABC");
+	CHECK(num_created == 8);
+	CHECK(num_destroyed == 4);
+}
