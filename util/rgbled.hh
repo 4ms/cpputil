@@ -91,9 +91,9 @@ struct MixedRgbLed {
 	}
 
 private:
-	const RLedT r_;
-	const GLedT g_;
-	const BLedT b_;
+	RLedT r_;
+	GLedT g_;
+	BLedT b_;
 	TriangleOscillator<UpdateRateHz> fader_;
 	DownCounter<UpdateRateHz> flasher_;
 	Color background_color_ = Colors::off;
