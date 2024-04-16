@@ -1,6 +1,7 @@
 project(cpputil CXX)
 
 add_library(cpputil)
+add_library(cpputil::cpputil ALIAS cpputil)
 
 set_property(TARGET cpputil PROPERTY CXX_STANDARD 20)
 
