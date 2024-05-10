@@ -7,16 +7,16 @@ struct RGB565 {
 	uint16_t g : 6;
 	uint16_t b : 5;
 
-	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue) {
-		r = red >> 3;
-		g = green >> 2;
-		b = blue >> 3;
+	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue)
+		: r(red >> 3)
+		, g(green >> 2)
+		, b(blue >> 3) {
 	}
 
-	constexpr RGB565(float red, float green, float blue) {
-		r = std::clamp<uint16_t>(red * 32.f, 0, 31);
-		g = std::clamp<uint16_t>(green * 64.f, 0, 63);
-		b = std::clamp<uint16_t>(blue * 32.f, 0, 31);
+	constexpr RGB565(float red, float green, float blue)
+		: r(std::clamp<uint16_t>(red * 32.f, 0, 31))
+		, g(std::clamp<uint16_t>(green * 64.f, 0, 63))
+		, b(std::clamp<uint16_t>(blue * 32.f, 0, 31)) {
 	}
 
 	constexpr uint16_t raw() const {
