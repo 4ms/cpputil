@@ -1,5 +1,4 @@
 #pragma once
-#include <array>
 #include <cstddef>
 
 template<class Storage>
@@ -20,11 +19,10 @@ public:
 	// Assign the cell_ value such that the next cell we will (try to) write is
 	// the cell after the one containing the first valid data
 	WearLevel() {
-		std::array<unsigned char, sizeof(data_t)> d;
-		auto data = reinterpret_cast<data_t *>(d.data());
+		data_t data;
 		while (cell_) {
-			if (Storage::read(*data, --cell_)) {
-				if (data->validate()) {
+			if (Storage::read(data, --cell_)) {
+				if (data.validate()) {
 					cell_++;
 					return;
 				}
