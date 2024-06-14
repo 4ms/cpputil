@@ -18,6 +18,7 @@ struct AnalyzedSignal {
 		if (newval > max)
 			max = newval;
 		iir += iir_coef * (newval - iir);
+		avg = iir; //TODO
 	}
 
 	void reset_to(float curval) {

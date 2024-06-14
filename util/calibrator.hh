@@ -19,6 +19,7 @@ public:
 		_offset = offset;
 	}
 
+	// 3-point calibration:
 	template<int TargetLowValue, int TargetHighValue>
 	bool calibrate_chan(float zero_measurement, float low_measurement, float high_measurement) {
 		constexpr float TargetRange = TargetHighValue - TargetLowValue;
@@ -32,11 +33,18 @@ public:
 		return true;
 	}
 
+	// 2-point calibration:
 	template<int TargetLowValue, int TargetHighValue, int Divider = 1>
 	void calibrate_chan(float low_measurement, float high_measurement) {
 		constexpr float TargetRange = (float)(TargetHighValue - TargetLowValue) / (float)Divider;
 		_slope = TargetRange / (high_measurement - low_measurement);
 		_offset = low_measurement - ((float)TargetLowValue / (float)Divider) / _slope;
+	}
+
+	// 2-point calibration, without templates
+	void calibrate_chan(float target_low, float target_high, float low_measurement, float high_measurement) {
+		_slope = (target_high - target_low) / (high_measurement - low_measurement);
+		_offset = low_measurement - (target_low / _slope);
 	}
 
 private:
