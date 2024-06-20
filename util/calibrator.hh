@@ -1,16 +1,19 @@
 #pragma once
-#include "util/math.hh"
-#include <cstdint>
+#include <cmath>
 
 class Calibrator {
 public:
 	Calibrator() = default;
-	Calibrator(float slope, float offset)
+	constexpr Calibrator(float slope, float offset)
 		: _slope(slope)
 		, _offset(offset) {
 	}
 
-	float adjust(float raw) {
+	constexpr Calibrator(std::pair<float, float> target, std::pair<float, float> measurement) {
+		calibrate_chan(target, measurement);
+	}
+
+	constexpr float adjust(float raw) {
 		return (raw - _offset) * _slope;
 	}
 
@@ -19,32 +22,21 @@ public:
 		_offset = offset;
 	}
 
-	// 3-point calibration:
-	template<int TargetLowValue, int TargetHighValue>
-	bool calibrate_chan(float zero_measurement, float low_measurement, float high_measurement) {
-		constexpr float TargetRange = TargetHighValue - TargetLowValue;
-		float t_slope = TargetRange / (high_measurement - low_measurement);
-		float t_offset = low_measurement - TargetLowValue / t_slope;
-		if (MathTools::f_abs(t_offset - zero_measurement) > 0.0001f) {
-			return false;
-		}
-		_slope = t_slope;
-		_offset = t_offset;
-		return true;
-	}
-
-	// 2-point calibration:
-	template<int TargetLowValue, int TargetHighValue, int Divider = 1>
-	void calibrate_chan(float low_measurement, float high_measurement) {
-		constexpr float TargetRange = (float)(TargetHighValue - TargetLowValue) / (float)Divider;
-		_slope = TargetRange / (high_measurement - low_measurement);
-		_offset = low_measurement - ((float)TargetLowValue / (float)Divider) / _slope;
-	}
-
-	// 2-point calibration, without templates
-	void calibrate_chan(float target_low, float target_high, float low_measurement, float high_measurement) {
+	constexpr void calibrate_chan(float target_low, float target_high, float low_measurement, float high_measurement) {
 		_slope = (target_high - target_low) / (high_measurement - low_measurement);
 		_offset = low_measurement - (target_low / _slope);
+	}
+
+	constexpr void calibrate_chan(std::pair<float, float> target, std::pair<float, float> measurement) {
+		calibrate_chan(target.first, target.second, measurement.first, measurement.second);
+	}
+
+	float slope() const {
+		return _slope;
+	}
+
+	float offset() const {
+		return _offset;
 	}
 
 private:
