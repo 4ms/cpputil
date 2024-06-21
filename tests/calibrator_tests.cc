@@ -1,5 +1,6 @@
 #include "doctest.h"
 #include "util/calibrator.hh"
+#include "util/math.hh"
 #include <limits>
 
 TEST_CASE("Basic usage: inputting the high and low notes used to calibrate, gives the target high and low notes") {
@@ -8,15 +9,7 @@ TEST_CASE("Basic usage: inputting the high and low notes used to calibrate, give
 	constexpr int LowNote = 2;
 	constexpr int HighNote = 4;
 
-	SUBCASE("provide a zero measurement to check linearity better") {
-		bool good = c.calibrate_chan<LowNote, HighNote>(-0.02, 0.22, 0.46);
-		CHECK(good == true);
-
-		bool bad = c.calibrate_chan<LowNote, HighNote>(-0.12, 0.22, 0.46);
-		CHECK(bad == false);
-	}
-
-	c.calibrate_chan<LowNote, HighNote>(0.22, 0.46);
+	c.calibrate_chan(LowNote, HighNote, 0.22, 0.46);
 	CHECK(c.adjust(0.22) == doctest::Approx(LowNote));
 	CHECK(c.adjust(0.46) == doctest::Approx(HighNote));
 
@@ -39,14 +32,14 @@ TEST_CASE("Works to convert 32-bit ints to -1.0...+1.0 float") {
 	constexpr int32_t HighVal24 = 0x007FFFFF;
 
 	SUBCASE("16 bit signed") {
-		c.calibrate_chan<LowVal, HighVal>(-1., 1.);
+		c.calibrate_chan(LowVal, HighVal, -1., 1.);
 		CHECK(c.adjust(0) == doctest::Approx(0.));
 		CHECK(c.adjust(0.5) == doctest::Approx(16384));
 		CHECK(c.adjust(-0.5) == doctest::Approx(-16384));
 	}
 
 	SUBCASE("float to 24 bit signed") {
-		c.calibrate_chan<LowVal24, HighVal24>(-1., 1.);
+		c.calibrate_chan(LowVal24, HighVal24, -1., 1.);
 
 		// Range is asymmetrical (-8388608 to +8388607) so 0 is not the center
 		CHECK(c.adjust(0) == doctest::Approx(-1.));
@@ -54,13 +47,12 @@ TEST_CASE("Works to convert 32-bit ints to -1.0...+1.0 float") {
 		CHECK(c.adjust(2.0f / 8388608.f) == doctest::Approx(1.));
 	}
 
-	static constexpr int32_t InputLowRangeMillivolts = -10000;
-	static constexpr int32_t InputHighRangeMillivolts = 10000;
+	static constexpr int32_t InputLowRangeVolts = -10;
+	static constexpr int32_t InputHighRangeVolts = 10;
 	static constexpr unsigned kMaxValue = MathTools::ipow(2, 24 - 1);
 
 	SUBCASE("24 bit signed to +/-10V") {
-		c.calibrate_chan<InputLowRangeMillivolts, InputHighRangeMillivolts, 1000>(-1. * (float)(kMaxValue),
-																				  kMaxValue - 1);
+		c.calibrate_chan(InputLowRangeVolts, InputHighRangeVolts, -1. * (float)(kMaxValue), kMaxValue - 1);
 		CHECK(c.adjust(0x7FFFFF) == doctest::Approx(10.f));
 		CHECK(c.adjust(0x700000) == doctest::Approx(8.75));
 		CHECK(c.adjust(0x600000) == doctest::Approx(7.5));
@@ -77,7 +69,7 @@ TEST_CASE("Works to convert 32-bit ints to -1.0...+1.0 float") {
 		constexpr uint32_t TwoVolts = TenVolts / 5;
 		constexpr uint32_t FourVolts = TwoVolts * 2;
 
-		c.calibrate_chan<TwoVolts, FourVolts>(0.1938f, 0.3848f);
+		c.calibrate_chan(TwoVolts, FourVolts, 0.1938f, 0.3848f);
 		CHECK(c.adjust(0.3848) == doctest::Approx(FourVolts));
 		CHECK(c.adjust(0.1938) == doctest::Approx(TwoVolts));
 		CHECK(c.adjust(0.1938 - (0.3848 - 0.1938)) ==
