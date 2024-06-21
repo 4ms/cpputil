@@ -82,17 +82,14 @@ public:
 	}
 
 	void erase(T *first, T *last) {
-		if (back_idx == 0) {
-			return;
-		}
-		const unsigned count = std::distance(first, last);
-		const unsigned index = std::distance(begin(), first);
-		if (index == back_idx - count) {
-			back_idx -= count;
+		const auto count = std::distance(first, last);
+
+		if (back_idx == 0 || count <= 0) {
 			return;
 		}
 
-		std::move(&data[index + count], &data[back_idx], &data[index]);
+		std::move(last, end(), first);
+
 		back_idx -= count;
 	}
 
