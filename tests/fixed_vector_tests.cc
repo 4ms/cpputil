@@ -1,5 +1,69 @@
 #include "doctest.h"
 #include "util/fixed_vector.hh"
+#include <algorithm>
+
+TEST_CASE("Iterator Erase") {
+	FixedVector<int, 20> vec{1, 2, 3, 1, 3, 2, 2, 1, 3, 2, 3, 1, 3, 1, 2, 3, 2, 1};
+	CHECK(vec.size() == 18);
+	//sort and remove duplicate entries
+	std::sort(vec.begin(), vec.end());
+	vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+	CHECK(vec.size() == 3);
+	CHECK(vec[0] == 1);
+	CHECK(vec[1] == 2);
+	CHECK(vec[2] == 3);
+}
+
+TEST_CASE("Iterator Erase with first == last is a no-op") {
+	FixedVector<int, 6> vec{1, 2, 3, 1};
+	CHECK(vec.size() == 4);
+
+	vec.erase(vec.begin(), vec.begin());
+	CHECK(vec.size() == 4);
+	CHECK(vec[0] == 1);
+	CHECK(vec[1] == 2);
+	CHECK(vec[2] == 3);
+	CHECK(vec[3] == 1);
+
+	vec.erase(vec.end(), vec.end());
+	CHECK(vec.size() == 4);
+	CHECK(vec[0] == 1);
+	CHECK(vec[1] == 2);
+	CHECK(vec[2] == 3);
+	CHECK(vec[3] == 1);
+
+	vec.erase(nullptr, nullptr);
+	CHECK(vec.size() == 4);
+	CHECK(vec[0] == 1);
+	CHECK(vec[1] == 2);
+	CHECK(vec[2] == 3);
+	CHECK(vec[3] == 1);
+}
+
+TEST_CASE("Iterator Erase different parts of vector") {
+	FixedVector<int, 6> vec{1, 2, 3, 99};
+	CHECK(vec.size() == 4);
+
+	SUBCASE("Erase middle two elements") {
+		vec.erase(&vec[1], &vec[3]);
+		CHECK(vec.size() == 2);
+		CHECK(vec[0] == 1);
+		CHECK(vec[1] == 99);
+	}
+
+	SUBCASE("Erase first element") {
+		vec.erase(&vec[0], &vec[1]);
+		CHECK(vec.size() == 3);
+		CHECK(vec[0] == 2);
+		CHECK(vec[1] == 3);
+		CHECK(vec[2] == 99);
+	}
+
+	SUBCASE("Erase all elements") {
+		vec.erase(vec.begin(), vec.end());
+		CHECK(vec.size() == 0);
+	}
+}
 
 TEST_CASE("Constructor  inits back_idx variable") {
 	FixedVector<int, 8> a{1, 3, 5};

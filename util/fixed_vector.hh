@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <cstddef>
+#include <iterator>
 
 template<typename T, size_t MaxElements>
 class FixedVector {
@@ -78,6 +79,18 @@ public:
 
 		std::move(&data[index + 1], &data[back_idx], &data[index]);
 		back_idx -= 1;
+	}
+
+	void erase(T *first, T *last) {
+		const auto count = std::distance(first, last);
+
+		if (back_idx == 0 || count <= 0) {
+			return;
+		}
+
+		std::move(last, end(), first);
+
+		back_idx -= count;
 	}
 
 	auto begin() const {
