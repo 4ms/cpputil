@@ -1,6 +1,7 @@
 #pragma once
 #include <utility>
 
+// Linear transformation used for calibrating ADCs and DACs
 class Calibrator {
 public:
 	Calibrator() = default;
@@ -13,11 +14,11 @@ public:
 		calibrate_chan(target, measurement);
 	}
 
-	constexpr float adjust(float raw) {
+	constexpr float adjust(float raw) const {
 		return (raw - _offset) * _slope;
 	}
 
-	constexpr float reverse_calibrate(float val) {
+	constexpr float reverse_calibrate(float val) const {
 		return val / _slope + _offset;
 	}
 
@@ -32,8 +33,8 @@ public:
 	}
 
 	// calibrate_chan(TARGET, MEASUREMENT)
-	// outputs cal: when the MCU writes TARGET 24-bit value to the codec DAC, the user sees MEASUREMENT volts on the jack.
-	// inputs cal: when the user inputs TARGET volts to the jack, the codec reads MEASUREMENT 24-bit value.
+	// outputs cal: when the MCU writes TARGET value to the codec DAC, the user sees MEASUREMENT volts on the jack.
+	// inputs cal: when the user inputs TARGET volts to the jack, the codec reads MEASUREMENT value.
 	constexpr void calibrate_chan(std::pair<float, float> target, std::pair<float, float> measurement) {
 		calibrate_chan(target.first, target.second, measurement.first, measurement.second);
 	}
