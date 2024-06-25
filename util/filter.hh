@@ -1,6 +1,4 @@
 #pragma once
-#include "util/circular_buffer.hh"
-// #include "lib/cpputil/util/math.hh"
 #include "util/math.hh"
 
 template<unsigned Size, class T = unsigned, unsigned InputValueBits = 12>
@@ -92,6 +90,51 @@ private:
 	AccumT buff_ = 0;
 	float val_ = 0;
 	unsigned int idx_ = 0;
+};
+
+// Another float-based oversampler that can change size
+struct ResizingOversampler {
+	ResizingOversampler() = default;
+	ResizingOversampler(unsigned size)
+		: size_{size} {
+	}
+
+	void set_size(unsigned new_size) {
+		if (idx_ >= new_size) {
+			val_ = buff_ / (float)idx_;
+			idx_ = 0;
+			buff_ = 0;
+		}
+		size_ = new_size;
+	}
+
+	float add_val(float newval) {
+		buff_ += newval;
+		if (++idx_ >= size_) {
+			val_ = buff_ / (float)size_;
+			idx_ = 0;
+			buff_ = 0;
+		}
+		return val_;
+	}
+
+	float val() {
+		return val_;
+	}
+
+	ResizingOversampler &operator=(ResizingOversampler const &that) {
+		buff_ = that.buff_;
+		val_ = that.val_;
+		idx_ = that.idx_;
+		size_ = that.size_;
+		return *this;
+	}
+
+private:
+	float buff_ = 0;
+	float val_ = 0;
+	unsigned int idx_ = 0;
+	unsigned size_ = 1;
 };
 
 template<class T, class Transfer>
