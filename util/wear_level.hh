@@ -11,31 +11,15 @@ template<class Storage>
 // Storage::erase()
 // Storage::is_writeable(size_t) --> bool
 class WearLevel : Storage {
-	size_t cell_ = Storage::cell_nr_;
+	size_t cell_ = 0;
 
 public:
 	using data_t = typename Storage::data_t;
 
-	// Scan the block from top to bottom for the first valid data.
-	// Assign the cell_ value such that the next cell we will (try to) write is
-	// the cell after the one containing the first valid data
-	WearLevel() {
-		std::array<unsigned char, sizeof(data_t)> d;
-		auto data = reinterpret_cast<data_t *>(d.data());
-		while (cell_) {
-			if (Storage::read(*data, --cell_)) {
-				if (data->validate()) {
-					cell_++;
-					return;
-				}
-			}
-		}
-	}
-
 	// Reads the latest valid data, starting with the last written cell and scanning downwards.
 	// Returns false only if the bottom of the block is reached without finding any valid data.
 	bool read(data_t &data) {
-		size_t c = cell_;
+		size_t c = Storage::cell_nr_;
 		while (c) {
 			Storage::read(data, --c);
 			if (data.validate()) {
@@ -65,5 +49,10 @@ public:
 			}
 		}
 		return Storage::write(data, cell_++);
+	}
+
+	//erase entire flash block. resets all data
+	bool erase() {
+		return Storage::erase();
 	}
 };
