@@ -9,11 +9,15 @@ template<class T, size_t max_size_>
 class InputBuffer {
 public:
 	void put(T item) {
-		if (head_ >= max_size_)
+		if (full())
 			return;
 
 		buf_[head_] = item;
 		head_++;
+	}
+
+	bool full() {
+		return head_ >= max_size_;
 	}
 
 	void reset() {
@@ -47,13 +51,17 @@ private:
 template<class T, size_t max_size_>
 class OutputBuffer {
 public:
-	T get(T item) {
-		if (head_ >= max_size_)
+	T get() {
+		if (full())
 			return T{};
 
 		auto t = buf_[head_];
 		head_++;
 		return t;
+	}
+
+	bool full() {
+		return head_ >= max_size_;
 	}
 
 	void reset() {
