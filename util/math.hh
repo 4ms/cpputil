@@ -275,6 +275,20 @@ static inline float tan_close(float x) {
 	return tanTable.closest_wrap(x / M_PIF);
 }
 
+// With gcc -ffast-math option, std::isfinite always is true
+// So this is a workaround.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+
+static inline bool is_finite_fastmath(float a) {
+	auto b = *reinterpret_cast<uint32_t *>(&a);
+	return (b & 0x7f800000) != 0x7f800000;
+}
+#pragma GCC diagnostic pop
+static inline bool is_inf_fastmath(float a) {
+	return std::abs(a) > 3.4028235e38f;
+}
+
 // Apply a hysteresis threshold on a gate signal. Assumes 0.0f = off, 1.0f = on
 // Converts a real-world analog signal (0.f to 1.0f) to a clean gate (0 or 1, but not in between)
 // and debounces chatter when crossing the threshold -- without introducing delay like debouncers typically do.
@@ -307,5 +321,4 @@ static inline constexpr float
 hysteresis_feedback(float feedback_coef, float thresh, float last_output, float new_input) {
 	return (new_input + last_output * feedback_coef) > thresh ? 1.f : 0.f;
 }
-
 }; // namespace MathTools
