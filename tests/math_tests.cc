@@ -194,7 +194,9 @@ TEST_CASE("math_tests: ipow_tests") {
 		CHECK(32768 == MathTools::ipow(2, 15));
 		CHECK(65536 == MathTools::ipow(2, 16));
 		CHECK(0x80000000U == MathTools::ipow(2, 31));
-		SUBCASE("2^32 overflows to 0") { CHECK(0x00000000 == MathTools::ipow(2, 32)); }
+		SUBCASE("2^32 overflows to 0") {
+			CHECK(0x00000000 == MathTools::ipow(2, 32));
+		}
 	}
 }
 
@@ -421,21 +423,27 @@ TEST_CASE("interpolate<>(ints)") {
 	CHECK(MathTools::interpolate<100>(500, 600, 50) == 550);
 	CHECK(MathTools::interpolate<100>(500, 600, 100) == 600);
 
-	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate<100>(500, 600, -100) == 400); }
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate<100>(500, 600, -100) == 400);
+	}
 }
 
 TEST_CASE("interpolate(floats)") {
 	CHECK(MathTools::interpolate(500, 600, 0.f) == 500);
 	CHECK(MathTools::interpolate(500, 600, 0.50) == 550);
 	CHECK(MathTools::interpolate(500, 600, 1.00) == 600);
-	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate(500, 600, -1.f) == 400); }
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate(500, 600, -1.f) == 400);
+	}
 }
 
 TEST_CASE("interpolate3 floats") {
 	CHECK(MathTools::interpolate3(500, 600, 0.f) == 500);
 	CHECK(MathTools::interpolate3(500, 600, 0.50) == 550);
 	CHECK(MathTools::interpolate3(500, 600, 1.00) == 600);
-	SUBCASE("negative phase continues linearly") { CHECK(MathTools::interpolate3(500, 600, -1.f) == 400); }
+	SUBCASE("negative phase continues linearly") {
+		CHECK(MathTools::interpolate3(500, 600, -1.f) == 400);
+	}
 }
 
 TEST_CASE("array_adj_diff") {
@@ -445,4 +453,80 @@ TEST_CASE("array_adj_diff") {
 	CHECK(d[1] == 5);
 	CHECK(d[2] == 20);
 	CHECK(d.size() == 3);
+}
+
+TEST_CASE("is_finite_fastmath") {
+	union F {
+		float f;
+		uint32_t x;
+	};
+
+	[[maybe_unused]] auto check_print = [](F a) {
+		// float f = a.f;
+		// printf("%g", a.f);
+		// printf("\tfin? %s", MathTools::is_finite_fastmath(f)? "Y": "");
+		// printf("\tinf? %s", MathTools::is_inf_fastmath(f)? "Y": "");
+		// printf("\n");
+	};
+
+	F a;
+	a.x = 0xFFFFFFFE; //-nan
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.x = 0x7FFFFFFF; //nan
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = NAN; //nan
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 1.f / 0.f; //inf
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(MathTools::is_inf_fastmath(a.f));
+
+	a.x = 0x0; // finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 3; // finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 1e-36; // finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 1e-46; // finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 1e38; // finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = 1e48; //inf
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(MathTools::is_inf_fastmath(a.f));
+
+	a.f = 3; //finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = -1e-36; //finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = -1e-46; //finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = -1e38; //finite
+	CHECK(MathTools::is_finite_fastmath(a.f));
+	CHECK(!MathTools::is_inf_fastmath(a.f));
+
+	a.f = -1e48; //inf
+	CHECK(!MathTools::is_finite_fastmath(a.f));
+	CHECK(MathTools::is_inf_fastmath(a.f));
 }
