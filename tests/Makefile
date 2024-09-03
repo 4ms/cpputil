@@ -19,7 +19,7 @@ CXXFLAGS = 	-Wall \
 			-Wextra \
 			-Wdeprecated-enum-float-conversion \
 			-Wenum-compare \
-		 	-std=c++23 \
+		 	-std=c++20 \
 			-I. \
 			-I.. \
 			-I../cpputil \
