@@ -25,7 +25,7 @@ inline bool contains_word(std::string const &name, std::string const &word) {
 		return true;
 
 	// "chan in 1", but not "chain 1" or "ch1 into ch2"
-	if (lname.contains(space_lword_space))
+	if (lname.find(space_lword_space) != std::string::npos)
 		return true;
 
 	return false;
