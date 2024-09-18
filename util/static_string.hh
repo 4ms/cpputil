@@ -1,7 +1,9 @@
 #pragma once
 #include <cstddef>
-#include <string>
 #include <string_view>
+#ifdef CPPUTIL_STATIC_STRING_USE_STD_STRING
+#include <string>
+#endif
 
 // A null-terminated string with fixed compile-time capacity
 template<size_t CAPACITY>
@@ -71,9 +73,17 @@ struct StaticString {
 		return _data;
 	}
 
+#ifdef CPPUTIL_STATIC_STRING_USE_STD_STRING
 	operator std::string() const {
 		return _data;
 	}
+	operator std::string() {
+		return _data;
+	}
+	constexpr StaticString(std::string s) {
+		copy(s.c_str());
+	}
+#endif
 
 	operator std::string_view() const {
 		return _data;
