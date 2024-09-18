@@ -35,12 +35,19 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 0);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 0);
-		// try {
-		// 	auto vers = VersionUtil::parse_version("garbage");
-		// 	(void)vers;
-		// 	CHECK(false);
-		// } catch (std::exception) {
-		// 	CHECK(true);
-		// }
+	}
+
+	{
+		auto vers = VersionUtil::parse_version("678.BAD.123");
+		CHECK(vers.major == 678);
+		CHECK(vers.minor == 0);
+		CHECK(vers.revision == 123);
+	}
+
+	{
+		auto vers = VersionUtil::parse_version("777.-22.333");
+		CHECK(vers.major == 777);
+		CHECK(vers.minor == 0);
+		CHECK(vers.revision == 333);
 	}
 }
