@@ -462,6 +462,7 @@ TEST_CASE("is_finite_fastmath") {
 	};
 
 	[[maybe_unused]] auto check_print = [](F a) {
+		(void)a;
 		// float f = a.f;
 		// printf("%g", a.f);
 		// printf("\tfin? %s", MathTools::is_finite_fastmath(f)? "Y": "");

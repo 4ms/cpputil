@@ -1,14 +1,14 @@
 #pragma once
-#include <ranges>
+#include <cstdlib>
 #include <string_view>
 
 namespace VersionUtil
 {
 
 struct Version {
-	unsigned major;
-	unsigned minor;
-	unsigned revision;
+	uint8_t major{};
+	uint8_t minor{};
+	uint8_t revision{};
 
 	void set_field(unsigned index, unsigned val) {
 		//sanity check:
@@ -22,55 +22,56 @@ struct Version {
 		if (index == 2)
 			revision = val;
 	}
-};
 
-#if !defined(__cpp_lib_ranges) || (__cpp_lib_ranges < 202211L)
+	Version() = default;
 
-Version parse_version(std::string_view vers) {
-	Version version{};
-	const std::string_view delim = ".";
+	Version(uint8_t maj, uint8_t min, uint8_t rev)
+		: major{maj}
+		, minor{min}
+		, revision{rev} {
+	}
 
-	unsigned i = 0;
-	while (true) {
-		auto token = vers;
-		const auto pos = vers.find_first_of(delim);
-		if (pos != std::string_view::npos) {
-			token = vers.substr(0, pos);
-			vers = vers.substr(pos + 1);
+	Version(std::string_view vers) {
+		const std::string_view delim = ".";
+
+		unsigned i = 0;
+		while (true) {
+			auto token = vers;
+			const auto pos = vers.find_first_of(delim);
+			if (pos != std::string_view::npos) {
+				token = vers.substr(0, pos);
+				vers = vers.substr(pos + 1);
+			}
+
+			auto num = strtol(token.data(), nullptr, 10);
+			set_field(i++, num);
+
+			if (pos == std::string_view::npos)
+				break;
 		}
-
-		auto num = strtol(token.data(), nullptr, 10);
-		version.set_field(i++, num);
-
-		if (pos == std::string_view::npos)
-			break;
 	}
-	return version;
-}
 
-#else
-
-auto split(std::string_view str, std::string_view delim) {
-	auto tokens = str | std::ranges::views::split(delim) | std::ranges::views::transform([](auto &&str) {
-		return std::string_view(&*str.begin(), std::ranges::distance(str));
-	});
-	return tokens;
-}
-
-Version parse_version(std::string_view vers) {
-	auto tokens = split(vers, ".");
-	Version version{};
-
-	for (unsigned i = 0; auto &&token : tokens) {
-		auto num = strtoul(token.data(), nullptr, 10);
-
-		version.set_field(i, num);
-
-		if (++i >= 3)
-			break;
+	// A Host is compatible with a plugin that has the same major and less-than-or-equal minor.
+	bool can_host_version(Version other) const {
+		return major == other.major && minor >= other.minor;
 	}
-	return version;
-}
-#endif
+
+	auto operator<=>(Version const &other) const {
+		if (major == other.major && minor == other.minor && revision == other.revision)
+			return std::strong_ordering::equal;
+
+		if ((major < other.major) || (major == other.major && minor < other.minor) ||
+			(major == other.major && minor == other.minor && revision < other.revision))
+			return std::strong_ordering::less;
+
+		return std::strong_ordering::greater;
+	}
+
+	bool operator==(Version const &other) const = default;
+
+	bool is_later(Version const &other) const {
+		return *this > other;
+	}
+};
 
 } // namespace VersionUtil
