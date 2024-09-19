@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdlib>
+#include <cstdint>
 #include <string_view>
 
 namespace VersionUtil
