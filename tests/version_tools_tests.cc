@@ -50,6 +50,12 @@ TEST_CASE("parse") {
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 33);
 	}
+	{
+		auto vers = VersionUtil::Version("1.2.3-dev");
+		CHECK(vers.major == 1);
+		CHECK(vers.minor == 2);
+		CHECK(vers.revision == 3);
+	}
 }
 
 TEST_CASE("operator==") {
