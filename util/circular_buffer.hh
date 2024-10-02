@@ -109,6 +109,12 @@ public:
 		return tail_;
 	}
 
+	T peek(size_t idx) const {
+		idx += tail_;
+		idx &= SIZE_MASK;
+		return buf_[idx];
+	}
+
 private:
 	void inc_head() {
 		head_ = (head_ + 1) & SIZE_MASK;
