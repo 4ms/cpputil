@@ -19,6 +19,12 @@ struct RGB565 {
 		, b(std::clamp<uint16_t>(blue * 32.f, 0, 31)) {
 	}
 
+	constexpr RGB565(uint32_t raw)
+		: r((raw & 0xf80000) >> 19)
+		, g((raw & 0x00fc00) >> 10)
+		, b((raw & 0x0000f8) >> 3) {
+	}
+
 	constexpr uint16_t raw() const {
 		return (r << 11) | (g << 5) | b;
 	}
@@ -70,3 +76,5 @@ static_assert(RGB565{(uint8_t)0xFF, 0xFF, 0x55}.blue() == (0x55 & 0xF8));
 static_assert(RGB565{(uint8_t)0xFF, 0xFF, 0xFF}.raw() == 0xFFFF);
 static_assert(RGB565{(uint8_t)0x80, 0x80, 0x80}.raw() == 0x8410);
 static_assert(RGB565{(uint8_t)0x00, 0x00, 0x00}.raw() == 0x0000);
+
+static_assert(RGB565(0xFFAA22) == RGB565((uint8_t)0xFF, 0xAA, 0x22));
