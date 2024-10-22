@@ -122,6 +122,12 @@ struct ResizingOversampler {
 		return val_;
 	}
 
+	void reset() {
+		buff_ = 0;
+		val_ = 0;
+		idx_ = 0;
+	}
+
 	ResizingOversampler &operator=(ResizingOversampler const &that) {
 		buff_ = that.buff_;
 		val_ = that.val_;
@@ -133,7 +139,7 @@ struct ResizingOversampler {
 private:
 	float buff_ = 0;
 	float val_ = 0;
-	unsigned int idx_ = 0;
+	unsigned idx_ = 0;
 	unsigned size_ = 1;
 };
 
