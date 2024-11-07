@@ -10,7 +10,7 @@ struct CircularBufferBlock {
 	static_assert(MathTools::is_power_of_2(SIZE));
 	static constexpr unsigned SIZEMASK = (SIZE - 1);
 
-	std::array<T, SIZE> data;
+	std::array<T, SIZE> data{};
 
 	void write(std::span<const T> block, unsigned start_pos) {
 		unsigned offset = start_pos & SIZEMASK;
