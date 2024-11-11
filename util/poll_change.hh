@@ -46,7 +46,7 @@ public:
 	}
 
 private:
-	bool current_state;
+	bool current_state = false;
 	bool change_detected = false;
 	int last_update_time = 0;
 	int update_ticks;
