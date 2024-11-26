@@ -54,6 +54,10 @@ struct InterpParamVariable {
 		this->num_updates = num_updates;
 	}
 
+	unsigned get_num_updates() {
+		return num_updates;
+	}
+
 	T cur_val;
 
 private:
