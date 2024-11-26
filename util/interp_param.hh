@@ -32,11 +32,13 @@ template<typename T>
 struct InterpParamVariable {
 	InterpParamVariable(unsigned num_updates = 256)
 		: cur_val{0}
+		, target_val{0}
 		, step_size{0}
 		, num_updates{num_updates} {
 	}
 
 	void set_new_value(T new_val) {
+		target_val = new_val;
 		T d = new_val - cur_val;
 		step_size = d / T(num_updates);
 	}
@@ -59,6 +61,7 @@ struct InterpParamVariable {
 	}
 
 	T cur_val;
+	T target_val;
 
 private:
 	T step_size;
