@@ -69,6 +69,20 @@ public:
 		return item;
 	}
 
+	bool get_move(T &t) {
+		auto tmp_tail = tail_.load(std::memory_order_relaxed);
+
+		if (tmp_tail == head_.load(std::memory_order_relaxed)) {
+			return false;
+		}
+
+		t = std::move(buf_[tmp_tail & SIZE_MASK]);
+		tmp_tail++;
+		std::atomic_signal_fence(std::memory_order_release);
+		tail_.store(tmp_tail, std::memory_order_release);
+		return true;
+	}
+
 	T get_or_default() {
 		return get().value_or(T{});
 	}
