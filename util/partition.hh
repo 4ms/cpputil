@@ -15,9 +15,10 @@ struct Partition {
 		calc_partitions(vals);
 	}
 
-	void calc_partitions(std::span<T> vals) {
-		for (auto &part : parts)
+	void calc_partitions(std::span<T> vals, std::span<const T> initial_vals = {}) {
+		for (auto &part : parts) {
 			part.clear();
+		}
 
 		struct IdVal {
 			T val;
@@ -32,6 +33,10 @@ struct Partition {
 		std::ranges::sort(ordered, std::greater{}, &IdVal::val);
 
 		std::array<T, NumPartitions> sums{};
+
+		for (auto i = 0u; auto init_val : initial_vals) {
+			sums[i++] = init_val;
+		}
 
 		// The part with the smallest sum gets the next element
 		for (auto [val, i] : ordered) {
