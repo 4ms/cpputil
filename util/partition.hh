@@ -12,10 +12,10 @@ struct Partition {
 	Partition() = default;
 
 	Partition(std::span<T> vals) {
-		calculate(vals);
+		calc_partitions(vals);
 	}
 
-	void calculate(std::span<T> vals) {
+	void calc_partitions(std::span<T> vals) {
 		for (auto &part : parts)
 			part.clear();
 

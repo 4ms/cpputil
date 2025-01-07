@@ -7,7 +7,7 @@ TEST_CASE("Basic usage") {
 	Partition<2, 8> parts;
 
 	auto nums = std::array{1u, 9u, 3u, 5u, 2u, 10u};
-	parts.calculate(nums);
+	parts.calc_partitions(nums);
 
 	CHECK(parts.parts[0].size() == 3);
 	CHECK(nums[parts.parts[0][0]] == 10);
