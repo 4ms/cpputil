@@ -2,15 +2,25 @@
 #include "util/fixed_vector.hh"
 #include <span>
 
-template<unsigned MaxElements>
-struct PartitionTwo {
+// Splits a list of elements into N groups, the sum of each group being roughly equal.
+// The **indices** of the original elements are stored resulting `parts`
+template<unsigned NumPartitions, unsigned MaxElements, typename T = unsigned>
+struct Partition {
+	// parts[N] contains the indices of the elements whose sums are roughly equal to other parts[]
+	std::array<FixedVector<unsigned, MaxElements>, NumPartitions> parts{};
 
-	FixedVector<unsigned, MaxElements> a{};
-	FixedVector<unsigned, MaxElements> b{};
+	Partition() = default;
 
-	PartitionTwo(std::span<unsigned> vals) {
+	Partition(std::span<T> vals) {
+		calculate(vals);
+	}
+
+	void calculate(std::span<T> vals) {
+		for (auto &part : parts)
+			part.clear();
+
 		struct IdVal {
-			unsigned val;
+			T val;
 			unsigned id;
 		};
 
@@ -21,18 +31,14 @@ struct PartitionTwo {
 
 		std::ranges::sort(ordered, std::greater{}, &IdVal::val);
 
-		unsigned a_sum = 0;
-		unsigned b_sum = 0;
+		std::array<T, NumPartitions> sums{};
 
-		// The part with the smaller sum gets the next element
+		// The part with the smallest sum gets the next element
 		for (auto [val, i] : ordered) {
-			if (a_sum <= b_sum) {
-				a_sum += val;
-				a.push_back(i);
-			} else {
-				b_sum += val;
-				b.push_back(i);
-			}
+			auto min_sum = std::ranges::min_element(sums);
+			auto idx = std::ranges::distance(sums.begin(), min_sum);
+			*min_sum += val;
+			parts[idx].push_back(i);
 		}
 	}
 };
