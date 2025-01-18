@@ -12,6 +12,10 @@ public:
 		change_detected = true;
 	}
 
+	void force_next_poll() {
+		last_update_time = 0;
+	}
+
 	void poll(unsigned now, bool state) {
 		if (now - last_update_time >= update_ticks) {
 			last_update_time = now;
