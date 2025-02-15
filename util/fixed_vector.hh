@@ -50,6 +50,10 @@ public:
 		return MaxElements;
 	}
 
+	size_t available() {
+		return max_size() - size();
+	}
+
 	void clear() {
 		back_idx = 0;
 	}
