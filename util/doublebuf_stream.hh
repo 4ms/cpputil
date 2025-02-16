@@ -25,9 +25,9 @@
 
 // #define DEBUG_DBLBUFSTREAM 1
 #if DEBUG_DBLBUFSTREAM
-#define pr_dbg printf
+#define dbs_pr_err printf
 #else
-#define pr_dbg(...)
+#define dbs_pr_err(...)
 #endif
 
 template<typename T, size_t Size>
@@ -51,16 +51,16 @@ struct DoubleBufferStream {
 			for (auto d : word)
 				inactive_buf.push_back(d);
 
-			pr_dbg("DBS::transmit: queued tx data in buffer %u\n", inactive_idx);
+			// pr_dbg("DBS::transmit: queued tx data in buffer %u\n", inactive_idx);
 
 			// Start a new transmission if one isn't in progress
 			if (!in_progress_idx.has_value()) {
-				pr_dbg("DBS::transmit: not tx in progress, so starting new tx\n");
+				// pr_dbg("DBS::transmit(): no tx in progress, so starting now\n");
 				return start_tx(inactive_idx);
 			}
 
 			// tx_done_callback() will transmit our data when it's called
-			pr_dbg("DBS::transmit: tx is progress, so not starting new tx\n");
+			// pr_dbg("DBS::transmit(): tx is progress, so not starting new tx\n");
 			return true;
 		} else {
 			return false;
@@ -69,19 +69,19 @@ struct DoubleBufferStream {
 
 	void tx_done_callback() {
 		if (!in_progress_idx.has_value()) {
-			pr_dbg("MIDI Host internal error: tx_done_callback called but no buffer is in progress\n");
+			dbs_pr_err("MIDI Host internal error: tx_done_callback called but no buffer is in progress\n");
 			return;
 		}
 
 		tx_buffer[in_progress_idx.value()].clear();
 
-		pr_dbg("DBS::tx_done_callback: finished tx of buffer[%u]\n", in_progress_idx.value());
+		// pr_dbg("DBS::tx_done_callback(): finished tx of buffer[%u]\n", in_progress_idx.value());
 
 		// Check if we should start transmitting the other buffer
 		auto other_buffer = 1 - in_progress_idx.value();
 
 		if (tx_buffer[other_buffer].size()) {
-			pr_dbg("DBS: tx_done_callback starting tx for %u\n", other_buffer);
+			// pr_dbg("DBS: tx_done_callback(): starting tx for buffer[%u]\n", other_buffer);
 			start_tx(other_buffer);
 		} else {
 			in_progress_idx = std::nullopt;
@@ -91,7 +91,7 @@ struct DoubleBufferStream {
 private:
 	bool start_tx(unsigned idx) {
 		in_progress_idx = idx;
-		pr_dbg("DBS::start_tx: starting tx of buffer[%u]\n", idx);
+		// pr_dbg("DBS::start_tx(): starting tx of buffer[%u]\n", idx);
 		auto &active_buf = tx_buffer[idx];
 		auto res = transmit_func({active_buf.begin(), active_buf.size()});
 		return res;
