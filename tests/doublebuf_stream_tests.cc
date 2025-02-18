@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "doctest.h"
 #include "util/doublebuf_stream.hh"
 
