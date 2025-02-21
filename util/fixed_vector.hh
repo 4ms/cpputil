@@ -34,6 +34,17 @@ public:
 		return true;
 	}
 
+	// returns MaxElements for failure
+	size_t push_back_for_overwrite() {
+		if (back_idx >= MaxElements)
+			return MaxElements;
+
+		auto idx = back_idx;
+
+		back_idx++;
+		return idx;
+	}
+
 	T pop_back() {
 		if (back_idx == 0)
 			return T{};
