@@ -7,6 +7,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 1);
 		CHECK(vers.minor == 2);
 		CHECK(vers.revision == 16);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -14,6 +15,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 9);
 		CHECK(vers.minor == 1);
 		CHECK(vers.revision == 0);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -21,6 +23,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 2);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 99);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -28,6 +31,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 209);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 0);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -35,6 +39,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 0);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 0);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -42,6 +47,7 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 67);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 123);
+		CHECK(vers.is_normal);
 	}
 
 	{
@@ -49,12 +55,22 @@ TEST_CASE("parse") {
 		CHECK(vers.major == 77);
 		CHECK(vers.minor == 0);
 		CHECK(vers.revision == 33);
+		CHECK(vers.is_normal);
 	}
 	{
 		auto vers = VersionUtil::Version("1.2.3-dev");
 		CHECK(vers.major == 1);
 		CHECK(vers.minor == 2);
 		CHECK(vers.revision == 3);
+		CHECK_FALSE(vers.is_normal);
+	}
+	{
+		auto vers = VersionUtil::Version("1.2.3");
+		CHECK(vers.is_normal);
+	}
+	{
+		auto vers = VersionUtil::Version("1.2.3-");
+		CHECK_FALSE(vers.is_normal);
 	}
 }
 
