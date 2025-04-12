@@ -4,8 +4,8 @@
 
 template<bool invert = false>
 class QuadratureEncoder {
-	static constexpr uint8_t valid_ccw = 0b10000111 ^ invert ? 0xff : 0x00;
-	static constexpr uint8_t valid_cw = 0b01001011 ^ invert ? 0xff : 0x00;
+	static constexpr uint8_t valid_ccw = 0b10000111 ^ (invert ? 0xff : 0x00);
+	static constexpr uint8_t valid_cw = 0b01001011 ^ (invert ? 0xff : 0x00);
 
 	uint8_t prev_state{};
 
