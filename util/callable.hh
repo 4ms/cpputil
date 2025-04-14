@@ -13,103 +13,38 @@
 // (which shouldn't happen, since the point of this is to avoid the heap,
 // but it could...)
 
-template<unsigned BUFFER_SIZE = 2 * sizeof(void *)>
-class CallbackSized {
-private:
-	// static constexpr unsigned BUFFER_SIZE = 2 * sizeof(void *);
-
-public:
-	CallbackSized() = default;
-
-	template<typename Callable>
-	CallbackSized(Callable callable) {
-		static_assert(sizeof(Callable) <= BUFFER_SIZE);
-		static_assert(std::is_invocable_v<Callable>);
-
-		new (&m_data[0]) Callable(callable);
-		m_callback = invoke<Callable>;
-		m_destroy = destroy<Callable>;
-	}
-
-	~CallbackSized() {
-		if (m_destroy)
-			m_destroy(&m_data[0]);
-	}
-
-	void call() {
-		// if (m_callback)
-		m_callback(&m_data[0]);
-		return;
-	}
-
-	void operator()() {
-		call();
-	}
-
-	operator bool() {
-		return m_callback;
-	}
-
-private:
-	template<typename Callable>
-	static void invoke(void *object) {
-		Callable &callable = *reinterpret_cast<Callable *>(object);
-		callable();
-	}
-
-	template<typename Callable>
-	static void destroy(void *object) {
-		Callable &callable = *reinterpret_cast<Callable *>(object);
-		callable.~Callable();
-	}
-
-private:
-	using CallbackM = void (*)(void *);
-	CallbackM m_callback{};
-
-	using Deleter = void (*)(void *);
-	Deleter m_destroy{};
-
-	alignas(uint64_t) uint8_t m_data[BUFFER_SIZE];
-};
-
-using Callback = CallbackSized<2 * sizeof(void *)>;
-
 // Function<T> is a callback that takes parameters and returns something
-template<typename Signature>
-struct Function {};
+template<unsigned buffer_size, typename Signature>
+struct FunctionSized {};
 
-template<typename Ret, typename... Args>
-class Function<Ret(Args...)> {
-private:
-	static constexpr uint8_t BUFFER_SIZE = 2 * sizeof(void *);
-
+template<unsigned buffer_size, typename Ret, typename... Args>
+class FunctionSized<buffer_size, Ret(Args...)> {
 public:
-	Function() = default;
+	FunctionSized() = default;
 
 	template<typename Callable>
-	Function(Callable callable) {
-		static_assert(sizeof(Callable) <= BUFFER_SIZE);
-		static_assert(std::is_invocable_v<Callable, Args...>);
-
+	requires(sizeof(Callable) <= buffer_size && std::is_invocable_v<Callable, Args...>)
+	FunctionSized(Callable callable)
+		: m_callback{invoke<Callable>}
+		, m_destroy{destroy<Callable>} {
 		new (&m_data[0]) Callable(callable);
-		m_callback = invoke<Callable>;
-		m_destroy = destroy<Callable>;
 	}
 
-	~Function() {
+	~FunctionSized() {
 		if (m_destroy)
 			m_destroy(&m_data[0]);
 	}
 
 	Ret call(Args... args) {
-		if (m_callback)
-			return m_callback(&m_data[0], std::forward<Args>(args)...);
-		return Ret();
+		return m_callback(&m_data[0], std::forward<Args>(args)...);
 	}
 
 	Ret operator()(Args... args) {
 		return call(std::forward<Args>(args)...);
+	}
+
+	operator bool() const {
+		return m_callback;
 	}
 
 private:
@@ -132,5 +67,13 @@ private:
 	using Deleter = void (*)(void *);
 	Deleter m_destroy{};
 
-	alignas(uint64_t) uint8_t m_data[BUFFER_SIZE];
+	alignas(uint64_t) uint8_t m_data[buffer_size];
 };
+
+template<typename Signature>
+using Function = FunctionSized<sizeof(void *) * 2, Signature>;
+
+template<unsigned size = sizeof(void *) * 2>
+using CallbackSized = FunctionSized<size, void(void)>;
+
+using Callback = CallbackSized<2 * sizeof(void *)>;
