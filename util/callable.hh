@@ -104,19 +104,19 @@ public:
 
 	Ret call(Args... args) {
 		if (m_callback)
-			return m_callback(&m_data[0], std::forward<Args...>(args)...);
+			return m_callback(&m_data[0], std::forward<Args>(args)...);
 		return Ret();
 	}
 
 	Ret operator()(Args... args) {
-		return call(std::forward<Args...>(args)...);
+		return call(std::forward<Args>(args)...);
 	}
 
 private:
 	template<typename Callable>
 	static Ret invoke(void *object, Args... args) {
 		Callable &callable = *reinterpret_cast<Callable *>(object);
-		callable(std::forward<Args...>(args)...);
+		return callable(std::forward<Args>(args)...);
 	}
 
 	template<typename Callable>
