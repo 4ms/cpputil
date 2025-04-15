@@ -103,3 +103,36 @@ TEST_CASE("CallableSized") {
 	func();
 	CHECK(capture3 == 20);
 }
+
+TEST_CASE("~Callable") {
+	auto capture{0};
+
+	Callback *func = new Callback{[&capture] {
+		capture += 10;
+		return capture;
+	}};
+
+	(*func)();
+	CHECK(capture == 10);
+	(*func)();
+	CHECK(capture == 20);
+
+	delete func;
+
+	Callback *empty = new Callback();
+	delete empty;
+}
+
+TEST_CASE("operator bool") {
+	auto capture{0};
+
+	Callback func;
+	CHECK_FALSE((bool)func);
+
+	func = Callback{[&capture] {
+		capture += 10;
+		return capture;
+	}};
+
+	CHECK((bool)func);
+}
