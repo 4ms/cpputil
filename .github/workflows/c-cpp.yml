@@ -25,6 +25,11 @@ jobs:
             cxx: clang++-18
           - os: ubuntu-22.04
             cxx: clang++-19
+          - os: ubuntu-22.04
+            cxx: g++-13
+          - os: ubuntu-22.04
+            cxx: g++-14
+
           - os: ubuntu-24.04
             cxx: clang++-15
           - os: ubuntu-24.04
