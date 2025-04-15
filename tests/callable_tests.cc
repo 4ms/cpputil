@@ -48,3 +48,58 @@ TEST_CASE("Callable Function lots of params") {
 	CHECK(func(10, 10.f, 'a', {}, {2, 'a', 1.2f, 1.4}) == 137);
 	CHECK(capture == 20);
 }
+
+TEST_CASE("FunctionSized") {
+	// This fails to compile (which is what we want)
+	// auto capture{0};
+	// auto capture2{0};
+	// auto capture3{0};
+	// auto func = Function<int(int, int)>{[&](int a, int b) {
+	// 	capture += 10;
+	// 	capture2 += 10;
+	// 	capture3 += 10;
+	// 	return a + b + capture;
+	// }};
+
+	auto capture{0};
+	auto capture2{0};
+	auto capture3{0};
+	auto func = FunctionSized<sizeof(void *) * 3, int(int, int)>{[&](int a, int b) {
+		capture += 10;
+		capture2 += 10;
+		capture3 += 10;
+		return a + b + capture;
+	}};
+}
+
+TEST_CASE("Callable") {
+	auto capture{0};
+
+	auto func = Callback{[&capture] {
+		capture += 10;
+		return capture;
+	}};
+
+	func();
+	CHECK(capture == 10);
+	func();
+	CHECK(capture == 20);
+}
+
+TEST_CASE("CallableSized") {
+	auto capture{0};
+	auto capture2{0};
+	auto capture3{0};
+
+	auto func = CallbackSized<sizeof(void *) * 3>{[&] {
+		capture += 10;
+		capture2 += 10;
+		capture3 += 10;
+		return capture;
+	}};
+
+	func();
+	CHECK(capture3 == 10);
+	func();
+	CHECK(capture3 == 20);
+}
