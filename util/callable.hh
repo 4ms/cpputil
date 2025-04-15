@@ -51,7 +51,10 @@ private:
 	template<typename Callable>
 	static Ret invoke(void *object, Args... args) {
 		Callable &callable = *reinterpret_cast<Callable *>(object);
-		return callable(std::forward<Args>(args)...);
+		if constexpr (std::is_same_v<void, Ret>)
+			callable(std::forward<Args>(args)...);
+		else
+			return callable(std::forward<Args>(args)...);
 	}
 
 	template<typename Callable>
