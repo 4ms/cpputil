@@ -10,19 +10,24 @@ class QuadratureEncoder {
 	uint8_t prev_state{};
 
 public:
-	enum class State { Undefined, Right, Left };
+	enum Direction { None = 0, CW = 1, CCW = -1 };
 
-	State update(bool state_a, bool state_b) {
+	Direction get_motion(bool state_a, bool state_b) {
 		const auto cur_state = state_a | (state_b << 1u);
+
+		if ((prev_state & 0b11) == cur_state)
+			return None;
+
 		prev_state <<= 2;
 		prev_state |= cur_state;
+
 		switch (prev_state) {
 			case valid_cw:
-				return State::Right;
+				return CW;
 			case valid_ccw:
-				return State::Left;
+				return CCW;
 			default:
-				return State::Undefined;
+				return None;
 		}
 	}
 };
