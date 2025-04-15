@@ -18,9 +18,17 @@ jobs:
             cxx: clang++
         exclude:
           - os: ubuntu-22.04
-            cxx: [clang++-17, clang++-18, clang++-19]
+            cxx: clang++-16
+          - os: ubuntu-22.04
+            cxx: clang++-17
+          - os: ubuntu-22.04
+            cxx: clang++-18
+          - os: ubuntu-22.04
+            cxx: clang++-19
           - os: ubuntu-24.04
-            cxx: [clang++-15, g++-11]
+            cxx: clang++-15
+          - os: ubuntu-24.04
+            cxx: g++-11
 
     runs-on: ${{ matrix.os }}
 
