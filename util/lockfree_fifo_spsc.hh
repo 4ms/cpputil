@@ -103,6 +103,10 @@ public:
 		return num_filled() == 0;
 	}
 
+	void set_read_pos(size_t pos) {
+		tail_.store(pos, std::memory_order_relaxed);
+	}
+
 	// Reset can be done by consumer or producer
 	void reset() {
 		tail_.store(head_.load(std::memory_order_relaxed), std::memory_order_relaxed);
@@ -116,6 +120,5 @@ public:
 private:
 	std::atomic<size_t> head_ = 0;
 	std::atomic<size_t> tail_ = 0;
-	std::atomic<bool> full_ = 0;
 	std::array<T, max_size_> buf_{};
 };
