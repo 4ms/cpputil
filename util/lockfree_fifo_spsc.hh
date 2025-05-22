@@ -48,6 +48,14 @@ public:
 		return max_size_ - (head_.load(std::memory_order_relaxed) - tail_.load(std::memory_order_acquire));
 	}
 
+	// Not safe, but useful for debugging:
+	// size_t head() const {
+	// 	return head_ & SIZE_MASK;
+	// }
+	// size_t tail() const {
+	// 	return tail_ & SIZE_MASK;
+	// }
+
 	bool full() const {
 		return num_free() == 0;
 	}

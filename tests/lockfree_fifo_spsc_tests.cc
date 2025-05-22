@@ -132,3 +132,39 @@ TEST_CASE("Construct with offset") {
 	a.put(6);
 	CHECK(a.get().value() == 4);
 }
+
+TEST_CASE("num_free") {
+	LockFreeFifoSpsc<int, 4> a;
+
+	CHECK(a.num_free() == 4);
+	a.put(1);
+	CHECK(a.num_free() == 3);
+	a.put(2);
+	CHECK(a.num_free() == 2);
+	a.put(3);
+	CHECK(a.num_free() == 1);
+	a.put(4);
+	CHECK(a.num_free() == 0);
+	CHECK(a.put(5) == false);
+	CHECK(a.num_free() == 0);
+
+	a.get();
+	CHECK(a.num_free() == 1);
+	a.put(6);
+	CHECK(a.num_free() == 0);
+	a.get();
+	CHECK(a.num_free() == 1);
+	a.get();
+	CHECK(a.num_free() == 2);
+	a.get();
+	CHECK(a.num_free() == 3);
+	a.get();
+	CHECK(a.num_free() == 4);
+	a.get();
+	CHECK(a.num_free() == 4);
+
+	a.put(7);
+	CHECK(a.num_free() == 3);
+	a.put(8);
+	CHECK(a.num_free() == 2);
+}
