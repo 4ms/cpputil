@@ -104,7 +104,11 @@ public:
 	}
 
 	void set_read_pos(size_t pos) {
-		tail_.store(pos, std::memory_order_relaxed);
+		tail_.store(pos, std::memory_order_release);
+	}
+
+	void set_write_pos(size_t pos) {
+		head_.store(pos, std::memory_order_release);
 	}
 
 	// Reset can be done by consumer or producer
