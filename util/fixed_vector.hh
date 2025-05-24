@@ -34,6 +34,20 @@ public:
 		return true;
 	}
 
+	// Resizes
+	bool resize(size_t num, T el = T{}) {
+		const auto new_back_idx = std::min(num, MaxElements);
+
+		if (new_back_idx > back_idx) {
+			for (auto i = back_idx; i < new_back_idx; i++) {
+				data[i] = el;
+			}
+		}
+
+		back_idx = new_back_idx;
+		return (num == new_back_idx);
+	}
+
 	// returns MaxElements for failure
 	size_t push_back_for_overwrite() {
 		if (back_idx >= MaxElements)
