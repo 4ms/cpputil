@@ -3,6 +3,7 @@
 #include <array>
 #include <cstddef>
 #include <iterator>
+#include <span>
 
 template<typename T, size_t MaxElements>
 class FixedVector {
@@ -46,6 +47,11 @@ public:
 
 		back_idx = new_back_idx;
 		return (num == new_back_idx);
+	}
+
+	bool resize_for_overwrite(size_t num) {
+		back_idx = std::min(num, MaxElements);
+		return (num == back_idx);
 	}
 
 	// returns MaxElements for failure
@@ -137,5 +143,13 @@ public:
 
 	auto end() {
 		return begin() + back_idx;
+	}
+
+	auto span() {
+		return std::span{begin(), back_idx};
+	}
+
+	auto span() const {
+		return std::span{begin(), back_idx};
 	}
 };
