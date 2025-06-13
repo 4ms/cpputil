@@ -7,7 +7,7 @@ class SequentialMap {
 public:
 	struct PairT {
 		KeyT key;
-		ValT element;
+		ValT second;
 	};
 
 	using DataT = FixedVector<PairT, N>;
@@ -16,7 +16,7 @@ public:
 	const ValT &operator[](const KeyT key) const {
 		for (auto &pair : data) {
 			if (pair.key == key)
-				return pair.element;
+				return pair.second;
 		}
 		return ValT{};
 	}
@@ -24,7 +24,7 @@ public:
 	ValT &operator[](const KeyT key) {
 		for (auto &pair : data) {
 			if (pair.key == key)
-				return pair.element;
+				return pair.second;
 		}
 
 		auto newsize = data.push_back_for_overwrite();
@@ -32,7 +32,7 @@ public:
 			// Overflow: silently return last element
 			newsize--;
 		}
-		return data[newsize].element;
+		return data[newsize].second;
 	}
 
 	void clear() {
@@ -43,7 +43,15 @@ public:
 		return data.size() == data.max_size();
 	}
 
-	bool exists(const KeyT key) {
+	auto find(KeyT key) {
+		for (auto it = data.begin(); it < data.end(); it++) {
+			if (it->key == key)
+				return it;
+		}
+		return data.end();
+	}
+
+	bool exists(const KeyT key) const {
 		for (auto &pair : data) {
 			if (pair.key == key)
 				return true;
