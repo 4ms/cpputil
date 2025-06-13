@@ -1,17 +1,16 @@
 #pragma once
-#include <array>
+#include "util/fixed_vector.hh"
 #include <type_traits>
 
 template<typename KeyT, typename ValT, size_t N>
 class SequentialMap {
 public:
-	//SequentialMap() {}
 	struct PairT {
 		KeyT key;
 		ValT element;
-		//const ValT& operator()() const { return element; }
 	};
-	using DataT = std::array<PairT, N>;
+
+	using DataT = FixedVector<PairT, N>;
 	DataT data;
 
 	const ValT &operator[](const KeyT key) const {
@@ -19,22 +18,50 @@ public:
 			if (pair.key == key)
 				return pair.element;
 		}
-		return data[0].element;
+		return ValT{};
 	}
+
 	ValT &operator[](const KeyT key) {
 		for (auto &pair : data) {
 			if (pair.key == key)
 				return pair.element;
 		}
-		return data[0].element;
+
+		auto newsize = data.push_back_for_overwrite();
+		if (newsize == data.max_size()) {
+			// Overflow: silently return last element
+			newsize--;
+		}
+		return data[newsize].element;
 	}
 
-	//const DataT& operator()() const { return data; }
-	using const_seqmap_iterator = typename DataT::const_iterator;
-	const const_seqmap_iterator begin() const {
+	void clear() {
+		data.clear();
+	}
+
+	bool is_full() const {
+		return data.size() == data.max_size();
+	}
+
+	bool exists(const KeyT key) {
+		for (auto &pair : data) {
+			if (pair.key == key)
+				return true;
+		}
+		return false;
+	}
+
+	const auto begin() const {
 		return data.begin();
 	}
-	const const_seqmap_iterator end() const {
+	const auto end() const {
+		return data.end();
+	}
+
+	auto begin() {
+		return data.begin();
+	}
+	auto end() {
 		return data.end();
 	}
 };
