@@ -77,7 +77,7 @@ public:
 		return back_idx;
 	}
 
-	constexpr size_t max_size() {
+	constexpr size_t max_size() const {
 		return MaxElements;
 	}
 
@@ -128,6 +128,8 @@ public:
 
 		back_idx -= count;
 	}
+
+	using iterator = decltype(data)::iterator;
 
 	auto begin() const {
 		return data.begin();
