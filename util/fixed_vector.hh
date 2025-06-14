@@ -129,7 +129,7 @@ public:
 		back_idx -= count;
 	}
 
-	using iterator = decltype(data)::iterator;
+	using iterator = typename decltype(data)::iterator;
 
 	auto begin() const {
 		return data.begin();
