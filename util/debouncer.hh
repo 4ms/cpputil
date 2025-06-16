@@ -72,6 +72,10 @@ public:
 		got_rising_edge_ = false;
 	}
 
+	void process(bool newstate) {
+		register_state(newstate);
+	}
+
 	void register_state(bool newstate) {
 		if (newstate == is_high_)
 			return;

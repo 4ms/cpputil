@@ -48,6 +48,14 @@ public:
 		return max_size_ - (head_.load(std::memory_order_relaxed) - tail_.load(std::memory_order_acquire));
 	}
 
+	// Not safe, but useful for debugging:
+	// size_t head() const {
+	// 	return head_ & SIZE_MASK;
+	// }
+	// size_t tail() const {
+	// 	return tail_ & SIZE_MASK;
+	// }
+
 	bool full() const {
 		return num_free() == 0;
 	}
@@ -103,6 +111,14 @@ public:
 		return num_filled() == 0;
 	}
 
+	void set_read_pos(size_t pos) {
+		tail_.store(pos, std::memory_order_release);
+	}
+
+	void set_write_pos(size_t pos) {
+		head_.store(pos, std::memory_order_release);
+	}
+
 	// Reset can be done by consumer or producer
 	void reset() {
 		tail_.store(head_.load(std::memory_order_relaxed), std::memory_order_relaxed);
@@ -116,6 +132,5 @@ public:
 private:
 	std::atomic<size_t> head_ = 0;
 	std::atomic<size_t> tail_ = 0;
-	std::atomic<bool> full_ = 0;
 	std::array<T, max_size_> buf_{};
 };
