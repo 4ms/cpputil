@@ -34,6 +34,10 @@ struct StaticString {
 		_data[i] = '\0';
 	}
 
+	constexpr void clear() {
+		_data[0] = '\0';
+	}
+
 	constexpr void copy(std::string_view s) {
 		size_t i = 0;
 		for (auto c : s) {
