@@ -115,6 +115,13 @@ public:
 		tail_.store(pos, std::memory_order_release);
 	}
 
+	// Sets read head `offset` samples before write head, if possible
+	void set_read_offset(size_t offset) {
+		auto head = head_.load(std::memory_order_acquire);
+		if (offset <= head)
+			tail_.store(head - offset, std::memory_order_release);
+	}
+
 	void set_write_pos(size_t pos) {
 		head_.store(pos, std::memory_order_release);
 	}
