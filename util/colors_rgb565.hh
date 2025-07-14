@@ -39,12 +39,12 @@ struct RGB565 {
 	}
 
 	//0..255
-	constexpr uint8_t green() {
+	constexpr uint8_t green() const {
 		return (raw() & 0x07e0) >> 3;
 	}
 
 	//0..255
-	constexpr uint8_t blue() {
+	constexpr uint8_t blue() const {
 		return (raw() & 0x001f) << 3;
 	}
 };
