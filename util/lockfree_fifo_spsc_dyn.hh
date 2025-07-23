@@ -37,14 +37,25 @@ public:
 		, buf_(max_size_) {
 	}
 
-	// Resets and resizes the vector. All contents are lost
-	// max_size must be a power of 2 or else the next highest power of 2 will be used
+	// Resets and resizes the vector. All contents are lost.
+	// max_size must be a power of 2 or else the next highest power of 2 will be used.
+	// If max_size does not change, do nothing.
 	// Edge-case: max_size cannot be more than half the largest integer representable by size_t
-	void resize(size_t max_size) {
-		reset();
-		max_size_ = MathTools::next_power_of_2(max_size);
-		SIZE_MASK = max_size_ - 1;
-		buf_.resize(max_size_);
+	void resize(size_t new_max_size) {
+		new_max_size = MathTools::next_power_of_2(new_max_size);
+		if (new_max_size != max_size_) {
+			reset();
+
+			if (new_max_size < max_size_) {
+				// Deallocate the buffer to force shrink to fit
+				std::vector<T>().swap(buf_);
+			}
+
+			buf_.resize(new_max_size);
+
+			max_size_ = new_max_size;
+			SIZE_MASK = max_size_ - 1;
+		}
 	}
 
 	//
