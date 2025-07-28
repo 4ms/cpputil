@@ -2,6 +2,7 @@
 #include "util/math_tables.hh"
 #include <algorithm>
 #include <array>
+#include <climits>
 #include <cstdint>
 #include <cstdlib>
 #include <numeric>
@@ -84,8 +85,6 @@ constexpr bool is_power_of_2(unsigned int v) {
 	return v && ((v & (v - 1)) == 0);
 }
 
-// Todo: log2_ceiling()
-
 constexpr unsigned int log2_floor(const unsigned int x) {
 	int i = 32;
 	while (i--) {
@@ -94,6 +93,45 @@ constexpr unsigned int log2_floor(const unsigned int x) {
 	}
 	return 0;
 }
+
+// Returns 0 if next power of 2 cannot be represented in the type T
+template<typename T>
+constexpr T next_power_of_2(T value) noexcept {
+	static_assert(std::is_integral<T>::value && !std::is_signed<T>::value,
+				  "next_power_of_2 only accepts unsigned integral types");
+
+	if (value == 0 || value == 1)
+		return 1;
+
+	if (is_power_of_2(value))
+		return value;
+
+	value |= value >> 1;
+	value |= value >> 2;
+	value |= value >> 4;
+	if constexpr (sizeof(T) > 1) {
+		value |= value >> 8;
+	}
+	if constexpr (sizeof(T) > 2) {
+		value |= value >> 16;
+	}
+	if constexpr (sizeof(T) > 4) {
+		value |= value >> 32;
+	}
+
+	return value + 1;
+}
+
+static_assert(next_power_of_2(0u) == 1); //2^0
+static_assert(next_power_of_2(1u) == 1); //2^0
+static_assert(next_power_of_2(2u) == 2); //2^1
+static_assert(next_power_of_2(3u) == 4); //2^2
+static_assert(next_power_of_2(123u) == 128);
+static_assert(next_power_of_2(511u) == 512);
+static_assert(next_power_of_2(512u) == 512);
+static_assert(next_power_of_2(513u) == 1024);
+static_assert(next_power_of_2(0x7FFFFFFFu) == 0x80000000u);
+static_assert(next_power_of_2(0x80000001u) == 0u); //overflow!
 
 constexpr unsigned int ipow(unsigned int a, unsigned int b) {
 	return b == 0 ? 1 : a * ipow(a, b - 1);

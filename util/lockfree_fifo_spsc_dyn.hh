@@ -1,30 +1,50 @@
 #pragma once
-#include "util/math.hh"
-#include <array>
 #include <atomic>
 #include <optional>
-#include <span>
+#include <vector>
 
 // Thread-safe Lock-free Single-Producer Single-Consumer
+// Allocates a vector on construction. Re-allocates (resizes) on resize()
 // For cheaply copied types
-// Will not overwrite
-template<class T, size_t max_size_>
-class LockFreeFifoSpsc {
+// Will not overwrite -- put() returns false if buffer is full, and get() returns nullopt if buffer is empty.
+// Provide the buffer size in the constructor.
+//
+// Edge-case: max_size cannot be more than half the largest integer representable by size_t
+template<class T>
+class LockFreeFifoSpscDyn {
 public:
-	static_assert(MathTools::is_power_of_2(max_size_), "Size must be a power of 2");
-	static constexpr size_t SIZE_MASK = max_size_ - 1;
-
-	LockFreeFifoSpsc() = default;
-
-	LockFreeFifoSpsc(std::span<T, max_size_> src) {
-		memcpy(buf_.data(), src.data(), max_size_);
+	LockFreeFifoSpscDyn(size_t max_size)
+		: max_size_{max_size}
+		, head_{0}
+		, tail_{0}
+		, buf_(max_size_) {
 	}
 
 	// Initialize with an offset between get and put
 	// Useful, for example, if get() and put() happen at the same rates
 	// and you want to provide a fixed delay
-	LockFreeFifoSpsc(size_t head)
-		: head_{head} {
+	LockFreeFifoSpscDyn(size_t max_size, size_t head)
+		: max_size_{max_size}
+		, head_{head}
+		, tail_{0}
+		, buf_(max_size_) {
+	}
+
+	// Resets and resizes the vector. All contents are lost.
+	// If max_size does not change, do nothing.
+	void resize(size_t new_max_size) {
+		if (new_max_size != max_size_) {
+			reset();
+
+			if (new_max_size < max_size_) {
+				// Deallocate the buffer to force shrink to fit
+				std::vector<T>().swap(buf_);
+			}
+
+			buf_.resize(new_max_size);
+
+			max_size_ = new_max_size;
+		}
 	}
 
 	//
@@ -36,7 +56,7 @@ public:
 		if ((tmp_head - tail_.load(std::memory_order_acquire)) == max_size_)
 			return false;
 
-		buf_[tmp_head & SIZE_MASK] = item;
+		buf_[tmp_head % max_size_] = item;
 		tmp_head++;
 		std::atomic_signal_fence(std::memory_order_release);
 		head_.store(tmp_head, std::memory_order_release);
@@ -70,7 +90,7 @@ public:
 			return std::nullopt;
 		}
 
-		auto item = buf_[tmp_tail & SIZE_MASK];
+		auto item = buf_[tmp_tail % max_size_];
 		tmp_tail++;
 		std::atomic_signal_fence(std::memory_order_release);
 		tail_.store(tmp_tail, std::memory_order_release);
@@ -84,7 +104,7 @@ public:
 			return false;
 		}
 
-		t = std::move(buf_[tmp_tail & SIZE_MASK]);
+		t = std::move(buf_[tmp_tail % max_size_]);
 		tmp_tail++;
 		std::atomic_signal_fence(std::memory_order_release);
 		tail_.store(tmp_tail, std::memory_order_release);
@@ -137,7 +157,8 @@ public:
 	}
 
 private:
+	size_t max_size_;
 	std::atomic<size_t> head_ = 0;
 	std::atomic<size_t> tail_ = 0;
-	std::array<T, max_size_> buf_{};
+	std::vector<T> buf_;
 };

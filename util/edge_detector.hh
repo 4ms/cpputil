@@ -44,7 +44,18 @@ class RisingEdgeDetector {
 
 public:
 	bool update(bool state) {
-		const auto out = state && last_state_ != state;
+		const auto out = state && (last_state_ != state);
+		last_state_ = state;
+		return out;
+	}
+};
+
+class FallingEdgeDetector {
+	bool last_state_ = false;
+
+public:
+	bool update(bool state) {
+		const auto out = !state && (last_state_ != state);
 		last_state_ = state;
 		return out;
 	}

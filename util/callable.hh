@@ -76,7 +76,19 @@ private:
 template<typename Signature>
 using Function = FunctionSized<sizeof(void *) * 2, Signature>;
 
+
 template<unsigned size = sizeof(void *) * 2>
-using CallbackSized = FunctionSized<size, void(void)>;
+struct CallbackSized : FunctionSized<size, void(void)>{
+	CallbackSized() = default;
+
+	template<typename Callable>
+	CallbackSized(Callable callable) : FunctionSized<size, void(void)>{callable}{}
+
+};
+// Note: we could just define CallbackSized like the following, but
+// that breaks the API for functions using CallbackSized in their signature
+// template<unsigned size = sizeof(void *) * 2>
+// using CallbackSized = FunctionSized<size, void(void)>;
 
 using Callback = CallbackSized<2 * sizeof(void *)>;
+

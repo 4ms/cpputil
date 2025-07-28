@@ -34,6 +34,10 @@ struct StaticString {
 		_data[i] = '\0';
 	}
 
+	constexpr void clear() {
+		_data[0] = '\0';
+	}
+
 	constexpr void copy(std::string_view s) {
 		size_t i = 0;
 		for (auto c : s) {
@@ -73,6 +77,10 @@ struct StaticString {
 		return _data;
 	}
 
+	size_t available() const {
+		return capacity - length();
+	}
+
 #ifdef CPPUTIL_STATIC_STRING_USE_STD_STRING
 	operator std::string() const {
 		return _data;
@@ -91,15 +99,20 @@ struct StaticString {
 
 	// volatile combinations:
 	// clang-format off
-  constexpr void copy(const char *s) volatile { const_cast<StaticString<CAPACITY>*>(this)->copy(s); }
+	constexpr void copy(const char *s) volatile { const_cast<StaticString<CAPACITY>*>(this)->copy(s); }
 
-  template <size_t OTHER_CAP>
-  constexpr void copy(StaticString<OTHER_CAP> const &other) { copy(other.data()); }
+	template <size_t OTHER_CAP>
+	constexpr void copy(StaticString<OTHER_CAP> const &other) { copy(other.data()); }
 
-  template <size_t OTHER_CAP>
-  constexpr void copy(StaticString<OTHER_CAP> volatile const &other) volatile { copy(const_cast<StaticString<OTHER_CAP> const &>(other).data()); }
+	template <size_t OTHER_CAP>
+	constexpr void copy(StaticString<OTHER_CAP> volatile const &other) volatile { copy(const_cast<StaticString<OTHER_CAP> const &>(other).data()); }
 
-  template <size_t OTHER_CAP>
-  constexpr void copy(StaticString<OTHER_CAP> const &other) volatile { copy(other.data()); }
+	template <size_t OTHER_CAP>
+	constexpr void copy(StaticString<OTHER_CAP> const &other) volatile { copy(other.data()); }
+
+	auto begin() { return _data; }
+	auto end() { return _data + length(); }
+	auto begin() const { return _data; }
+	auto end() const { return _data + length(); }
 	// clang-format on
 };

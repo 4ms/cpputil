@@ -235,7 +235,8 @@ struct OneShot {
 	}
 
 	void set_update_rate_hz(float hz) {
-		increment_ = 1.f / hz;
+		if (hz > 0)
+			increment_ = 1.f / hz;
 	}
 
 private:
