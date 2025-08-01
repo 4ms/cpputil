@@ -14,6 +14,10 @@ private:
 	std::array<std::atomic<bool>, MaxEntries> used_flags;
 
 public:
+	constexpr size_t size() const {
+		return MaxEntries;
+	}
+
 	ThreadSafePool() = default;
 
 	// Returns index of first available entry
