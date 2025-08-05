@@ -47,7 +47,7 @@ public:
 	void clear() {
 		for (size_t i = 0; i < MaxEntries; i++) {
 			data[i] = T{};
-			used_flags[i].store(false, std::memory_order_acquire);
+			used_flags[i].store(false, std::memory_order_release);
 		}
 	}
 
