@@ -27,7 +27,9 @@ struct Color {
 		uint8_t r, g, b;
 	};
 
-	explicit constexpr Color(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0)
+	constexpr Color() = default;
+
+	explicit constexpr Color(uint8_t r, uint8_t g, uint8_t b)
 		: r_(r)
 		, g_(g)
 		, b_(b) {
@@ -134,7 +136,9 @@ struct Color {
 	}
 
 private:
-	uint8_t r_, g_, b_;
+	uint8_t r_{};
+	uint8_t g_{};
+	uint8_t b_{};
 };
 
 struct Colors {
