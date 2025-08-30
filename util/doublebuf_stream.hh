@@ -1,6 +1,6 @@
 #pragma once
+#include "util/callable.hh"
 #include "util/fixed_vector.hh"
-#include <functional>
 #include <optional>
 #include <span>
 
@@ -36,10 +36,18 @@ struct DoubleBufferStream {
 	FixedVector<T, Size> tx_buffer[2];
 	std::optional<unsigned> in_progress_idx = std::nullopt;
 
-	std::function<bool(std::span<T>)> transmit_func;
+	Function<bool(std::span<const T>)> transmit_func;
 
-	DoubleBufferStream(std::function<bool(std::span<T>)> xmit_func)
+	DoubleBufferStream()
+		: transmit_func{[](std::span<const T>) { return false; }} {
+	}
+
+	DoubleBufferStream(auto xmit_func)
 		: transmit_func{xmit_func} {
+	}
+
+	void set_transmit_func(auto xmit_func) {
+		transmit_func = std::move(xmit_func);
 	}
 
 	// Pushes to the inactive buffer and starts transmission if it's not already started
