@@ -26,6 +26,13 @@ public:
 		return data[idx];
 	}
 
+	T back() const {
+		if (back_idx > 0)
+			return data[back_idx - 1];
+		else
+			return T{};
+	}
+
 	bool push_back(T el) {
 		if (back_idx >= MaxElements)
 			return false;
