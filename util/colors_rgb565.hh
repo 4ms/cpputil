@@ -7,6 +7,9 @@ struct RGB565 {
 	uint16_t g : 6;
 	uint16_t b : 5;
 
+	constexpr RGB565() {
+	}
+
 	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue)
 		: r(red >> 3)
 		, g(green >> 2)
