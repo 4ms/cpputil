@@ -32,32 +32,31 @@ struct RGB565 {
 
 	// Construct from raw u16 RGB565 format
 	RGB565 operator=(uint16_t raw) {
-		std::memcpy(this, &raw, 2);
+		*this = std::bit_cast<RGB565>(raw);
 		return *this;
 	}
 
-	// Returns endianness with r as MSB
 	constexpr uint16_t raw() const {
 		return (r << 11) | (g << 5) | b;
 	}
 
 	constexpr operator uint16_t() const {
-		return raw();
+		return std::bit_cast<uint16_t>(*this);
 	}
 
 	//0..255
 	constexpr uint8_t red() const {
-		return (raw() & 0xf800) >> 8;
+		return r << 3;
 	}
 
 	//0..255
 	constexpr uint8_t green() const {
-		return (raw() & 0x07e0) >> 3;
+		return g << 2;
 	}
 
 	//0..255
 	constexpr uint8_t blue() const {
-		return (raw() & 0x001f) << 3;
+		return b << 3;
 	}
 };
 namespace Colors565
@@ -89,4 +88,4 @@ static_assert(RGB565{(uint8_t)0xFF, 0xFF, 0xFF}.raw() == 0xFFFF);
 static_assert(RGB565{(uint8_t)0x80, 0x80, 0x80}.raw() == 0x8410);
 static_assert(RGB565{(uint8_t)0x00, 0x00, 0x00}.raw() == 0x0000);
 
-static_assert(RGB565(0xFFAA22) == RGB565((uint8_t)0xFF, 0xAA, 0x22));
+static_assert(RGB565(0xFFAA22).raw() == RGB565((uint8_t)0xFF, 0xAA, 0x22).raw());
