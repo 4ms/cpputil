@@ -4,6 +4,7 @@
 #include <cstring>
 
 struct RGB565 {
+	// msb> rrrrr gggggg bbbbb <lsb
 	uint16_t b : 5;
 	uint16_t g : 6;
 	uint16_t r : 5;
