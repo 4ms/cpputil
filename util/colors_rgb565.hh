@@ -1,33 +1,41 @@
 #pragma once
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 
 struct RGB565 {
-	uint16_t r : 5;
-	uint16_t g : 6;
 	uint16_t b : 5;
+	uint16_t g : 6;
+	uint16_t r : 5;
 
 	constexpr RGB565() {
 	}
 
 	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue)
-		: r(red >> 3)
+		: b(blue >> 3)
 		, g(green >> 2)
-		, b(blue >> 3) {
+		, r(red >> 3) {
 	}
 
 	constexpr RGB565(float red, float green, float blue)
-		: r(std::clamp<uint16_t>(red * 32.f, 0, 31))
+		: b(std::clamp<uint16_t>(blue * 32.f, 0, 31))
 		, g(std::clamp<uint16_t>(green * 64.f, 0, 63))
-		, b(std::clamp<uint16_t>(blue * 32.f, 0, 31)) {
+		, r(std::clamp<uint16_t>(red * 32.f, 0, 31)) {
 	}
 
-	constexpr RGB565(uint32_t raw)
-		: r((raw & 0xf80000) >> 19)
-		, g((raw & 0x00fc00) >> 10)
-		, b((raw & 0x0000f8) >> 3) {
+	constexpr RGB565(uint32_t rgb888)
+		: b((rgb888 & 0x0000f8) >> 3)
+		, g((rgb888 & 0x00fc00) >> 10)
+		, r((rgb888 & 0xf80000) >> 19) {
 	}
 
+	// Construct from raw u16 RGB565 format
+	RGB565 operator=(uint16_t raw) {
+		std::memcpy(this, &raw, 2);
+		return *this;
+	}
+
+	// Returns endianness with r as MSB
 	constexpr uint16_t raw() const {
 		return (r << 11) | (g << 5) | b;
 	}
