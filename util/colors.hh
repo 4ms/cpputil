@@ -27,10 +27,16 @@ struct Color {
 		uint8_t r, g, b;
 	};
 
-	explicit constexpr Color(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0)
+	explicit constexpr Color(uint8_t r, uint8_t g, uint8_t b)
 		: r_(r)
 		, g_(g)
 		, b_(b) {
+	}
+
+	constexpr Color()
+		: r_(0)
+		, g_(0)
+		, b_(0) {
 	}
 
 	constexpr Color(uint16_t rgb565)
