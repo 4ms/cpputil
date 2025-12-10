@@ -12,28 +12,28 @@ class FixedVector {
 
 public:
 	template<typename... Ts>
-	FixedVector(const Ts... t)
+	constexpr FixedVector(const Ts... t)
 		: data{t...}
 		, back_idx{sizeof...(t)} {
 	}
 
 	// Unchecked!
-	T &operator[](size_t idx) {
+	constexpr T &operator[](size_t idx) {
 		return data[idx];
 	}
 
-	const T &operator[](size_t idx) const {
+	constexpr const T &operator[](size_t idx) const {
 		return data[idx];
 	}
 
-	T back() const {
+	constexpr T back() const {
 		if (back_idx > 0)
 			return data[back_idx - 1];
 		else
 			return T{};
 	}
 
-	bool push_back(T el) {
+	constexpr bool push_back(T el) {
 		if (back_idx >= MaxElements)
 			return false;
 
@@ -43,7 +43,7 @@ public:
 	}
 
 	// Resizes
-	bool resize(size_t num, T el = T{}) {
+	constexpr bool resize(size_t num, T el = T{}) {
 		const auto new_back_idx = std::min(num, MaxElements);
 
 		if (new_back_idx > back_idx) {
@@ -56,13 +56,13 @@ public:
 		return (num == new_back_idx);
 	}
 
-	bool resize_for_overwrite(size_t num) {
+	constexpr bool resize_for_overwrite(size_t num) {
 		back_idx = std::min(num, MaxElements);
 		return (num == back_idx);
 	}
 
 	// returns MaxElements for failure
-	size_t push_back_for_overwrite() {
+	constexpr size_t push_back_for_overwrite() {
 		if (back_idx >= MaxElements)
 			return MaxElements;
 
@@ -72,7 +72,7 @@ public:
 		return idx;
 	}
 
-	T pop_back() {
+	constexpr T pop_back() {
 		if (back_idx == 0)
 			return T{};
 
@@ -80,7 +80,7 @@ public:
 		return data[back_idx];
 	}
 
-	size_t size() const {
+	constexpr size_t size() const {
 		return back_idx;
 	}
 
@@ -88,15 +88,15 @@ public:
 		return MaxElements;
 	}
 
-	size_t available() {
+	constexpr size_t available() {
 		return max_size() - size();
 	}
 
-	void clear() {
+	constexpr void clear() {
 		back_idx = 0;
 	}
 
-	void insert(unsigned index, T d) {
+	constexpr void insert(unsigned index, T d) {
 		if (back_idx >= max_size() || index > back_idx)
 			return;
 
@@ -111,7 +111,7 @@ public:
 		back_idx++;
 	}
 
-	void erase(const unsigned index) {
+	constexpr void erase(const unsigned index) {
 		if (back_idx == 0 || index >= back_idx)
 			return;
 
@@ -124,7 +124,7 @@ public:
 		back_idx -= 1;
 	}
 
-	void erase(T *first, T *last) {
+	constexpr void erase(T *first, T *last) {
 		const auto count = std::distance(first, last);
 
 		if (back_idx == 0 || count <= 0) {
@@ -138,27 +138,27 @@ public:
 
 	using iterator = typename decltype(data)::iterator;
 
-	auto begin() const {
+	constexpr auto begin() const {
 		return data.begin();
 	}
 
-	auto end() const {
+	constexpr auto end() const {
 		return begin() + back_idx;
 	}
 
-	auto begin() {
+	constexpr auto begin() {
 		return data.begin();
 	}
 
-	auto end() {
+	constexpr auto end() {
 		return begin() + back_idx;
 	}
 
-	auto span() {
+	constexpr auto span() {
 		return std::span{begin(), back_idx};
 	}
 
-	auto span() const {
+	constexpr auto span() const {
 		return std::span{begin(), back_idx};
 	}
 };
