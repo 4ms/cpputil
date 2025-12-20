@@ -32,7 +32,11 @@ struct RGB565 {
 
 	// Construct from raw u16 RGB565 format
 	RGB565 operator=(uint16_t raw) {
+#if defined(__cpp_lib_bit_cast)
 		*this = std::bit_cast<RGB565>(raw);
+#else
+		std::memcpy(this, (void *)(&raw), 2);
+#endif
 		return *this;
 	}
 
@@ -41,7 +45,11 @@ struct RGB565 {
 	}
 
 	constexpr operator uint16_t() const {
+#if defined(__cpp_lib_bit_cast)
 		return std::bit_cast<uint16_t>(*this);
+#else
+		return raw();
+#endif
 	}
 
 	//0..255
