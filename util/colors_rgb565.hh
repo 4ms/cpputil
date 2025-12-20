@@ -5,11 +5,14 @@
 
 struct RGB565 {
 	// msb> rrrrr gggggg bbbbb <lsb
-	uint16_t b : 5;
-	uint16_t g : 6;
-	uint16_t r : 5;
+	uint16_t b : 5 {};
+	uint16_t g : 6 {};
+	uint16_t r : 5 {};
 
-	constexpr RGB565() {
+	constexpr RGB565()
+		: b{0}
+		, g{0}
+		, r{0} {
 	}
 
 	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue)
