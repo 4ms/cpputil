@@ -64,8 +64,10 @@ public:
 			if (cell_ >= Storage::NumCells) {
 				if (erased_once)
 					return false;
-				if (!storage.erase())
+				if (!storage.erase()) {
+					cell_ = 0;
 					return false;
+				}
 				cell_ = 0;
 				erased_once = true;
 			}
