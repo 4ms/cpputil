@@ -25,8 +25,8 @@ public:
 	// Scan the block from top to bottom for the first valid data.
 	// Assign the cell_ value such that the next cell we will (try to) write is
 	// the cell after the one containing the first valid data
-	WearLeveler(auto storage_init)
-		: storage{storage_init} {
+	WearLeveler(auto &...storage_init)
+		: storage{storage_init...} {
 		data_t data;
 		while (cell_) {
 			if (storage.read(&data, --cell_)) {
