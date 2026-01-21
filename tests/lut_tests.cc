@@ -1,12 +1,12 @@
 #include "doctest.h"
-#include "util/lut.hh"
+#include "util/lookup_table.hh"
 
 struct VoltageToFreqTableRange {
 	static constexpr float min = -0.1f;
 	static constexpr float max = 0.5f;
 };
 constinit auto VoltageToFrequencyTable =
-	Mapping::LookupTable_t<50>::generate<VoltageToFreqTableRange>([](float x) { return x * x + 7; });
+	LookupTable<50>::generate<VoltageToFreqTableRange>([](float x) { return x * x + 7; });
 
 TEST_CASE("check mapping table") {
 	constexpr unsigned LEN = 50;
