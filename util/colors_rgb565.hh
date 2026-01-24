@@ -1,28 +1,46 @@
 #pragma once
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 
 struct RGB565 {
-	uint16_t r : 5;
-	uint16_t g : 6;
-	uint16_t b : 5;
+	// msb> rrrrr gggggg bbbbb <lsb
+	uint16_t b : 5 {};
+	uint16_t g : 6 {};
+	uint16_t r : 5 {};
+
+	constexpr RGB565()
+		: b{0}
+		, g{0}
+		, r{0} {
+	}
 
 	constexpr RGB565(uint8_t red, uint8_t green, uint8_t blue)
-		: r(red >> 3)
+		: b(blue >> 3)
 		, g(green >> 2)
-		, b(blue >> 3) {
+		, r(red >> 3) {
 	}
 
 	constexpr RGB565(float red, float green, float blue)
-		: r(std::clamp<uint16_t>(red * 32.f, 0, 31))
+		: b(std::clamp<uint16_t>(blue * 32.f, 0, 31))
 		, g(std::clamp<uint16_t>(green * 64.f, 0, 63))
-		, b(std::clamp<uint16_t>(blue * 32.f, 0, 31)) {
+		, r(std::clamp<uint16_t>(red * 32.f, 0, 31)) {
 	}
 
-	constexpr RGB565(uint32_t raw)
-		: r((raw & 0xf80000) >> 19)
-		, g((raw & 0x00fc00) >> 10)
-		, b((raw & 0x0000f8) >> 3) {
+	constexpr RGB565(uint32_t rgb888)
+		: b((rgb888 & 0x0000f8) >> 3)
+		, g((rgb888 & 0x00fc00) >> 10)
+		, r((rgb888 & 0xf80000) >> 19) {
+	}
+
+	// Construct from raw u16 RGB565 format
+	RGB565 operator=(uint16_t raw) {
+#if defined(__cpp_lib_bit_cast)
+		*this = std::bit_cast<RGB565>(raw);
+#else
+		std::memcpy(this, (void *)(&raw), 2);
+#endif
+		return *this;
 	}
 
 	constexpr uint16_t raw() const {
@@ -30,22 +48,26 @@ struct RGB565 {
 	}
 
 	constexpr operator uint16_t() const {
+#if defined(__cpp_lib_bit_cast)
+		return std::bit_cast<uint16_t>(*this);
+#else
 		return raw();
+#endif
 	}
 
 	//0..255
 	constexpr uint8_t red() const {
-		return (raw() & 0xf800) >> 8;
+		return r << 3;
 	}
 
 	//0..255
 	constexpr uint8_t green() const {
-		return (raw() & 0x07e0) >> 3;
+		return g << 2;
 	}
 
 	//0..255
 	constexpr uint8_t blue() const {
-		return (raw() & 0x001f) << 3;
+		return b << 3;
 	}
 };
 namespace Colors565
@@ -77,4 +99,4 @@ static_assert(RGB565{(uint8_t)0xFF, 0xFF, 0xFF}.raw() == 0xFFFF);
 static_assert(RGB565{(uint8_t)0x80, 0x80, 0x80}.raw() == 0x8410);
 static_assert(RGB565{(uint8_t)0x00, 0x00, 0x00}.raw() == 0x0000);
 
-static_assert(RGB565(0xFFAA22) == RGB565((uint8_t)0xFF, 0xAA, 0x22));
+static_assert(RGB565(0xFFAA22).raw() == RGB565((uint8_t)0xFF, 0xAA, 0x22).raw());

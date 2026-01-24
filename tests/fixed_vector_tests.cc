@@ -65,9 +65,27 @@ TEST_CASE("Iterator Erase different parts of vector") {
 	}
 }
 
-TEST_CASE("Constructor  inits back_idx variable") {
+TEST_CASE("Constructor inits size") {
 	FixedVector<int, 8> a{1, 3, 5};
 	CHECK(a.size() == 3);
+}
+
+TEST_CASE("back() returns default-constructed T with empty vector") {
+	struct T {
+		int x = 99999;
+	};
+	FixedVector<T, 3> a{T{.x = 1}, T{.x = 3}, T{.x = 5}};
+	CHECK(a.back().x == 5);
+	CHECK(a.pop_back().x == 5);
+
+	CHECK(a.back().x == 3);
+	CHECK(a.pop_back().x == 3);
+
+	CHECK(a.back().x == 1);
+	CHECK(a.pop_back().x == 1);
+
+	CHECK(a.back().x == 99999);
+	CHECK(a.pop_back().x == 99999);
 }
 
 TEST_CASE("Basic usage: operator[] reads") {

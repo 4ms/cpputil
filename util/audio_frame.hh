@@ -22,8 +22,8 @@ public:
 		return scaleInput(chan[chan_num]);
 	}
 
-	float scale_output_chan(unsigned chan_num) const {
-		return scaleOutput(chan[chan_num]);
+	void set_scaled_output(unsigned chan_num, float val) {
+		chan[chan_num] = scaleOutput(val);
 	}
 
 	static constexpr float scaleInput(SampleType val) {
