@@ -35,12 +35,6 @@ struct Color {
 		, b_(b) {
 	}
 
-	constexpr Color()
-		: r_(0)
-		, g_(0)
-		, b_(0) {
-	}
-
 	constexpr Color(uint16_t rgb565)
 		: r_((rgb565 & 0xf800) >> 8)
 		, g_((rgb565 & 0x07e0) >> 3)
