@@ -27,16 +27,12 @@ struct Color {
 		uint8_t r, g, b;
 	};
 
+	constexpr Color() = default;
+
 	explicit constexpr Color(uint8_t r, uint8_t g, uint8_t b)
 		: r_(r)
 		, g_(g)
 		, b_(b) {
-	}
-
-	constexpr Color()
-		: r_(0)
-		, g_(0)
-		, b_(0) {
 	}
 
 	constexpr Color(uint16_t rgb565)
@@ -55,15 +51,15 @@ struct Color {
 		return b_;
 	}
 
-	const Color operator+(Color const that) const {
+	constexpr Color operator+(Color const that) const {
 		return Color(builtin_add_u8(r_, that.r_), builtin_add_u8(g_, that.g_), builtin_add_u8(b_, that.b_));
 	}
 
-	const Color operator*(float phase) const {
+	constexpr Color operator*(float phase) const {
 		return Color{0, 0, 0}.blend(*this, phase);
 	}
 
-	bool operator==(Color const &other) const {
+	constexpr bool operator==(Color const &other) const {
 		return (r_ == other.r_ && g_ == other.g_ && b_ == other.b_);
 	}
 
@@ -140,7 +136,9 @@ struct Color {
 	}
 
 private:
-	uint8_t r_, g_, b_;
+	uint8_t r_{};
+	uint8_t g_{};
+	uint8_t b_{};
 };
 
 struct Colors {
