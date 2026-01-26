@@ -24,13 +24,13 @@ struct CreateArray {
 
 } // namespace details
 
-template<std::size_t NumPoints>
+template<std::size_t NumPoints, typename T = float>
 class LookupTable {
 public:
-	using Base_t = std::array<float, NumPoints>;
+	using Base_t = std::array<T, NumPoints>;
 
 public:
-	constexpr LookupTable(const float min_, const float max_, const Base_t &input)
+	constexpr LookupTable(const T min_, const T max_, const Base_t &input)
 		: min(min_)
 		, max(max_) {
 		static_assert(NumPoints >= 2);
@@ -39,12 +39,12 @@ public:
 
 	template<typename rangeClass, typename F>
 	static constexpr LookupTable generate(const F func) {
-		constexpr details::CreateArray<float, NumPoints, rangeClass, F> dataArray(func);
+		constexpr details::CreateArray<T, NumPoints, rangeClass, F> dataArray(func);
 		return LookupTable(rangeClass::min, rangeClass::max, dataArray.data);
 	}
 
-	constexpr float lookup(float val) const {
-		float idx = ((val - min) / (max - min)) * (NumPoints - 1);
+	constexpr T lookup(T val) const {
+		T idx = ((val - min) / (max - min)) * (NumPoints - 1);
 
 		if (idx <= 0.f)
 			return points.front();
@@ -52,17 +52,21 @@ public:
 			return points.back();
 		else {
 			auto lower_idx = (uint32_t)idx;
-			float phase = idx - lower_idx;
+			T phase = idx - lower_idx;
 			auto lower = points[lower_idx];
 			auto upper = points[lower_idx + 1];
 			return lower + phase * (upper - lower);
 		}
 	}
 
+	constexpr T operator()(T val) const {
+		return lookup(val);
+	}
+
 private:
 	Base_t points;
-	const float min;
-	const float max;
+	const T min;
+	const T max;
 };
 
 namespace LookupTableTests

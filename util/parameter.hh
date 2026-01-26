@@ -32,6 +32,13 @@ struct LatchedParam {
 	void operator=(T x) {
 		val = x;
 	}
+
+	LatchedParam &operator=(LatchedParam const &x) {
+		val = x.val;
+		changed = x.changed;
+		return *this;
+	}
+
 	operator T() {
 		return val;
 	}
