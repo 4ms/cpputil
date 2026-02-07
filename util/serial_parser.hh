@@ -32,6 +32,14 @@ struct Parser {
 		return std::bit_cast<T>(buffer);
 	}
 
+	constexpr bool advance(std::span<const uint8_t> &block, size_t offset) {
+		if (offset >= block.size())
+			return false;
+
+		block = block.subspan(offset);
+		return true;
+	}
+
 	template<typename T>
 	constexpr std::optional<T> get(Keys key) requires(std::is_trivially_copyable_v<T>)
 	{
@@ -40,7 +48,8 @@ struct Parser {
 		while (parsing.size() > sizeof(Header)) {
 			auto header = as<Header>(parsing);
 
-			parsing = parsing.subspan(sizeof(Header));
+			if (!advance(parsing, sizeof(Header)))
+				break;
 
 			if (header.key == key) {
 				if (header.size == sizeof(T)) {
@@ -50,7 +59,8 @@ struct Parser {
 					// ...or ignore and continue trying to find the key
 				}
 			}
-			parsing = parsing.subspan(header.size);
+			if (!advance(parsing, header.size))
+				break;
 		}
 		return std::nullopt;
 	}
