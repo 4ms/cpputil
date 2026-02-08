@@ -47,6 +47,9 @@ constexpr auto track = CompactBinaryParser<Keys>{blob3}.get<std::array<const uin
 static_assert(CompactBinaryParser<Keys>{*track}.get<uint16_t>(Keys::BPM) == 180);
 static_assert(CompactBinaryParser<Keys>{*track}.get<uint16_t>(Keys::Mode) == 4);
 
+constexpr std::array<unsigned char, 5> blob_str = {'b', 'p', 'm', 0x1, 120};
+static_assert(CompactBinaryParser<const char[3], uint8_t>{blob_str}.get<uint8_t>("bpm") == 120);
+
 TEST_CASE("Basic usage") {
 
 	enum class Keys : uint16_t {
