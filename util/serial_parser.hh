@@ -51,7 +51,7 @@ struct Parser {
 				break;
 
 			bool cmp;
-			if constexpr (std::is_same_v<std::decay_t<Keys>, const char *>)
+			if constexpr (std::is_array_v<Keys>)
 				cmp = (c_memcmp(header.key, key, sizeof(Keys)) == 0);
 			else
 				cmp = (header.key == key);
