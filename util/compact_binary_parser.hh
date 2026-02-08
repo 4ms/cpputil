@@ -54,7 +54,54 @@ struct CompactBinaryParser {
 	}
 
 	template<typename T>
-	constexpr static T as(std::span<const uint8_t> bytes) {
+	constexpr std::optional<T> get(KeyT key) const {
+		auto [sz, offset] = get_size_and_offset(key);
+		if (sz == sizeof(T)) {
+			if (offset + sz <= blob.size()) {
+				auto parsing = blob.subspan(offset);
+				return as<T>(parsing);
+			}
+		}
+		return std::nullopt;
+	}
+
+	constexpr std::span<const uint8_t> get_node(KeyT key) const {
+		auto [sz, offset] = get_size_and_offset(key);
+		return blob.subspan(offset, sz);
+	}
+
+	constexpr std::pair<size_t, ptrdiff_t> get_size_and_offset(KeyT key) const {
+		auto parsing = blob;
+
+		while (parsing.size() >= sizeof(Header)) {
+			auto header = as<Header>(parsing);
+
+			if (!advance(parsing, sizeof(Header)))
+				break;
+
+			bool cmp;
+			if constexpr (std::is_array_v<KeyT>)
+				cmp = compare_nullterm_array(header.key, key, sizeof(KeyT));
+			else
+				cmp = (header.key == key);
+
+			if (cmp) {
+				return {header.size, std::distance(blob.begin(), parsing.begin())};
+			}
+
+			if (!advance(parsing, header.size))
+				break;
+		}
+		return {0, 0};
+	}
+
+	constexpr size_t get_size(KeyT key) const {
+		return get_size_and_offset(key).first;
+	}
+
+	template<typename T>
+	constexpr static T as(std::span<const uint8_t> bytes) requires(std::is_trivially_copyable_v<T>)
+	{
 		// Copy to ensure alignment:
 		alignas(T) std::array<std::byte, sizeof(T)> buffer;
 
@@ -72,45 +119,14 @@ struct CompactBinaryParser {
 		return true;
 	}
 
-	template<typename T>
-	constexpr std::optional<T> get(KeyT key) const requires(std::is_trivially_copyable_v<T>)
-	{
-		auto parsing = blob;
-
-		while (parsing.size() >= sizeof(Header)) {
-			auto header = as<Header>(parsing);
-
-			if (!advance(parsing, sizeof(Header)))
-				break;
-
-			bool cmp;
-			if constexpr (std::is_array_v<KeyT>)
-				cmp = (c_memcmp(header.key, key, sizeof(KeyT)) == 0);
-			else
-				cmp = (header.key == key);
-
-			if (cmp) {
-				if (header.size == sizeof(T)) {
-					if (parsing.size() >= sizeof(T))
-						return as<T>(parsing);
-				}
-			}
-
-			if (!advance(parsing, header.size))
-				break;
-		}
-		return std::nullopt;
-	}
-
-	// constexpr memcmp (almost)
-	constexpr static int c_memcmp(const char *a, const char *b, size_t s) {
+	constexpr static bool compare_nullterm_array(const char *a, const char *b, size_t s) {
 		while (s--) {
 			// stop comparing if both arrays have null terminator in the same place
 			if (*a == 0 && *b == 0)
-				return 0;
+				return true;
 			if (*a++ != *b++)
-				return -1;
+				return false;
 		}
-		return 0;
+		return true;
 	}
 };

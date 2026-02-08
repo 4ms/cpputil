@@ -115,11 +115,30 @@ TEST_CASE("Basic usage") {
 			// clang-format on
 		};
 
-		auto track = CompactBinaryParser<Keys>{blob}.get<std::array<const uint8_t, 12>>(Keys::Track);
-		CHECK(track.has_value());
+		SUBCASE("Copy sub-object, then parse") {
+			auto track = CompactBinaryParser<Keys>{blob}.get<std::array<const uint8_t, 12>>(Keys::Track);
+			CHECK(track.has_value());
 
-		auto track_bpm = CompactBinaryParser<Keys>{*track}.get<uint16_t>(Keys::BPM);
-		CHECK(track_bpm.value() == 180);
+			auto track_bpm = CompactBinaryParser<Keys>{*track}.get<uint16_t>(Keys::BPM);
+			CHECK(track_bpm.value() == 180);
+			auto track_mode = CompactBinaryParser<Keys>{*track}.get<uint16_t>(Keys::Mode);
+			CHECK(track_mode.value() == 4);
+		}
+
+		SUBCASE("Parse sub-object in place in original data") {
+			auto track = CompactBinaryParser<Keys>{blob}.get_node(Keys::Track);
+			CHECK(track.size() == 12);
+			CHECK(CompactBinaryParser<Keys>{blob}.get_size(Keys::Track) == 12);
+
+			auto track_bpm = CompactBinaryParser<Keys>{track}.get<uint16_t>(Keys::BPM);
+			CHECK(track_bpm.value() == 180);
+			auto track_mode = CompactBinaryParser<Keys>{track}.get<uint16_t>(Keys::Mode);
+			CHECK(track_mode.value() == 4);
+
+			// non-existant sub-object
+			auto no_exist = CompactBinaryParser<Keys>{blob}.get_node(Keys::Mode);
+			CHECK(no_exist.size() == 0);
+		}
 	}
 
 	SUBCASE("Check bad data size") {
