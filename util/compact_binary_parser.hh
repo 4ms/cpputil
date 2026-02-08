@@ -20,6 +20,7 @@
 // Lifetime of backing data exceeds that of CompactBinaryParser object
 
 template<typename KeyT, typename DataSizeT = uint16_t>
+requires(std::is_trivial_v<KeyT> && std::is_integral_v<DataSizeT>)
 struct CompactBinaryParser {
 	struct __attribute__((packed)) Header {
 		KeyT key;

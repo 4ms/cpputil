@@ -146,23 +146,30 @@ TEST_CASE("Basic usage") {
 		CHECK(!bpm.has_value());
 	}
 
-	SUBCASE("ASCII keys with StaticString") {
-		std::array<unsigned char, 6> blob_str = {'b', 'p', 'm', 0, 0x1, 120};
-		auto p = CompactBinaryParser<StaticString<3>, uint8_t>{blob_str};
-		auto bpm = p.get<uint8_t>(StaticString<3>{"bpm"});
-		CHECK(bpm.has_value());
-		CHECK(bpm.value() == 120);
-	}
-
 	SUBCASE("ASCII keys with char array") {
 		std::array<unsigned char, 5> blob_str = {'b', 'p', 'm', 0x1, 120};
-		static_assert(sizeof(CompactBinaryParser<const char[3]>::Header) == 5);
-		static_assert(sizeof(CompactBinaryParser<const char[2]>::Header) == 4);
-
 		auto p = CompactBinaryParser<const char[3], uint8_t>{blob_str};
 		auto bpm = p.get<uint8_t>("bpm");
 		CHECK(bpm.has_value());
 		CHECK(bpm.value() == 120);
+	}
+
+	SUBCASE("ASCII keys with char array and short key") {
+		std::array<unsigned char, 15> blob_str = {
+			'b', 'p', 'm', 0x1, 120, 't', '1', '\0', 0x1, 5, 'x', '\0', '\0', 0x1, 55};
+		auto p = CompactBinaryParser<const char[3], uint8_t>{blob_str};
+
+		// "bpm" == 'b' 'p' 'm' '\0', but get() will only compare the first three bytes 'b' 'p' 'm'
+		auto bpm = p.get<uint8_t>("bpm");
+		CHECK(bpm.value() == 120);
+
+		// Don't need to pad the key since "t1\0" => 't' '1' '\0'
+		auto t1 = p.get<uint8_t>("t1");
+		CHECK(t1.value() == 5);
+
+		// Need to pad the key since 3 chars are required:"x\0" => 'x' '\0' '\0'
+		auto x = p.get<uint8_t>("x\0");
+		CHECK(x.value() == 55);
 	}
 
 	SUBCASE("Zero-length data has no value even if key exists") {
