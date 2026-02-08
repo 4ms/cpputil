@@ -1,4 +1,4 @@
-#include "../util/serial_parser.hh"
+#include "../util/compact_binary_parser.hh"
 #include "../util/static_string.hh"
 #include "doctest.h"
 
