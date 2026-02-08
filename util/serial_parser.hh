@@ -7,8 +7,14 @@
 #include <optional>
 #include <span>
 
+// Parses binary data compacted with [key][data-size][data]
+
+// Assumptions:
+// Little-endian
+// Lifetime of backing data exceeds that of Parser
+
 template<typename Keys, typename DataSizeT = uint16_t>
-struct Parser {
+struct CompactBinaryParser {
 	struct __attribute__((packed)) Header {
 		Keys key;
 		DataSizeT size;
@@ -16,7 +22,7 @@ struct Parser {
 
 	std::span<const uint8_t> blob;
 
-	constexpr Parser(std::span<const uint8_t> blob)
+	constexpr CompactBinaryParser(std::span<const uint8_t> blob)
 		: blob{blob} {
 	}
 
@@ -31,7 +37,7 @@ struct Parser {
 		return std::bit_cast<T>(buffer);
 	}
 
-	constexpr bool advance(std::span<const uint8_t> &block, size_t offset) {
+	constexpr static bool advance(std::span<const uint8_t> &block, size_t offset) {
 		if (offset >= block.size())
 			return false;
 
@@ -40,7 +46,7 @@ struct Parser {
 	}
 
 	template<typename T>
-	constexpr std::optional<T> get(Keys key) requires(std::is_trivially_copyable_v<T>)
+	constexpr std::optional<T> get(Keys key) const requires(std::is_trivially_copyable_v<T>)
 	{
 		auto parsing = blob;
 
