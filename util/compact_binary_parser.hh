@@ -19,10 +19,10 @@
 // Little-endian
 // Lifetime of backing data exceeds that of CompactBinaryParser object
 
-template<typename Keys, typename DataSizeT = uint16_t>
+template<typename KeyT, typename DataSizeT = uint16_t>
 struct CompactBinaryParser {
 	struct __attribute__((packed)) Header {
-		Keys key;
+		KeyT key;
 		DataSizeT size;
 	};
 
@@ -52,7 +52,7 @@ struct CompactBinaryParser {
 	}
 
 	template<typename T>
-	constexpr std::optional<T> get(Keys key) const requires(std::is_trivially_copyable_v<T>)
+	constexpr std::optional<T> get(KeyT key) const requires(std::is_trivially_copyable_v<T>)
 	{
 		auto parsing = blob;
 
@@ -63,8 +63,8 @@ struct CompactBinaryParser {
 				break;
 
 			bool cmp;
-			if constexpr (std::is_array_v<Keys>)
-				cmp = (c_memcmp(header.key, key, sizeof(Keys)) == 0);
+			if constexpr (std::is_array_v<KeyT>)
+				cmp = (c_memcmp(header.key, key, sizeof(KeyT)) == 0);
 			else
 				cmp = (header.key == key);
 
@@ -89,4 +89,4 @@ struct CompactBinaryParser {
 		}
 		return 0;
 	}
-}
+};
