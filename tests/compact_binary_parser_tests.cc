@@ -1,5 +1,4 @@
 #include "../util/compact_binary_parser.hh"
-#include "../util/static_string.hh"
 #include "doctest.h"
 
 enum class Keys : uint16_t {
@@ -135,7 +134,7 @@ TEST_CASE("Basic usage") {
 			auto track_mode = CompactBinaryParser<Keys>{track}.get<uint16_t>(Keys::Mode);
 			CHECK(track_mode.value() == 4);
 
-			// non-existant sub-object
+			// non-existent sub-object
 			auto no_exist = CompactBinaryParser<Keys>{blob}.get_node(Keys::Mode);
 			CHECK(no_exist.size() == 0);
 		}
