@@ -10,7 +10,7 @@
 
 template<typename Keys, typename DataSizeT = uint16_t>
 struct Parser {
-	struct Header {
+	struct __attribute__((packed)) Header {
 		Keys key;
 		DataSizeT size;
 	};
@@ -51,14 +51,19 @@ struct Parser {
 			if (!advance(parsing, sizeof(Header)))
 				break;
 
-			if (header.key == key) {
+			bool cmp;
+			if constexpr (std::is_same_v<std::decay_t<Keys>, const char *>)
+				cmp = (memcmp(header.key, key, sizeof(Keys)) == 0);
+			else
+				cmp = (header.key == key);
+
+			if (cmp) {
 				if (header.size == sizeof(T)) {
-					return as<T>(parsing);
-				} else {
-					// TODO: report incorrect size error?
-					// ...or ignore and continue trying to find the key
+					if (parsing.size() >= sizeof(T))
+						return as<T>(parsing);
 				}
 			}
+
 			if (!advance(parsing, header.size))
 				break;
 		}
