@@ -8,10 +8,16 @@
 #include <span>
 
 // Parses binary data compacted with [key][data-size][data]
-
+//
+//  0x05 0x00  0x04 0x00  0xff 0x3f 0x33 0x00
+// ----------  ---------  -------------------
+//  key = 5    data=4Bytes  data = 0x00333fff
+//
+// Can also use char[] for keys (e.g. "bpm")
+//
 // Assumptions:
 // Little-endian
-// Lifetime of backing data exceeds that of Parser
+// Lifetime of backing data exceeds that of CompactBinaryParser object
 
 template<typename Keys, typename DataSizeT = uint16_t>
 struct CompactBinaryParser {
@@ -75,12 +81,12 @@ struct CompactBinaryParser {
 		return std::nullopt;
 	}
 
-	// constexpr memcmp
+	// constexpr memcmp (almost)
 	constexpr static int c_memcmp(const char *a, const char *b, size_t s) {
 		while (s--) {
 			if (*a++ != *b++)
-				return (*a < *b) ? -1 : 1;
+				return -1;
 		}
 		return 0;
 	}
-};
+}
