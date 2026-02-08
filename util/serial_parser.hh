@@ -52,7 +52,7 @@ struct Parser {
 
 			bool cmp;
 			if constexpr (std::is_same_v<std::decay_t<Keys>, const char *>)
-				cmp = (memcmp(header.key, key, sizeof(Keys)) == 0);
+				cmp = (c_memcmp(header.key, key, sizeof(Keys)) == 0);
 			else
 				cmp = (header.key == key);
 
@@ -67,5 +67,14 @@ struct Parser {
 				break;
 		}
 		return std::nullopt;
+	}
+
+	// constexpr memcmp
+	constexpr static int c_memcmp(const char *a, const char *b, size_t s) {
+		while (s--) {
+			if (*a++ != *b++)
+				return (*a < *b) ? -1 : 1;
+		}
+		return 0;
 	}
 };
