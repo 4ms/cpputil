@@ -168,7 +168,7 @@ TEST_CASE("Basic usage") {
 		CHECK(t1.value() == 5);
 
 		// Need to pad the key since 3 chars are required:"x\0" => 'x' '\0' '\0'
-		auto x = p.get<uint8_t>("x\0");
+		auto x = p.get<uint8_t>("x");
 		CHECK(x.value() == 55);
 	}
 

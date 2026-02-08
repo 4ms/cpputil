@@ -8,12 +8,32 @@
 #include <span>
 
 // Parses binary data compacted with [key][data-size][data]
+// [key] is a fixed width, defined by KeyT
+// [data-size] is a fixed width, defined by DataSizeT
+// [data] is #data-size bytes long
 //
-//  0x05 0x00  0x04 0x00  0xff 0x3f 0x33 0x00
+// Example with KeyT == DataSizeT == uint16_t
+//
+//  0x05 0x00  0x04 0x00  0xff 0x11 0x33 0xaa
 // ----------  ---------  -------------------
-//  key = 5    data=4Bytes  data = 0x00333fff
+//  key = 5    d-sz=4Bytes  data = 0xaa3311ff
 //
-// Can also use char[] for keys (e.g. "bpm")
+// Can also use char[] for keys (e.g. "bpm"):
+// KeyT == const char[6], DataSizeT == uint8_t
+//
+//  'b' 'p' 'm'   0x01     0x80
+// ----------     ----     ----
+//  key="bpm"    d-sz=1B   data=128
+//
+// If the key is smaller than the max key size then it must be padded.
+// The first padding byte must be \0 (null-terminator).
+// Subsequent padding bytes can be any value.
+//
+//        v----v---required padding since all keys must be same length
+//  'x' '\0'  0xXX   0x01     0x05
+// ---------------   ----     ----
+//  key="x"         d-sz=1B   data=5
+//       ^---lookup key is 'x' '\0' which matches 'x' '\0' 0xXX
 //
 // Assumptions:
 // Little-endian
@@ -85,6 +105,9 @@ struct CompactBinaryParser {
 	// constexpr memcmp (almost)
 	constexpr static int c_memcmp(const char *a, const char *b, size_t s) {
 		while (s--) {
+			// stop comparing if both arrays have null terminator in the same place
+			if (*a == 0 && *b == 0)
+				return 0;
 			if (*a++ != *b++)
 				return -1;
 		}
