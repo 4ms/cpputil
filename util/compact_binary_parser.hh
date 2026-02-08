@@ -67,7 +67,10 @@ struct CompactBinaryParser {
 
 	constexpr std::span<const uint8_t> get_node(KeyT key) const {
 		auto [sz, offset] = get_size_and_offset(key);
-		return blob.subspan(offset, sz);
+		if (size_t(offset + sz) <= blob.size())
+			return blob.subspan(offset, sz);
+		else
+			return {};
 	}
 
 	constexpr std::pair<DataSizeT, ptrdiff_t> get_size_and_offset(KeyT key) const {
@@ -122,7 +125,7 @@ struct CompactBinaryParser {
 
 	constexpr static bool compare_nullterm_array(const char *a, const char *b, size_t s) {
 		while (s--) {
-			// stop comparing if both arrays have null terminator in the same place
+			// stop comparing if both arrays match up and including the null terminator
 			if (*a == 0 && *b == 0)
 				return true;
 			if (*a++ != *b++)
