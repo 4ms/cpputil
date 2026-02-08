@@ -3,7 +3,6 @@
 #include <bit>
 #include <cstddef>
 #include <cstdint>
-#include <cstdio>
 #include <cstring>
 #include <optional>
 #include <span>
@@ -24,7 +23,7 @@ struct Parser {
 	template<typename T>
 	constexpr static T as(std::span<const uint8_t> bytes) {
 		// Copy to ensure alignment:
-		alignas(T) std::array<std::byte, sizeof(T)> buffer{};
+		alignas(T) std::array<std::byte, sizeof(T)> buffer;
 
 		for (std::size_t i = 0; i < sizeof(T); ++i)
 			buffer[i] = static_cast<std::byte>(bytes[i]);
