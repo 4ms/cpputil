@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
-        cxx: [g++-14, g++-13, g++-12, g++-11, clang++-18, clang++-17, clang++-16, clang++-15 ]
+        cxx: [g++-15, g++-14, g++-13, g++-12, g++-11,  clang++-19, clang++-18, clang++-17, clang++-16, clang++-15 ]
         include:
           - os: macos-latest
             cxx: clang++
@@ -24,9 +24,13 @@ jobs:
           - os: ubuntu-22.04
             cxx: clang++-18
           - os: ubuntu-22.04
+            cxx: clang++-19
+          - os: ubuntu-22.04
             cxx: g++-13
           - os: ubuntu-22.04
             cxx: g++-14
+          - os: ubuntu-22.04
+            cxx: g++-15
 
           - os: ubuntu-24.04
             cxx: clang++-15
