@@ -57,7 +57,7 @@ struct CompactBinaryParser {
 	constexpr std::optional<T> get(KeyT key) const {
 		auto [sz, offset] = get_size_and_offset(key);
 		if (sz == sizeof(T)) {
-			if (offset + sz <= blob.size()) {
+			if (size_t(offset + sz) <= blob.size()) {
 				auto parsing = blob.subspan(offset);
 				return as<T>(parsing);
 			}
@@ -86,7 +86,8 @@ struct CompactBinaryParser {
 				cmp = (header.key == key);
 
 			if (cmp) {
-				return {header.size, std::distance(blob.begin(), parsing.begin())};
+				auto sz = static_cast<DataSizeT>(header.size);
+				return {sz, std::distance(blob.begin(), parsing.begin())};
 			}
 
 			if (!advance(parsing, header.size))
