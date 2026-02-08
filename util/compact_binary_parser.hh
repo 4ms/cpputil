@@ -70,7 +70,7 @@ struct CompactBinaryParser {
 		return blob.subspan(offset, sz);
 	}
 
-	constexpr std::pair<size_t, ptrdiff_t> get_size_and_offset(KeyT key) const {
+	constexpr std::pair<DataSizeT, ptrdiff_t> get_size_and_offset(KeyT key) const {
 		auto parsing = blob;
 
 		while (parsing.size() >= sizeof(Header)) {
