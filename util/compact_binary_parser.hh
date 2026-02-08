@@ -18,22 +18,22 @@
 // ----------  ---------  -------------------
 //  key = 5    d-sz=4Bytes  data = 0xaa3311ff
 //
-// Can also use char[] for keys (e.g. "bpm"):
+// Can also use const char[] for keys (e.g. "bpm"):
 // KeyT == const char[6], DataSizeT == uint8_t
 //
 //  'b' 'p' 'm'   0x01     0x80
 // ----------     ----     ----
 //  key="bpm"    d-sz=1B   data=128
 //
-// If the key is smaller than the max key size then it must be padded.
+// If the const char[] key is smaller than the max key size then it must be padded.
 // The first padding byte must be \0 (null-terminator).
-// Subsequent padding bytes can be any value.
+// Subsequent padding bytes can be any value, they are ignored.
 //
 //        v----v---required padding since all keys must be same length
 //  'x' '\0'  0xXX   0x01     0x05
 // ---------------   ----     ----
 //  key="x"         d-sz=1B   data=5
-//       ^---lookup key is 'x' '\0' which matches 'x' '\0' 0xXX
+//       ^---lookup key is 'x' '\0' which matches 'x' '\0' 0xXX (where 0xXX is any value)
 //
 // Assumptions:
 // Little-endian
