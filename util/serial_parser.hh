@@ -44,7 +44,7 @@ struct Parser {
 	{
 		auto parsing = blob;
 
-		while (parsing.size() > sizeof(Header)) {
+		while (parsing.size() >= sizeof(Header)) {
 			auto header = as<Header>(parsing);
 
 			if (!advance(parsing, sizeof(Header)))
