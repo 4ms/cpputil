@@ -30,18 +30,12 @@ template<typename KeyT, typename DataSizeT = uint16_t>
 requires(std::is_trivial_v<KeyT> && std::is_integral_v<DataSizeT>)
 struct CompactBinarySerializer {
 
-	template<typename T>
-	constexpr static auto to_bytes(T const &value) -> std::array<uint8_t, sizeof(T)>
-	requires(std::is_trivially_copyable_v<T>)
-	{
-		return std::bit_cast<std::array<uint8_t, sizeof(T)>>(value);
-	}
-
 	struct Measurer {
 		size_t count = 0;
 
 		template<typename T>
-		constexpr void field(KeyT, T const &) requires(std::is_trivially_copyable_v<T>) {
+		constexpr void field(KeyT, T const &) requires(std::is_trivially_copyable_v<T>)
+		{
 			count += sizeof(KeyT) + sizeof(DataSizeT) + sizeof(T);
 		}
 
@@ -59,7 +53,9 @@ struct CompactBinarySerializer {
 
 	template<typename Derived>
 	struct WriterBase {
-		constexpr Derived &self() { return static_cast<Derived &>(*this); }
+		constexpr Derived &self() {
+			return static_cast<Derived &>(*this);
+		}
 
 		constexpr void write_key(KeyT key) {
 			if constexpr (std::is_array_v<KeyT>) {
@@ -72,21 +68,22 @@ struct CompactBinarySerializer {
 				}
 				self().emit(std::span<const uint8_t>{buf});
 			} else {
-				auto bytes = to_bytes(key);
+				auto bytes = std::bit_cast<std::array<uint8_t, sizeof(KeyT)>>(key);
 				self().emit(std::span<const uint8_t>{bytes});
 			}
 		}
 
 		constexpr void write_size(DataSizeT size) {
-			auto bytes = to_bytes(size);
+			auto bytes = std::bit_cast<std::array<uint8_t, sizeof(DataSizeT)>>(size);
 			self().emit(std::span<const uint8_t>{bytes});
 		}
 
 		template<typename T>
-		constexpr void field(KeyT key, T const &value) requires(std::is_trivially_copyable_v<T>) {
+		constexpr void field(KeyT key, T const &value) requires(std::is_trivially_copyable_v<T>)
+		{
 			write_key(key);
 			write_size(static_cast<DataSizeT>(sizeof(T)));
-			auto bytes = to_bytes(value);
+			auto bytes = std::bit_cast<std::array<uint8_t, sizeof(T)>>(value);
 			self().emit(std::span<const uint8_t>{bytes});
 		}
 
@@ -110,6 +107,10 @@ struct CompactBinarySerializer {
 		std::span<uint8_t> buf;
 		size_t pos = 0;
 
+		constexpr SpanWriter(std::span<uint8_t> buf)
+			: buf{buf} {
+		}
+
 		constexpr void emit(std::span<const uint8_t> bytes) {
 			for (auto b : bytes) {
 				if (pos < buf.size())
@@ -123,6 +124,10 @@ struct CompactBinarySerializer {
 	struct SinkWriter : WriterBase<SinkWriter<Sink>> {
 		Sink &sink;
 		size_t count = 0;
+
+		constexpr SinkWriter(Sink &sink)
+			: sink{sink} {
+		}
 
 		constexpr void emit(std::span<const uint8_t> bytes) {
 			sink(bytes);
@@ -140,14 +145,14 @@ struct CompactBinarySerializer {
 	// Returns total bytes needed (may exceed output.size() on overflow)
 	template<typename F>
 	constexpr static size_t serialize(std::span<uint8_t> output, F &&describe) {
-		SpanWriter w{{}, output};
+		SpanWriter w{output};
 		describe(w);
 		return w.pos;
 	}
 
 	template<typename F, typename Sink>
 	constexpr static size_t stream(F &&describe, Sink &&sink) {
-		SinkWriter<std::remove_reference_t<Sink>> w{{}, sink};
+		SinkWriter<Sink> w{sink};
 		describe(w);
 		return w.count;
 	}
