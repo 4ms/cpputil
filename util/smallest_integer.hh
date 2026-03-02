@@ -15,6 +15,7 @@ struct SmallestUnsignedInt {
 };
 
 template<int64_t min_val, int64_t max_val>
+requires(min_val <= max_val)
 struct SmallestSignedInt {
 	using type =
 		std::make_signed_t<typename SmallestUnsignedInt<(max_val >= -min_val ? max_val : -min_val - 1) << 1>::type>;
