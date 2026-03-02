@@ -135,8 +135,8 @@ TEST_CASE("Spans and subspans") {
 	std::array<int32_t, 8> buf{1, 2, 3, 4, 5, 6, 7, 8};
 	CircularBufferAccess big{buf};
 
-	std::span<int32_t> bufspan1{&buf[0], &buf[4]};
-	std::span<int32_t> bufspan2{&buf[4], &buf[8]};
+	std::span<int32_t> bufspan1{buf.begin(), buf.begin() + 4};
+	std::span<int32_t> bufspan2{buf.begin() + 4, buf.end()};
 
 	CircularBufferAccess a{bufspan1};
 	CHECK(a.size() == 4);
