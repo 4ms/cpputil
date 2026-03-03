@@ -92,3 +92,16 @@ struct CallbackSized : FunctionSized<size, void(void)> {
 
 using Callback = CallbackSized<2 * sizeof(void *)>;
 
+// helper for deduction guide
+template<typename T>
+struct FunctionTraits : public FunctionTraits<decltype(&T::operator())> {};
+
+// helper for deduction guide
+template<typename ClassType, typename ReturnType, typename... Args>
+struct FunctionTraits<ReturnType (ClassType::*)(Args...) const> {
+	using Sig = ReturnType(Args...);
+};
+
+// custom deduction guide
+template<typename T>
+FunctionSized(T) -> FunctionSized<sizeof(T), typename FunctionTraits<T>::Sig>;
