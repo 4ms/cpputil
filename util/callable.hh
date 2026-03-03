@@ -76,14 +76,14 @@ private:
 template<typename Signature>
 using Function = FunctionSized<sizeof(void *) * 2, Signature>;
 
-
 template<unsigned size = sizeof(void *) * 2>
-struct CallbackSized : FunctionSized<size, void(void)>{
+struct CallbackSized : FunctionSized<size, void(void)> {
 	CallbackSized() = default;
 
 	template<typename Callable>
-	CallbackSized(Callable callable) : FunctionSized<size, void(void)>{callable}{}
-
+	CallbackSized(Callable callable)
+		: FunctionSized<size, void(void)>{callable} {
+	}
 };
 // Note: we could just define CallbackSized like the following, but
 // that breaks the API for functions using CallbackSized in their signature
@@ -92,3 +92,16 @@ struct CallbackSized : FunctionSized<size, void(void)>{
 
 using Callback = CallbackSized<2 * sizeof(void *)>;
 
+// helper for deduction guide
+template<typename T>
+struct FunctionTraits : public FunctionTraits<decltype(&T::operator())> {};
+
+// helper for deduction guide
+template<typename ClassType, typename ReturnType, typename... Args>
+struct FunctionTraits<ReturnType (ClassType::*)(Args...) const> {
+	using Sig = ReturnType(Args...);
+};
+
+// custom deduction guide
+template<typename T>
+FunctionSized(T) -> FunctionSized<sizeof(T), typename FunctionTraits<T>::Sig>;
