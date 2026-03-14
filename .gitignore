@@ -1,3 +1,4 @@
 tests/build
 **/settings.local.json
 CLAUDE.md
+build
