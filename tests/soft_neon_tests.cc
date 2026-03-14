@@ -2,10 +2,6 @@
 #include "util/soft_neon.hh"
 #include <cmath>
 
-static bool approx(float a, float b, float eps = 1e-5f) {
-	return std::fabs(a - b) < eps;
-}
-
 TEST_CASE("float32x4_t: element access") {
 	float32x4_t v = {1.f, 2.f, 3.f, 4.f};
 	CHECK(v[0] == 1.f);
