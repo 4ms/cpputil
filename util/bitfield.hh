@@ -24,7 +24,7 @@ auto constexpr bitfield(const Ts... args) {
 template<typename Enum>
 constexpr std::underlying_type_t<Enum> OR(std::initializer_list<Enum> fields) {
 	using UT = std::underlying_type_t<Enum>;
-	UT val;
+	UT val = 0;
 	for (auto el : fields) {
 		val |= static_cast<UT>(el);
 	}
