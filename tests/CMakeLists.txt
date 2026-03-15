@@ -33,3 +33,10 @@ set_target_properties(runtests PROPERTIES
 
 enable_testing()
 add_test(NAME unit_tests COMMAND runtests --no-intro)
+
+option(CPPUTIL_COVERAGE "Enable coverage instrumentation" OFF)
+if(CPPUTIL_COVERAGE)
+    target_compile_options(cpputil PRIVATE --coverage -O0)
+    target_compile_options(runtests PRIVATE --coverage -O0)
+    target_link_options(runtests PRIVATE --coverage)
+endif()
