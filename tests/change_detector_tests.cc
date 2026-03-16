@@ -25,6 +25,11 @@ TEST_CASE("ChangeDetector: same state does not trigger change") {
 	CHECK(cd.changed() == false);
 	cd.update(false);
 	CHECK(cd.changed() == false);
+
+	cd.update(true);
+	cd.changed(); // consume
+	cd.update(true);
+	CHECK(cd.changed() == false);
 }
 
 TEST_CASE("ChangeDetector: detects change from true to false") {
