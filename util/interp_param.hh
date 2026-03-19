@@ -29,6 +29,42 @@ private:
 };
 
 template<typename T>
+struct InterpParamVar {
+	InterpParamVar()
+		: cur_val{0}
+		, target_val{0}
+		, step_size{0} {
+	}
+
+	void set_new_value(T new_val, unsigned num_updates) {
+		target_val = new_val;
+		if (num_updates > 0) {
+			T d = new_val - cur_val;
+			step_size = d / T(num_updates);
+		}
+	}
+
+	T next() {
+		cur_val += step_size;
+		return cur_val;
+	}
+
+	T get_step_size() {
+		return step_size;
+	}
+
+	T snap_to_target() {
+		cur_val = target_val;
+		return target_val;
+	}
+
+private:
+	T cur_val;
+	T target_val;
+	T step_size;
+};
+
+template<typename T>
 struct InterpParamVariable {
 	InterpParamVariable(unsigned num_updates = 256)
 		: cur_val{0}

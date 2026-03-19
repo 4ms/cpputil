@@ -28,11 +28,11 @@ struct FilteredInterpArray {
 		if (_new_data_ready) {
 			_new_data_ready = false;
 
-			for (unsigned i = 0; i < N; i++) {
-				if (_update_count > 0)
-					_interps[i].set_num_updates(_update_count);
+			if (_update_count > 0)
+				_num_updates = _update_count;
 
-				_interps[i].set_new_value(_filters[i].add_val(read_fn(i)));
+			for (unsigned i = 0; i < N; i++) {
+				_interps[i].set_new_value(_filters[i].add_val(read_fn(i)), _num_updates);
 			}
 			_update_count = 0;
 		}
@@ -43,12 +43,11 @@ struct FilteredInterpArray {
 	void get_interp_values(auto output_fn) {
 		_update_count++;
 
-		bool did_overshoot = (_update_count >= _interps[0].get_num_updates());
+		bool did_overshoot = (_update_count >= _num_updates);
 
 		if (did_overshoot) {
 			for (unsigned i = 0; i < N; i++) {
-				_interps[i].cur_val = _interps[i].target_val;
-				output_fn(i, _interps[i].target_val);
+				output_fn(i, _interps[i].snap_to_target());
 			}
 		} else {
 			for (unsigned i = 0; i < N; i++)
@@ -57,8 +56,7 @@ struct FilteredInterpArray {
 	}
 
 	void set_num_updates(unsigned n) {
-		for (auto &interp : _interps)
-			interp.set_num_updates(n);
+		_num_updates = n;
 	}
 
 	static constexpr size_t size() {
@@ -66,8 +64,9 @@ struct FilteredInterpArray {
 	}
 
 private:
-	std::array<InterpParamVariable<T>, N> _interps{};
+	std::array<InterpParamVar<T>, N> _interps{};
 	std::array<Filter, N> _filters{};
 	std::atomic<bool> _new_data_ready{false};
 	unsigned _update_count{0};
+	unsigned _num_updates{256};
 };
