@@ -2,9 +2,19 @@
 #include "util/interp_param.hh"
 #include <array>
 #include <atomic>
+#include <concepts>
 #include <cstddef>
+#include <span>
+
+template<typename FilterT, typename T>
+concept IsSimpleFilter = requires(FilterT v, T t) {
+	{
+		v.add_val(t)
+	} -> std::convertible_to<T>;
+};
 
 template<size_t N, typename Filter, typename T = float>
+requires IsSimpleFilter<Filter, T>
 struct FilteredInterpArray {
 
 	void mark_new_data_ready() {
@@ -19,9 +29,10 @@ struct FilteredInterpArray {
 			_new_data_ready = false;
 
 			for (unsigned i = 0; i < N; i++) {
-				_interps[i].set_new_value(_filters[i].add_val(read_fn(i)));
 				if (_update_count > 0)
 					_interps[i].set_num_updates(_update_count);
+
+				_interps[i].set_new_value(_filters[i].add_val(read_fn(i)));
 			}
 			_update_count = 0;
 		}
