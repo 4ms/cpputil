@@ -5,6 +5,7 @@
 #include <climits>
 #include <cstdint>
 #include <cstdlib>
+#include <cmath>
 #include <numeric>
 #include <optional>
 
