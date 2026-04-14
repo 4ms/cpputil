@@ -126,6 +126,38 @@ public:
 	}
 };
 
+struct TogglerCounter : Toggler {
+	void register_state(unsigned newstate) {
+		if (newstate == is_high_) {
+			steady_state_ctr++;
+			return;
+		}
+
+		is_high_ = newstate;
+		steady_state_ctr = 0;
+
+		if (newstate)
+			got_rising_edge_ = true;
+		else
+			got_falling_edge_ = true;
+	}
+
+	unsigned steady_state_count() const {
+		return steady_state_ctr;
+	}
+
+	void reset_count() {
+		steady_state_ctr = 0;
+	}
+
+	void process(unsigned new_state) {
+		register_state(new_state);
+	}
+
+private:
+	unsigned steady_state_ctr = 0;
+};
+
 template<unsigned RisingEdgePattern = 0x00000001,
 		 unsigned FallingEdgePattern = 0xFFFFFFFE,
 		 unsigned StateMask = 0x00000FFF>
