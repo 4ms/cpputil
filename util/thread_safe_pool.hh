@@ -44,6 +44,13 @@ public:
 		return false;
 	}
 
+	// Acquire-load on the slot's used flag. Pairs with the release from create()/destroy()
+	bool is_used(size_t idx) const {
+		if (idx >= used_flags.size())
+			return false;
+		return used_flags[idx].load(std::memory_order_acquire);
+	}
+
 	void clear() {
 		for (size_t i = 0; i < MaxEntries; i++) {
 			data[i] = T{};
