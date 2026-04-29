@@ -158,9 +158,12 @@ private:
 	unsigned steady_state_ctr = 0;
 };
 
+// DebounceRawState: true: calling is_high() or is_pressed() will return the debounced high/low state.
+//                   false: is_high()/is_pressed() returns the last raw reading
 template<unsigned RisingEdgePattern = 0x00000001,
 		 unsigned FallingEdgePattern = 0xFFFFFFFE,
-		 unsigned StateMask = 0x00000FFF>
+		 unsigned StateMask = 0x00000FFF,
+		 bool DebounceRawState = false>
 struct Debouncer : Toggler {
 	Debouncer()
 		: debounce_state_{0} {
@@ -173,7 +176,8 @@ struct Debouncer : Toggler {
 		} else if (debounce_state_ == (FallingEdgePattern & StateMask)) {
 			register_falling_edge();
 		} else {
-			set_state_no_events(new_state);
+			if constexpr (!DebounceRawState)
+				set_state_no_events(new_state);
 		}
 	}
 
@@ -183,7 +187,8 @@ private:
 
 template<unsigned RisingEdgePattern = 0x00000001,
 		 unsigned FallingEdgePattern = 0xFFFFFFFE,
-		 unsigned StateMask = 0x00000FFF>
+		 unsigned StateMask = 0x00000FFF,
+		 bool DebounceRawState = false>
 struct DebouncerCounter : Toggler {
 	void register_state(unsigned new_state) {
 		debounce_state_ = ((debounce_state_ << 1) | new_state) & StateMask;
@@ -194,7 +199,8 @@ struct DebouncerCounter : Toggler {
 			register_falling_edge();
 			steady_state_ctr = 0;
 		} else {
-			set_state_no_events(new_state);
+			if constexpr (!DebounceRawState)
+				set_state_no_events(new_state);
 			steady_state_ctr++;
 		}
 	}
