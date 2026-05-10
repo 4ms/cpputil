@@ -19,7 +19,7 @@ struct StereoValue<float, 2> {
 
 	union {
 		float32x2_t __attribute__((aligned(16))) v;
-		float __attribute__((aligned(16))) s[2];
+		float s[2];
 	};
 
 	/** Constructs an uninitialized vector. */
@@ -84,7 +84,7 @@ struct StereoValue<int32_t, 2> {
 
 	union {
 		int32x2_t __attribute__((aligned(16))) v;
-		int32_t __attribute__((aligned(16))) s[2];
+		int32_t s[2];
 	};
 
 	StereoValue() = default;

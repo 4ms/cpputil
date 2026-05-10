@@ -510,8 +510,8 @@ T pow(T a, int b) {
 
 using std::isnan;
 
-inline float_2 isnan(float_2 a) {
-    return a.v == vdup_n_f32(NAN);
+inline bool isnan(float_2 a) {
+    return a[0] != a[0] || a[1] != a[1];
 }
 
 using std::isinf;
