@@ -120,11 +120,7 @@ inline float ifelse(bool cond, float a, float b) {
 
 /** Given a mask, returns a if mask is 0xffffffff per element, b if mask is 0x00000000 */
 inline float_2 ifelse(float_2 mask, float_2 a, float_2 b) {
-	return float_2(vbsl_f32(vreinterpret_u32_f32(mask.v), a.v, b.v));
-}
-/** Given a mask, returns a if mask is 0xffffffff per element, b if mask is 0x00000000 */
-inline int32_2 ifelse(int32_2 mask, int32_2 a, int32_2 b) {
-	return int32_2(vbsl_s32(vreinterpret_u32_s32(mask.v), a.v, b.v));
+	return float_2(vbsl_f32(vcvt_u32_f32(mask.v), a.v, b.v));
 }
 
 // Returns the maximum value between the two lanes of the argument
@@ -508,16 +504,8 @@ T pow(T a, int b) {
 	return p;
 }
 
-using std::isnan;
-
-inline float_2 isnan(float_2 a) {
-    return a.v == vdup_n_f32(NAN);
-}
-
-using std::isinf;
-
-inline float_2 isinf(float_2 a) {
-    return a.v == vdup_n_f32(INFINITY);
+inline bool is_finite(float_2 a) {
+    return MathTools::is_finite_fastmath(a[0]) && MathTools::is_finite_fastmath(a[1]);
 }
 
 inline void print_2(std::string l, float_2 v)
