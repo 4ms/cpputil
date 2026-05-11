@@ -73,6 +73,10 @@ struct StaticString {
 		return std::string_view{_data} == std::string_view{rhs};
 	}
 
+	bool is_empty() const {
+		return _data[0] == '\0';
+	}
+
 	operator const char *() const {
 		return _data;
 	}
