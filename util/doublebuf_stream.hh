@@ -18,10 +18,15 @@
 // When a transmission ends (tx_done_callback is called),
 // if the inactive buffer has data, then a new transmission will be started with it.
 
-// Note: This is not safe if tx_done_callback() interrupts transmit() or start_tx().
-// A valid use case is in the STM USB host library, which does not call
-// the tx callback in an IRQ, so we do not run the risk of tx_done_callback()
-// interrupting transmit() or start_tx();
+// WARNING: if either tx_done_callback() or transmit() runs in an ISR that can
+// interrupt the other function, then this is not safe. Use a LockFreeFifoSpsc
+// instead.
+//
+// Observered behavior with start_tx()/transmit() in an ISR interrupting tx_done_callback():
+// The compiler may capture the tx_buffer[other_buffer].size(), see it's non-zero,
+// and then an ISR might fire before start_tx() stores the new in_progress_idx.
+// The ISR would then append to the buffer that's about to be sent, but when it returns
+// to start_tx(), the old size will be used. This silently drops the new data.
 
 // #define DEBUG_DBLBUFSTREAM 1
 #if DEBUG_DBLBUFSTREAM
