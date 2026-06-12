@@ -84,3 +84,14 @@ inline float32x4_t vmaxq_f32(float32x4_t a, float32x4_t b) {
 		MathTools::max(a.v[3], b.v[3]),
 	};
 }
+
+inline float32x4_t vaddq_f32(float32x4_t a, float32x4_t b) {
+	return {a.v[0] + b.v[0], a.v[1] + b.v[1], a.v[2] + b.v[2], a.v[3] + b.v[3]};
+}
+
+inline void vst1q_f32(float *p, float32x4_t a) {
+	p[0] = a.v[0];
+	p[1] = a.v[1];
+	p[2] = a.v[2];
+	p[3] = a.v[3];
+}
