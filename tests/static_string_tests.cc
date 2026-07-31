@@ -121,3 +121,21 @@ TEST_CASE("Static String comparison") {
 		CHECK_EQ(str4 == str3, true);
 	}
 }
+
+TEST_CASE("Static String contains") {
+	StaticString<8> str1{"12345678"};
+	StaticString<3> str2{"123"};
+	StaticString<3> str3{"abc"};
+	CHECK(str1.contains("123"));
+	CHECK(str1.contains("12345678"));
+	CHECK(str1.contains(str1));
+	CHECK(str1.contains("7"));
+	CHECK(str1.contains("\0"));
+	CHECK(str1.contains("5678\0"));
+	CHECK(str1.contains(str2));
+	CHECK_FALSE(str1.contains("0"));
+	CHECK_FALSE(str1.contains("57"));
+	CHECK_FALSE(str1.contains("6789"));
+	CHECK_FALSE(str1.contains("123456789"));
+	CHECK_FALSE(str1.contains(str3));
+}

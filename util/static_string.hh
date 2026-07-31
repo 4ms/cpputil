@@ -73,6 +73,11 @@ struct StaticString {
 		return std::string_view{_data} == std::string_view{rhs};
 	}
 
+	bool contains(const char *rhs) const {
+		// Note: can replace with std::string_view::contains() in c++23
+		return std::string_view{_data}.find(rhs) != std::string_view::npos;
+	}
+
 	operator const char *() const {
 		return _data;
 	}
