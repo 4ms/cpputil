@@ -86,6 +86,24 @@ struct StaticString {
 		return capacity - length();
 	}
 
+	bool append(char c) {
+		if (auto len = length(); len < capacity) {
+			_data[len] = c;
+			_data[len + 1] = '\0';
+			return true;
+		}
+		return false;
+	}
+
+	char pop() {
+		if (auto len = length(); len > 0) {
+			auto c = _data[len - 1];
+			_data[len - 1] = '\0';
+			return c;
+		}
+		return '\0';
+	}
+
 #ifdef CPPUTIL_STATIC_STRING_USE_STD_STRING
 	operator std::string() const {
 		return _data;

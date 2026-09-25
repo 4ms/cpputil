@@ -139,3 +139,44 @@ TEST_CASE("Static String contains") {
 	CHECK_FALSE(str1.contains("123456789"));
 	CHECK_FALSE(str1.contains(str3));
 }
+
+TEST_CASE("StaticString::append()") {
+	StaticString<6> s{"1234"};
+	CHECK(s.append('5'));
+	CHECK(s.is_equal("12345"));
+	CHECK(s.append('6'));
+	CHECK(s.is_equal("123456"));
+	CHECK_FALSE(s.append('7'));
+	CHECK(s.is_equal("123456"));
+
+	StaticString<2> t;
+	CHECK(t._data[0] == '\0');
+	t.append('a');
+	CHECK(t._data[0] == 'a');
+	CHECK(t._data[1] == '\0');
+	t.append('b');
+	CHECK(t._data[0] == 'a');
+	CHECK(t._data[1] == 'b');
+	CHECK(t._data[2] == '\0');
+}
+
+TEST_CASE("StaticString::pop()") {
+	StaticString<6> s{"12"};
+	CHECK(s.length() == 2);
+
+	CHECK(s.pop() == '2');
+	CHECK(s.is_equal("1"));
+	CHECK(s.length() == 1);
+
+	CHECK(s.pop() == '1');
+	CHECK(s.is_equal(""));
+	CHECK(s.length() == 0);
+
+	CHECK(s.pop() == '\0');
+	CHECK(s.is_equal(""));
+	CHECK(s.length() == 0);
+
+	CHECK(s.pop() == '\0');
+	CHECK(s.is_equal(""));
+	CHECK(s.length() == 0);
+}
